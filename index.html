@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FluxoCash | Gestão Completa</title>
+    <title>FluxoCash | Gestão Híbrida</title>
     
     <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -79,7 +79,7 @@
                 <form id="form-login" class="space-y-4">
                     <input type="email" id="log-email" class="w-full p-3 border rounded-lg bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500" placeholder="E-mail" required>
                     <input type="password" id="log-pass" class="w-full p-3 border rounded-lg bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Senha" required>
-                    <button type="submit" id="btn-login" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg hover:bg-slate-900 transition">Entrar</button>
+                    <button type="submit" id="btn-login" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg hover:bg-slate-900 transition">Entrar (Nuvem)</button>
                 </form>
                 <div class="mt-4 text-center text-sm text-slate-500">
                     Ainda não tem conta? <button onclick="toggleAuth('register')" class="text-emerald-600 font-bold hover:underline">Criar agora</button>
@@ -101,8 +101,9 @@
 
             <div class="mt-6 pt-4 border-t space-y-3">
                 <button onclick="forceOfflineMode()" class="w-full bg-slate-100 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-200 transition border border-slate-300">
-                    <i class="fa-solid fa-wifi-slash mr-2"></i> Modo Offline (Sem Login)
+                    <i class="fa-solid fa-wifi-slash mr-2"></i> Entrar no Modo Offline
                 </button>
+                <p class="text-xs text-center text-slate-400">Seus dados serão salvos neste dispositivo.</p>
             </div>
             <p id="auth-error" class="text-red-500 text-xs text-center mt-3 font-bold h-auto min-h-[1rem]"></p>
         </div>
@@ -167,68 +168,40 @@
                                 </div>
                                 <ul id="list-extra-incomes" class="text-sm space-y-2 mb-3 max-h-32 overflow-y-auto"></ul>
                                 <form onsubmit="addExtraIncome(event)" class="flex gap-2">
-                                    <input id="extra-desc" type="text" placeholder="Ex: Freelance" class="w-full p-2 text-xs border rounded outline-none" required>
+                                    <input id="extra-desc" type="text" placeholder="Ex: Vendas" class="w-full p-2 text-xs border rounded outline-none" required>
                                     <input id="extra-val" type="number" placeholder="Valor" class="w-20 p-2 text-xs border rounded outline-none" step="0.01" required>
                                     <button class="bg-emerald-600 text-white px-3 rounded hover:bg-emerald-700 text-xs"><i class="fa-solid fa-plus"></i></button>
                                 </form>
                             </div>
                         </div>
 
-                        <!-- Cards de Totais -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                                <p class="text-xs text-slate-500 font-bold uppercase">Fixas</p>
-                                <p id="dash-fix" class="text-lg font-bold text-slate-700">R$ 0</p>
-                            </div>
-                            <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
-                                <p class="text-xs text-orange-600 font-bold uppercase">Variáveis</p>
-                                <p id="dash-var" class="text-lg font-bold text-orange-700">R$ 0</p>
-                            </div>
-                            <div class="bg-red-50 p-4 rounded-xl border border-red-100">
-                                <p class="text-xs text-red-600 font-bold uppercase">Dívidas</p>
-                                <p id="dash-debt" class="text-lg font-bold text-red-700">R$ 0</p>
-                            </div>
-                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
-                                <p class="text-xs text-emerald-600 font-bold uppercase">Investido</p>
-                                <p id="dash-goal" class="text-lg font-bold text-emerald-700">R$ 0</p>
-                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><p class="text-xs text-slate-500 font-bold uppercase">Fixas</p><p id="dash-fix" class="text-lg font-bold text-slate-700">R$ 0</p></div>
+                            <div class="bg-orange-50 p-4 rounded-xl border border-orange-100"><p class="text-xs text-orange-600 font-bold uppercase">Variáveis</p><p id="dash-var" class="text-lg font-bold text-orange-700">R$ 0</p></div>
+                            <div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs text-red-600 font-bold uppercase">Dívidas</p><p id="dash-debt" class="text-lg font-bold text-red-700">R$ 0</p></div>
+                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100"><p class="text-xs text-emerald-600 font-bold uppercase">Investido</p><p id="dash-goal" class="text-lg font-bold text-emerald-700">R$ 0</p></div>
                         </div>
 
-                        <!-- Saldo Final -->
                         <div class="text-center pt-4 border-t border-slate-100">
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Saldo Livre (Liberdade)</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Saldo Livre</p>
                             <div id="final-balance" class="text-5xl font-extrabold text-slate-300 my-2 transition-colors">R$ 0,00</div>
                             <p id="balance-msg" class="text-sm text-slate-500">...</p>
                         </div>
                     </div>
 
-                    <!-- 🚀 BOTÕES DE AÇÃO RÁPIDA -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <button onclick="nav('variable')" class="quick-btn bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-orange-50 group">
-                            <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center group-hover:bg-orange-200 transition"><i class="fa-solid fa-cart-shopping"></i></div>
-                            <span class="text-xs font-bold text-slate-600 group-hover:text-orange-700">Adicionar Gasto</span>
-                        </button>
-                        <button onclick="nav('fixed')" class="quick-btn bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-blue-50 group">
-                            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition"><i class="fa-solid fa-file-invoice"></i></div>
-                            <span class="text-xs font-bold text-slate-600 group-hover:text-blue-700">Adicionar Conta Fixa</span>
-                        </button>
-                        <button onclick="nav('goals')" class="quick-btn bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-emerald-50 group">
-                            <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center group-hover:bg-emerald-200 transition"><i class="fa-solid fa-piggy-bank"></i></div>
-                            <span class="text-xs font-bold text-slate-600 group-hover:text-emerald-700">Investir</span>
-                        </button>
-                        <button onclick="askAI('general')" class="quick-btn bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-xl shadow-md flex flex-col items-center gap-2 hover:opacity-90">
-                            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-                            <span class="text-xs font-bold">Análise IA</span>
-                        </button>
+                        <button onclick="nav('variable')" class="bg-white p-4 rounded-xl shadow-sm border hover:bg-orange-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-cart-shopping text-orange-500"></i><span class="text-xs font-bold text-slate-600">Gasto Var.</span></button>
+                        <button onclick="nav('fixed')" class="bg-white p-4 rounded-xl shadow-sm border hover:bg-blue-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-file-invoice text-blue-500"></i><span class="text-xs font-bold text-slate-600">Conta Fixa</span></button>
+                        <button onclick="nav('goals')" class="bg-white p-4 rounded-xl shadow-sm border hover:bg-emerald-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-piggy-bank text-emerald-500"></i><span class="text-xs font-bold text-slate-600">Investir</span></button>
+                        <button onclick="askAI('general')" class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-xl shadow-md flex flex-col items-center gap-2 hover:opacity-90"><i class="fa-solid fa-robot"></i><span class="text-xs font-bold">Análise IA</span></button>
                     </div>
 
-                    <!-- Gráfico -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
                         <canvas id="chart-main"></canvas>
                     </div>
                 </div>
 
-                <!-- ABAS DE CONTEÚDO (Mantidas) -->
+                <!-- ABAS DE CONTEÚDO -->
                 <div id="page-fixed" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border">
                         <h2 class="font-bold mb-4 text-slate-700">Contas Fixas</h2>
@@ -239,8 +212,17 @@
 
                 <div id="page-variable" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                        <h2 class="font-bold mb-4 text-slate-700">Gastos Variáveis</h2>
-                        <form onsubmit="addVar(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"><select id="var-cat" class="p-3 border rounded outline-none"><option>Alimentação</option><option>Mercado</option><option>Lazer</option><option>Transporte</option><option>Delivery</option><option>Outros</option></select><input id="var-val" type="number" placeholder="Valor" class="p-3 border rounded outline-none" step="0.01" required><input id="var-date" type="date" class="p-3 border rounded outline-none md:col-span-1 col-span-2"><button class="bg-orange-500 text-white font-bold p-3 rounded md:col-span-1 col-span-2">Lançar</button></form>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="font-bold text-slate-700">Gastos Variáveis</h2>
+                            
+                            <!-- BOTÃO IMPORTAR CSV -->
+                            <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded text-xs font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-import"></i> Importar CSV
+                                <input type="file" id="file-import" accept=".csv" class="hidden" onchange="importCSV(this)">
+                            </label>
+                        </div>
+
+                        <form onsubmit="addVar(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"><select id="var-cat" class="p-3 border rounded outline-none"><option>Alimentação</option><option>Mercado</option><option>Lazer</option><option>Transporte</option><option>Outros</option></select><input id="var-val" type="number" placeholder="Valor" class="p-3 border rounded outline-none" step="0.01" required><input id="var-date" type="date" class="p-3 border rounded outline-none md:col-span-1 col-span-2"><button class="bg-orange-500 text-white font-bold p-3 rounded md:col-span-1 col-span-2">Lançar</button></form>
                         <ul id="list-variable" class="divide-y text-sm"></ul>
                     </div>
                 </div>
@@ -248,7 +230,7 @@
                 <div id="page-debts" class="hidden space-y-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border">
                         <div class="flex justify-between mb-4"><h2 class="font-bold text-slate-700">Dívidas</h2><button onclick="askAI('debts')" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">IA</button></div>
-                        <form onsubmit="addDebt(event)" class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6"><input id="debt-name" type="text" placeholder="Nome" class="p-3 border rounded col-span-2" required><input id="debt-tot" type="number" placeholder="Total" class="p-3 border rounded" step="0.01"><input id="debt-par" type="number" placeholder="Parcela" class="p-3 border rounded" required step="0.01"><button class="bg-red-500 text-white font-bold p-3 rounded col-span-2">Adicionar</button></form>
+                        <form onsubmit="addDebt(event)" class="grid grid-cols-2 gap-3 mb-6"><input id="debt-name" type="text" placeholder="Nome" class="p-3 border rounded col-span-2" required><input id="debt-tot" type="number" placeholder="Total" class="p-3 border rounded" step="0.01"><input id="debt-par" type="number" placeholder="Parcela" class="p-3 border rounded" required step="0.01"><button class="bg-red-500 text-white font-bold p-3 rounded col-span-2">Adicionar</button></form>
                         <div id="list-debts" class="grid gap-2"></div>
                     </div>
                 </div>
@@ -289,9 +271,9 @@
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIG (Seus Dados Inseridos)
+        // CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyCL6XpBIm322dq2hW7z-Y5Nskxdn-T9OzU",
+            apiKey: "AIzaSyCzz0ntyKDngm6Yae0OIbD0fXHakEXm4Ck",
             authDomain: "fluxocash-b81f6.firebaseapp.com",
             projectId: "fluxocash-b81f6",
             storageBucket: "fluxocash-b81f6.firebasestorage.app",
@@ -399,8 +381,8 @@
                         else { saveData(); }
                         render();
                     }, (err) => { 
-                        // Fallback se leitura falhar
-                        window.forceOfflineMode();
+                        console.error(err); 
+                        if(err.code.includes('permission') || err.code.includes('unavailable')) window.forceOfflineMode();
                     });
                 }
             });
@@ -409,6 +391,50 @@
         const saveData = async () => {
             if(isOffline) { localStorage.setItem('fluxocash_local', JSON.stringify(appData)); return; }
             if(currentUser) await setDoc(doc(db, 'artifacts', 'fluxocash-app', 'users', currentUser.uid, 'app_data', 'main'), appData);
+        };
+
+        // --- IMPORTAR CSV (NOVO) ---
+        window.importCSV = (input) => {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                let count = 0;
+
+                // Tenta processar CSV simples (Data, Descrição, Valor)
+                lines.forEach(line => {
+                    const cols = line.split(',');
+                    if (cols.length >= 2) {
+                        // Tenta achar valor numérico
+                        let val = null;
+                        let desc = "Importado";
+                        let date = new Date().toISOString().split('T')[0];
+
+                        // Lógica básica de detecção
+                        cols.forEach(c => {
+                            const clean = c.replace(/[^\d.-]/g, '');
+                            if (clean && !isNaN(parseFloat(clean)) && c.includes('.')) {
+                                val = Math.abs(parseFloat(clean)); // Assume despesa
+                            } else if (c.length > 3 && !c.includes('/')) {
+                                desc = c.replace(/"/g, '').trim();
+                            }
+                        });
+
+                        if (val) {
+                            appData.variable.push({ category: "Outros", value: val, date: date });
+                            count++;
+                        }
+                    }
+                });
+
+                alert(`${count} itens importados!`);
+                saveData();
+                render();
+            };
+            reader.readAsText(file);
         };
 
         // --- APP FUNCTIONS ---
@@ -456,7 +482,7 @@
             [...appData.variable].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach((i,x)=>lVar.innerHTML+=`<li class="bg-white p-3 rounded border flex justify-between mb-2"><div><span class="font-bold">${i.category}</span> <span class="text-xs text-slate-400">${i.date}</span></div><div class="flex gap-2 font-bold text-orange-600"><span>${fmt(i.value)}</span><button onclick="delItem('variable',${x})" class="text-red-300 hover:text-red-500">x</button></div></li>`);
 
             const lDebt = document.getElementById('list-debts'); lDebt.innerHTML='';
-            appData.debts.forEach((i,x)=>lDebt.innerHTML+=`<div class="bg-white p-3 rounded border-l-4 border-red-400 shadow-sm flex justify-between"><div><span class="font-bold">${i.name}</span><br><span class="text-xs">Total: ${fmt(i.total)}</span></div><div class="text-right font-bold text-red-600">${fmt(i.parcel)}<button onclick="delItem('debts',${x})" class="ml-2 text-slate-300 hover:text-red-500">x</button></div></div>`);
+            appData.debts.forEach((i,x)=>lDebt.innerHTML+=`<div class="bg-white p-3 rounded border-l-4 border-red-400 shadow-sm flex justify-between"><div><div class="font-bold">${i.name}</div><div class="text-xs">Total: ${fmt(i.total)}</div></div><div class="text-right font-bold text-red-600">${fmt(i.parcel)}<button onclick="delItem('debts',${x})" class="ml-2 text-slate-300 hover:text-red-500">x</button></div></div>`);
 
             const lGoal = document.getElementById('list-goals'); lGoal.innerHTML='';
             appData.goals.forEach((i,x)=>lGoal.innerHTML+=`<div class="bg-emerald-50 p-3 border border-emerald-100 rounded flex justify-between"><div><span class="font-bold text-emerald-800">${i.name}</span></div><div class="text-right text-emerald-600 font-bold">${fmt(i.value)} <button onclick="delItem('goals',${x})" class="text-xs text-red-300 ml-2">x</button></div></div>`);
@@ -475,23 +501,39 @@
             document.getElementById('page-'+id).classList.remove('hidden');
             document.getElementById('nav-d-'+id)?.classList.add('active');
             document.getElementById('mob-'+id)?.classList.add('active');
-            if(id==='dashboard') render();
+            if(id === 'dashboard') render();
         };
 
-        window.closeAI = () => { document.getElementById('ai-modal').style.display='none'; document.getElementById('ai-modal').classList.add('hidden'); };
+        // --- 6. AI ---
+        window.closeAI = () => {
+            document.getElementById('ai-modal').style.display = 'none';
+            document.getElementById('ai-modal').classList.add('hidden');
+        };
+
         window.askAI = async (ctx) => {
             const modal = document.getElementById('ai-modal');
-            modal.classList.remove('hidden'); modal.style.display='flex';
-            document.getElementById('ai-content').innerHTML = '<div class="text-center"><i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600"></i><p>Pensando...</p></div>';
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            const content = document.getElementById('ai-content');
+            content.innerHTML = '<div class="text-center"><i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600"></i><p class="mt-2 text-slate-500">Consultando o Pai Rico...</p></div>';
+            
             try {
+                // Modelo Flash (estável)
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
                     method: 'POST', headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({contents:[{parts:[{text:`Analise como Pai Rico. Dados: ${JSON.stringify(appData)}. Foco: ${ctx}. Markdown.`}]}]})
+                    body: JSON.stringify({contents:[{parts:[{text:`Analise como Robert Kiyosaki. Dados: ${JSON.stringify(appData)}. Foco: ${ctx}. Use Markdown.`}]}]})
                 });
-                if(!res.ok) throw new Error((await res.json()).error.message);
+                
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error?.message || "Erro desconhecido");
+                }
+
                 const d = await res.json();
                 document.getElementById('ai-content').innerHTML = marked.parse(d.candidates[0].content.parts[0].text);
-            } catch(e) { document.getElementById('ai-content').innerHTML = `<p class="text-red-500 font-bold">Erro IA: ${e.message}</p>`; }
+            } catch(e) { 
+                content.innerHTML = `<p class="text-red-500 text-center font-bold">Erro IA: ${e.message}</p>`; 
+            }
         };
 
         document.getElementById('var-date').valueAsDate = new Date();
