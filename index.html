@@ -138,13 +138,15 @@
 
                 <div class="flex items-center gap-3">
                     <!-- Botão de Feedback (Todos veem) -->
-                    <button onclick="openFeedback()" class="text-slate-500 hover:text-emerald-600 transition p-2" title="Sugerir Melhoria">
+                    <button onclick="openFeedback()" class="flex items-center gap-2 text-slate-500 hover:text-emerald-600 transition px-3 py-1 rounded hover:bg-slate-100" title="Sugerir Melhoria">
                         <i class="fa-solid fa-box-open"></i>
+                        <span class="text-xs font-bold hidden sm:inline">(MELHORIAS)</span>
                     </button>
 
                     <!-- Botão Admin (Só admin vê) -->
-                    <button onclick="openAdmin()" id="btn-admin" class="hidden text-white bg-slate-800 hover:bg-slate-900 transition px-3 py-1 rounded text-xs font-bold shadow">
+                    <button onclick="openAdmin()" id="btn-admin" class="hidden relative text-white bg-slate-800 hover:bg-slate-900 transition px-3 py-1 rounded text-xs font-bold shadow">
                         <i class="fa-solid fa-lock mr-1"></i> ADM
+                        <span id="admin-badge" class="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] hidden">0</span>
                     </button>
 
                     <div class="h-6 w-px bg-slate-200 mx-2"></div>
@@ -222,6 +224,28 @@
                         </div>
                     </div>
 
+                    <!-- GRÁFICOS DE PROJEÇÃO E GARGALOS (ADICIONADOS) -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Projeção Futura -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
+                            <h3 class="font-bold text-slate-700 mb-2 text-sm flex justify-between">
+                                <span>🚀 Projeção (Custos Futuros)</span>
+                                <span class="text-xs font-normal text-slate-400">Fixas + Parcelas</span>
+                            </h3>
+                            <div class="relative h-64 w-full">
+                                <canvas id="chart-projection"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Gargalos -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
+                            <h3 class="font-bold text-slate-700 mb-2 text-sm">⚠️ Gargalos: Variáveis</h3>
+                            <div class="relative h-64 w-full">
+                                <canvas id="chart-variable-breakdown"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- GRÁFICO DE EVOLUÇÃO (LINHA DO TEMPO) -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
                          <div class="flex justify-between items-center mb-4">
@@ -235,7 +259,7 @@
 
                     <!-- Gráfico Distribuição Atual -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
-                        <h3 class="font-bold text-slate-700 mb-4">Distribuição deste Mês</h3>
+                        <h3 class="font-bold text-slate-700 mb-4">Distribuição Geral deste Mês</h3>
                         <div class="relative h-64 w-full">
                             <canvas id="chart-main"></canvas>
                         </div>
@@ -295,7 +319,13 @@
 
                     <div class="bg-white p-6 rounded-2xl shadow-sm border">
                         <div class="flex justify-between mb-4"><h2 class="font-bold text-slate-700">Passivos (Dívidas)</h2><button onclick="askAI('debts')" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">IA</button></div>
-                        <form onsubmit="addDebt(event)" class="grid grid-cols-2 gap-3 mb-6"><input id="debt-name" type="text" placeholder="Nome" class="p-3 border rounded col-span-2" required><input id="debt-tot" type="number" placeholder="Total" class="p-3 border rounded" step="0.01"><input id="debt-par" type="number" placeholder="Parcela" class="p-3 border rounded" required step="0.01"><button class="bg-red-500 text-white font-bold p-3 rounded col-span-2">Adicionar</button></form>
+                        <form onsubmit="addDebt(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                            <input id="debt-name" type="text" placeholder="Nome" class="p-3 border rounded col-span-2 md:col-span-2" required>
+                            <input id="debt-tot" type="number" placeholder="Total" class="p-3 border rounded" step="0.01">
+                            <input id="debt-par" type="number" placeholder="Parcela" class="p-3 border rounded" required step="0.01">
+                            <input id="debt-inst" type="number" placeholder="Qtd. Parcelas" class="p-3 border rounded col-span-2 md:col-span-1" required>
+                            <button class="bg-red-500 text-white font-bold p-3 rounded col-span-2 md:col-span-3 mt-2">Adicionar</button>
+                        </form>
                         <div id="list-debts" class="grid gap-2"></div>
                     </div>
                 </div>
@@ -328,13 +358,25 @@
     <!-- FEEDBACK MODAL -->
     <div id="feedback-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6">
-            <h3 class="text-lg font-bold text-slate-800 mb-2">Sugestão de Melhoria</h3>
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Sugestão de Melhoria 💡</h3>
             <p class="text-sm text-slate-500 mb-4">Sua ideia pode virar realidade no app!</p>
             <textarea id="feedback-text" class="w-full p-3 border rounded-lg bg-slate-50 h-32 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Escreva sua sugestão aqui..."></textarea>
             <div class="flex justify-end gap-2 mt-4">
                 <button onclick="document.getElementById('feedback-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500 hover:text-slate-700">Cancelar</button>
                 <button onclick="sendFeedback()" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-bold">Enviar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION MODAL -->
+    <div id="notify-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Sugestão Atendida!</h3>
+            <p class="text-sm text-slate-600 mb-4">Sua sugestão de melhoria foi implementada com sucesso. Obrigado por contribuir!</p>
+            <button onclick="document.getElementById('notify-modal').classList.add('hidden')" class="w-full py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold">Ótimo!</button>
         </div>
     </div>
 
@@ -370,7 +412,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, getDocs, orderBy, query, updateDoc, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // === CONFIGURAÇÃO ===
         const ADMIN_EMAIL = "ohebertgustavo@gmail.com"; 
@@ -388,8 +430,7 @@
         // INIT
         let app, auth, db, currentUser = null;
         let appData = { income: 0, extraIncomes: [], fixed: [], variable: [], debts: [], goals: [], history: [] }; 
-        let chartInstance = null;
-        let historyChartInstance = null;
+        let chartInstance = null, historyChartInstance = null, variableBreakdownChart = null, projChart = null;
         let isOffline = false;
         
         // Frases
@@ -477,7 +518,11 @@
                     // CHECK ADMIN
                     if(user.email === ADMIN_EMAIL) {
                         document.getElementById('btn-admin').classList.remove('hidden');
+                        checkAdminNotifications(); // Count pending
                     }
+                    
+                    // CHECK USER NOTIFICATIONS (If suggest done)
+                    checkUserNotifications(user.uid);
 
                     const docRef = doc(db, 'artifacts', 'fluxocash-app', 'users', user.uid, 'app_data', 'main');
                     onSnapshot(docRef, (s) => {
@@ -494,7 +539,8 @@
             if(currentUser) await setDoc(doc(db, 'artifacts', 'fluxocash-app', 'users', currentUser.uid, 'app_data', 'main'), appData);
         };
 
-        // --- FEEDBACK & ADMIN LOGIC ---
+        // --- FEEDBACK & ADMIN LOGIC (IMPROVED) ---
+        
         window.openFeedback = () => { document.getElementById('feedback-modal').classList.remove('hidden'); };
         
         window.sendFeedback = async () => {
@@ -507,9 +553,11 @@
                 await addDoc(collection(db, 'artifacts', 'fluxocash-app', 'global_feedback'), {
                     text: txt,
                     user: currentUser.email || "Anônimo",
+                    userId: currentUser.uid,
+                    status: 'pending', // Default status
                     date: new Date().toISOString()
                 });
-                alert("Sugestão enviada com sucesso! Obrigado.");
+                alert("Sugestão enviada! Você será notificado quando concluída.");
                 document.getElementById('feedback-text').value = "";
                 document.getElementById('feedback-modal').classList.add('hidden');
             } catch(e) {
@@ -536,16 +584,26 @@
                     return;
                 }
 
-                snapshot.forEach(doc => {
-                    const data = doc.data();
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const docId = docSnap.id;
                     const date = new Date(data.date).toLocaleDateString('pt-BR');
+                    const statusColor = data.status === 'done' ? 'bg-green-100 text-green-800' : (data.status === 'doing' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800');
+                    
                     list.innerHTML += `
                         <div class="bg-white p-4 rounded border border-slate-200 shadow-sm">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="font-bold text-sm text-indigo-600">${data.user}</span>
-                                <span class="text-xs text-slate-400">${date}</span>
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <span class="font-bold text-sm text-indigo-600 block">${data.user}</span>
+                                    <span class="text-xs text-slate-400">${date}</span>
+                                </div>
+                                <select onchange="updateFeedbackStatus('${docId}', this.value)" class="text-xs font-bold p-1 rounded border outline-none ${statusColor}">
+                                    <option value="pending" ${data.status === 'pending' ? 'selected' : ''}>PENDENTE</option>
+                                    <option value="doing" ${data.status === 'doing' ? 'selected' : ''}>EXECUTANDO</option>
+                                    <option value="done" ${data.status === 'done' ? 'selected' : ''}>CONCLUIDO</option>
+                                </select>
                             </div>
-                            <p class="text-sm text-slate-700">${data.text}</p>
+                            <p class="text-sm text-slate-700 mt-2 bg-slate-50 p-2 rounded">${data.text}</p>
                         </div>
                     `;
                 });
@@ -554,134 +612,192 @@
             }
         };
 
+        window.updateFeedbackStatus = async (id, newStatus) => {
+            try {
+                const ref = doc(db, 'artifacts', 'fluxocash-app', 'global_feedback', id);
+                await updateDoc(ref, { status: newStatus });
+                // Refresh list color
+                loadAdminMessages(); 
+                checkAdminNotifications();
+            } catch(e) { console.error("Update failed", e); }
+        };
+
+        async function checkAdminNotifications() {
+            try {
+                // Count pending
+                const q = query(collection(db, 'artifacts', 'fluxocash-app', 'global_feedback'), where('status', '==', 'pending'));
+                const snap = await getDocs(q);
+                const count = snap.size;
+                const badge = document.getElementById('admin-badge');
+                if(count > 0) {
+                    badge.innerText = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            } catch(e) {}
+        }
+
+        async function checkUserNotifications(uid) {
+            try {
+                // Check if user has any 'done' feedback that hasn't been notified locally (simplified check)
+                const q = query(collection(db, 'artifacts', 'fluxocash-app', 'global_feedback'), where('userId', '==', uid), where('status', '==', 'done'));
+                const snap = await getDocs(q);
+                
+                // Simple logic: if exists any done, show notification (in real app we would mark as read in DB)
+                let hasUnread = false;
+                snap.forEach(d => {
+                    const data = d.data();
+                    if(!localStorage.getItem(`read_${d.id}`)) {
+                        hasUnread = true;
+                        localStorage.setItem(`read_${d.id}`, 'true'); // Mark locally as seen
+                    }
+                });
+
+                if(hasUnread) {
+                    document.getElementById('notify-modal').classList.remove('hidden');
+                }
+            } catch(e) {}
+        }
+
 
         // --- APP FUNCTIONS ---
         window.addFixed = (e) => { e.preventDefault(); const n=document.getElementById('fix-name').value, v=parseFloat(document.getElementById('fix-val').value); if(n&&v){ appData.fixed.push({name:n,value:v}); e.target.reset(); saveData(); } };
         window.addVar = (e) => { e.preventDefault(); const c=document.getElementById('var-cat').value, v=parseFloat(document.getElementById('var-val').value), d=document.getElementById('var-date').value; if(c&&v){ appData.variable.push({category:c,value:v,date:d}); document.getElementById('var-val').value=''; saveData(); } };
-        window.addDebt = (e) => { e.preventDefault(); const n=document.getElementById('debt-name').value, t=parseFloat(document.getElementById('debt-tot').value)||0, p=parseFloat(document.getElementById('debt-par').value); if(n&&p){ appData.debts.push({name:n,total:t,parcel:p}); e.target.reset(); saveData(); } };
+        
+        // DEBTS WITH INSTALLMENTS
+        window.addDebt = (e) => { 
+            e.preventDefault(); 
+            const n=document.getElementById('debt-name').value, p=parseFloat(document.getElementById('debt-par').value), inst=parseInt(document.getElementById('debt-inst').value)||1; 
+            if(n&&p){ appData.debts.push({name:n, parcel:p, installments: inst}); e.target.reset(); saveData(); } 
+        };
+        
         window.addGoal = (e) => { e.preventDefault(); const n=document.getElementById('goal-name').value, v=parseFloat(document.getElementById('goal-val').value); if(n&&v){ appData.goals.push({name:n,value:v}); e.target.reset(); saveData(); } };
-        window.addExtraIncome = (e) => { e.preventDefault(); const d=document.getElementById('extra-desc').value, v=parseFloat(document.getElementById('extra-val').value); if(d&&v){ if(!appData.extraIncomes) appData.extraIncomes=[]; appData.extraIncomes.push({desc:d,value:v}); e.target.reset(); saveData(); render(); } };
-
-        window.delItem = (type, i) => { if(confirm("Remover?")) { appData[type].splice(i,1); saveData(); render(); } };
+        window.addExtraIncome = (e) => { e.preventDefault(); const d=document.getElementById('extra-desc').value, v=parseFloat(document.getElementById('extra-val').value); if(d&&v){ appData.extraIncomes.push({desc:d,value:v}); e.target.reset(); saveData(); render(); } };
+        
+        window.delItem = (t, i) => { if(confirm("Remover?")) { appData[t].splice(i,1); saveData(); render(); } };
         window.delExtra = (i) => { if(confirm("Remover?")) { appData.extraIncomes.splice(i,1); saveData(); render(); } };
         window.resetAll = () => { if(confirm("Zerar?")) { appData={income:0,extraIncomes:[],fixed:[],variable:[],debts:[],goals:[], history:[]}; saveData(); render(); } };
         document.getElementById('inp-income').addEventListener('input', (e) => { appData.income = parseFloat(e.target.value)||0; saveData(); render(); });
 
         window.saveCurrentMonth = () => {
-            const label = prompt("Nome do mês (ex: Jan/24):", new Date().toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}));
-            if(!label) return;
-            const ext = (appData.extraIncomes||[]).reduce((a,b)=>a+b.value,0);
-            const fix = appData.fixed.reduce((a,b)=>a+b.value,0);
-            const vari = appData.variable.reduce((a,b)=>a+b.value,0);
-            const debt = appData.debts.reduce((a,b)=>a+b.parcel,0);
-            const goal = appData.goals.reduce((a,b)=>a+b.value,0);
-            const bal = (appData.income||0)+ext-(fix+vari+debt+goal);
-            if(!appData.history) appData.history=[];
-            appData.history.push({label, balance:bal});
-            saveData(); render();
+            const label = prompt("Mês (ex: Jan/24):", new Date().toLocaleDateString('pt-BR',{month:'short'})); if(!label) return;
+            // Simplified Snapshot Logic
+            const bal = (appData.income||0) + (appData.extraIncomes||[]).reduce((a,b)=>a+b.value,0) - (appData.fixed.reduce((a,b)=>a+b.value,0) + appData.variable.reduce((a,b)=>a+b.value,0) + appData.debts.reduce((a,b)=>a+b.parcel,0) + appData.goals.reduce((a,b)=>a+b.value,0));
+            appData.history.push({label, balance:bal}); saveData(); render();
         };
         window.clearHistory = () => { if(confirm("Limpar histórico?")) { appData.history=[]; saveData(); render(); } };
         window.importCSV = (i) => {
-            const f=i.files[0]; if(!f)return;
+            const f=i.files[0]; if(!f) return;
             const r=new FileReader(); r.onload=(e)=>{
-                const l=e.target.result.split('\n'); let c=0;
-                l.forEach(line=>{
-                    if(!line.trim())return;
-                    let cols=line.split(line.includes(';')?';':',');
-                    if(cols.length>=3){
-                        let d=cols[0].trim(), t=cols[1].trim().replace(/"/g,''), v=parseFloat(cols[2].trim().replace(/[^\d.,-]/g,'').replace(',','.'));
-                        if(d.includes('/')) d=`${d.split('/')[2]}-${d.split('/')[1]}-${d.split('/')[0]}`;
-                        if(!isNaN(v)){ appData.variable.push({category:t,value:Math.abs(v),date:d}); c++; }
+                e.target.result.split('\n').forEach(line=>{
+                    const c=line.split(line.includes(';')?';':',');
+                    if(c.length>=3) {
+                        const val = parseFloat(c[2].replace(/[^\d.,-]/g,'').replace(',','.'));
+                        if(!isNaN(val)) appData.variable.push({category:c[1].replace(/"/g,''), value:Math.abs(val), date: c[0]});
                     }
                 });
-                alert(`${c} importados!`); saveData(); render();
+                alert("Importado!"); saveData(); render();
             }; r.readAsText(f);
         };
 
         // --- RENDER ---
         function fmt(n) { return new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'}).format(n); }
-        
         function render() {
             if(document.activeElement.id !== 'inp-income') document.getElementById('inp-income').value = appData.income || "";
-            const extra = (appData.extraIncomes||[]).reduce((a,b)=>a+b.value,0);
-            const inc = (appData.income||0) + extra;
+            const ext = (appData.extraIncomes||[]).reduce((a,b)=>a+b.value,0);
+            const inc = (appData.income||0) + ext;
             const fix = appData.fixed.reduce((a,b)=>a+b.value,0);
             const vari = appData.variable.reduce((a,b)=>a+b.value,0);
             const debt = appData.debts.reduce((a,b)=>a+b.parcel,0);
             const goal = appData.goals.reduce((a,b)=>a+b.value,0);
             const bal = inc - (fix+vari+debt+goal);
 
-            document.getElementById('total-extra-income').innerText = fmt(extra);
+            document.getElementById('total-extra-income').innerText = fmt(ext);
             document.getElementById('dash-fix').innerText = fmt(fix);
             document.getElementById('dash-var').innerText = fmt(vari);
             document.getElementById('dash-debt').innerText = fmt(debt);
             document.getElementById('dash-goal').innerText = fmt(goal);
-            const elBal = document.getElementById('final-balance');
-            elBal.innerText = fmt(bal);
-            elBal.className = `text-5xl font-extrabold my-2 ${bal>0?'text-emerald-500':(bal<0?'text-red-500':'text-slate-300')}`;
+            const elBal = document.getElementById('final-balance'); elBal.innerText = fmt(bal);
+            elBal.className = `text-5xl font-extrabold my-2 ${bal>0?'text-emerald-500':'text-red-500'}`;
             document.getElementById('balance-msg').innerText = bal>0?"Riqueza crescendo 🚀":"Gasto > Renda ⚠️";
 
-            const elExtra = document.getElementById('list-extra-incomes'); elExtra.innerHTML='';
-            (appData.extraIncomes||[]).forEach((i,x) => elExtra.innerHTML+=`<li class="flex justify-between border-b border-emerald-100 py-1"><span>${i.desc}</span><div class="font-bold text-emerald-700">${fmt(i.value)} <button onclick="delExtra(${x})" class="text-red-300 hover:text-red-500 ml-1">x</button></div></li>`);
+            // LISTS
+            const lEx=document.getElementById('list-extra-incomes'); lEx.innerHTML=''; (appData.extraIncomes||[]).forEach((i,x)=>lEx.innerHTML+=`<li class="flex justify-between border-b pb-1 text-sm"><span>${i.desc}</span><span class="font-bold text-emerald-600">${fmt(i.value)} <button onclick="delExtra(${x})" class="text-red-400">x</button></span></li>`);
+            const lFix=document.getElementById('list-fixed'); lFix.innerHTML=''; appData.fixed.forEach((i,x)=>lFix.innerHTML+=`<tr class="border-b"><td class="p-3">${i.name}</td><td class="text-right">${fmt(i.value)}</td><td class="text-right"><button onclick="delItem('fixed',${x})"><i class="fa-solid fa-trash text-red-300"></i></button></td></tr>`);
+            const lVar=document.getElementById('list-variable'); lVar.innerHTML=''; [...appData.variable].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach((i,x)=>lVar.innerHTML+=`<li class="bg-white p-3 rounded border flex justify-between mb-2"><div><span class="font-bold">${i.category}</span> <span class="text-xs text-slate-400">${i.date}</span></div><div class="font-bold text-orange-600">${fmt(i.value)}<button onclick="delItem('variable',${x})" class="ml-2 text-red-300">x</button></div></li>`);
+            const lDebt=document.getElementById('list-debts'); lDebt.innerHTML=''; appData.debts.forEach((i,x)=>lDebt.innerHTML+=`<div class="bg-white p-3 rounded border-l-4 border-red-400 shadow-sm flex justify-between"><div><div class="font-bold">${i.name}</div><div class="text-xs text-slate-500">${i.installments}x restantes</div></div><div class="text-right font-bold text-red-600">${fmt(i.parcel)}<button onclick="delItem('debts',${x})" class="ml-2 text-slate-300">x</button></div></div>`);
+            const lGoal=document.getElementById('list-goals'); lGoal.innerHTML=''; appData.goals.forEach((i,x)=>lGoal.innerHTML+=`<div class="bg-emerald-50 p-3 border border-emerald-100 rounded flex justify-between"><div><span class="font-bold text-emerald-800">${i.name}</span></div><div class="text-right text-emerald-600 font-bold">${fmt(i.value)}<button onclick="delItem('goals',${x})" class="ml-2 text-red-300">x</button></div></div>`);
 
-            const lFix = document.getElementById('list-fixed'); lFix.innerHTML='';
-            appData.fixed.forEach((i,x)=>lFix.innerHTML+=`<tr class="border-b hover:bg-slate-50"><td class="p-3">${i.name}</td><td class="p-3 text-right">${fmt(i.value)}</td><td class="p-3 text-right"><button onclick="delItem('fixed',${x})" class="text-red-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`);
+            // --- CHARTS ---
+            
+            // 1. PROJECTION CHART (Future Costs)
+            const ctxProj = document.getElementById('chart-projection');
+            if (ctxProj) {
+                const maxMonths = Math.max(6, ...appData.debts.map(d=>d.installments || 1)); // Min 6 months
+                const labelsProj = []; const dataProj = [];
+                
+                for(let i=1; i<=maxMonths; i++) {
+                    labelsProj.push(`Mês ${i}`);
+                    let monthlyCost = fix; // Fixed expenses always exist
+                    // Add debt parcels only if installment is still active for month i
+                    appData.debts.forEach(d => { if(d.installments >= i) monthlyCost += d.parcel; });
+                    dataProj.push(monthlyCost);
+                }
+                
+                if(window.projChart) window.projChart.destroy();
+                window.projChart = new Chart(ctxProj.getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: labelsProj, datasets: [{ label: 'Custo Previsto (Fixo + Passivos)', data: dataProj, backgroundColor: '#64748b' }] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
 
-            const lVar = document.getElementById('list-variable'); lVar.innerHTML='';
-            [...appData.variable].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach((i,x)=>lVar.innerHTML+=`<li class="bg-white p-3 rounded border flex justify-between mb-2"><div><span class="font-bold block">${i.category}</span><span class="text-xs text-slate-400">${i.date}</span></div><div class="flex gap-2 font-bold text-orange-600"><span>${fmt(i.value)}</span><button onclick="delItem('variable',${x})" class="text-red-300 hover:text-red-500">x</button></div></li>`);
+            // 2. VARIABLE BREAKDOWN CHART
+            const ctxVar = document.getElementById('chart-variable-breakdown');
+            if (ctxVar) {
+                const catTotals = {};
+                appData.variable.forEach(v => { catTotals[v.category] = (catTotals[v.category]||0) + v.value; });
+                
+                if(window.varChart) window.varChart.destroy();
+                window.varChart = new Chart(ctxVar.getContext('2d'), {
+                    type: 'doughnut',
+                    data: { labels: Object.keys(catTotals), datasets: [{ data: Object.values(catTotals), backgroundColor: ['#f87171', '#fb923c', '#fbbf24', '#a3e635', '#34d399', '#22d3ee', '#818cf8', '#e879f9'] }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10 } } } }
+                });
+            }
 
-            const lDebt = document.getElementById('list-debts'); lDebt.innerHTML='';
-            appData.debts.forEach((i,x)=>lDebt.innerHTML+=`<div class="bg-white p-3 rounded border-l-4 border-red-400 shadow-sm flex justify-between"><div><div class="font-bold">${i.name}</div><div class="text-xs">Total: ${fmt(i.total)}</div></div><div class="text-right font-bold text-red-600">${fmt(i.parcel)}<button onclick="delItem('debts',${x})" class="ml-2 text-slate-300 hover:text-red-500">x</button></div></div>`);
+            // 3. HISTORY CHART
+            const ctxHist = document.getElementById('chart-history');
+            if (ctxHist) {
+                if(historyChartInstance) historyChartInstance.destroy();
+                const histData = appData.history || [];
+                historyChartInstance = new Chart(ctxHist.getContext('2d'), { type: 'line', data: { labels: histData.map(h => h.label), datasets: [{ label: 'Evolução Saldo', data: histData.map(h => h.balance), borderColor: '#059669', tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false } });
+            }
 
-            const lGoal = document.getElementById('list-goals'); lGoal.innerHTML='';
-            appData.goals.forEach((i,x)=>lGoal.innerHTML+=`<div class="bg-emerald-50 p-3 border border-emerald-100 rounded flex justify-between"><div><span class="font-bold text-emerald-800">${i.name}</span></div><div class="text-right text-emerald-600 font-bold">${fmt(i.value)} <button onclick="delItem('goals',${x})" class="text-xs text-red-300 ml-2">x</button></div></div>`);
-
-            // MAIN DOUGHNUT CHART
-            const ctx = document.getElementById('chart-main').getContext('2d');
-            if(chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Fixas','Variáveis','Passivos','Ativos','Livre'], datasets: [{ data: [fix,vari,debt,goal,Math.max(0,bal)], backgroundColor: ['#64748b','#f97316','#ef4444','#10b981','#cbd5e1'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right' } } } });
-
-            // HISTORY LINE CHART
-            const ctxHist = document.getElementById('chart-history').getContext('2d');
-            if(historyChartInstance) historyChartInstance.destroy();
-            const historyData = appData.history || [];
-            historyChartInstance = new Chart(ctxHist, { type: 'line', data: { labels: historyData.map(h => h.label), datasets: [{ label: 'Saldo Livre', data: historyData.map(h => h.balance), borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } } });
+            // 4. MAIN CHART
+            const ctxMain = document.getElementById('chart-main');
+            if (ctxMain) {
+                if(chartInstance) chartInstance.destroy();
+                chartInstance = new Chart(ctxMain.getContext('2d'), { type: 'doughnut', data: { labels: ['Fixas','Variáveis','Passivos','Ativos','Livre'], datasets: [{ data: [fix,vari,debt,goal,Math.max(0,bal)], backgroundColor: ['#64748b','#f97316','#ef4444','#10b981','#cbd5e1'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right' } } } });
+            }
         }
 
         window.nav = (id) => {
-            ['dashboard','fixed','variable','debts','goals'].forEach(t => {
-                document.getElementById('page-'+t).classList.add('hidden');
-                document.getElementById('nav-d-'+t)?.classList.remove('active');
-                document.getElementById('mob-'+t)?.classList.remove('active');
-            });
-            document.getElementById('page-'+id).classList.remove('hidden');
-            document.getElementById('nav-d-'+id)?.classList.add('active');
-            document.getElementById('mob-'+id)?.classList.add('active');
-            if(id === 'dashboard') render();
-            updateQuote(id); // Frase
+            ['dashboard','fixed','variable','debts','goals'].forEach(t => { document.getElementById('page-'+t).classList.add('hidden'); document.getElementById('nav-d-'+t)?.classList.remove('active'); document.getElementById('mob-'+t)?.classList.remove('active'); });
+            document.getElementById('page-'+id).classList.remove('hidden'); document.getElementById('nav-d-'+id)?.classList.add('active'); document.getElementById('mob-'+id)?.classList.add('active');
+            if(id === 'dashboard') render(); updateQuote(id);
         };
+        function updateQuote(id) { const el = document.getElementById('quote-'+id); if(el && quotes[id]) { const t = quotes[id][Math.floor(Math.random()*quotes[id].length)]; el.innerText = `"${t}"`; } }
 
-        function updateQuote(tabId) {
-            const list = quotes[tabId]; if(!list) return;
-            const randomQuote = list[Math.floor(Math.random() * list.length)];
-            const el = document.getElementById(`quote-${tabId}`);
-            if(el) { el.parentElement.style.opacity = '0'; setTimeout(() => { el.innerText = `"${randomQuote}"`; el.parentElement.style.opacity = '1'; }, 200); }
-        }
-
-        window.closeAI = () => { document.getElementById('ai-modal').style.display='none'; document.getElementById('ai-modal').classList.add('hidden'); };
+        // AI
+        window.closeAI = () => document.getElementById('ai-modal').classList.add('hidden');
         window.askAI = async (ctx) => {
-            const modal = document.getElementById('ai-modal');
-            modal.classList.remove('hidden'); modal.style.display='flex';
-            document.getElementById('ai-content').innerHTML = '<div class="text-center"><i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600"></i><p>Pensando...</p></div>';
+            document.getElementById('ai-modal').classList.remove('hidden'); document.getElementById('ai-content').innerText = "Pensando...";
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
-                    method: 'POST', headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({contents:[{parts:[{text:`Analise como Robert Kiyosaki. Dados: ${JSON.stringify(appData)}. Foco: ${ctx}. Use Markdown.`}]}]})
-                });
-                if(!res.ok) throw new Error((await res.json()).error.message);
-                const d = await res.json();
-                document.getElementById('ai-content').innerHTML = marked.parse(d.candidates[0].content.parts[0].text);
-            } catch(e) { document.getElementById('ai-content').innerHTML = `<p class="text-red-500 font-bold">Erro IA: ${e.message}</p>`; }
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({contents:[{parts:[{text:`Analise como Robert Kiyosaki. Dados: ${JSON.stringify(appData)}. Foco: ${ctx}. Markdown.`}]}]}) });
+                const d = await res.json(); document.getElementById('ai-content').innerHTML = marked.parse(d.candidates[0].content.parts[0].text);
+            } catch(e) { document.getElementById('ai-content').innerText = "Erro IA"; }
         };
 
         document.getElementById('var-date').valueAsDate = new Date();
