@@ -16,7 +16,7 @@
         
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; overflow: hidden; }
         
-        /* TELA DE LOGIN */
+        /* TELA DE LOGIN (Z-Index Ajustado) */
         #auth-screen {
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
             z-index: 9000;
@@ -530,7 +530,7 @@
             
             try {
                 // Endpoint para Gemini 1.5 Flash (Modelo atual e estável)
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
