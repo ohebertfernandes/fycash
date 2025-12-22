@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FluxoCash | Gestão Híbrida</title>
+    <title>FluxoCash | Gestão Completa</title>
     
     <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -175,13 +175,27 @@
                             </div>
                         </div>
 
+                        <!-- Cards de Totais -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><p class="text-xs text-slate-500 font-bold uppercase">Fixas</p><p id="dash-fix" class="text-lg font-bold text-slate-700">R$ 0</p></div>
-                            <div class="bg-orange-50 p-4 rounded-xl border border-orange-100"><p class="text-xs text-orange-600 font-bold uppercase">Variáveis</p><p id="dash-var" class="text-lg font-bold text-orange-700">R$ 0</p></div>
-                            <div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs text-red-600 font-bold uppercase">Dívidas</p><p id="dash-debt" class="text-lg font-bold text-red-700">R$ 0</p></div>
-                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100"><p class="text-xs text-emerald-600 font-bold uppercase">Investido</p><p id="dash-goal" class="text-lg font-bold text-emerald-700">R$ 0</p></div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <p class="text-xs text-slate-500 font-bold uppercase">Fixas</p>
+                                <p id="dash-fix" class="text-lg font-bold text-slate-700">R$ 0</p>
+                            </div>
+                            <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
+                                <p class="text-xs text-orange-600 font-bold uppercase">Variáveis</p>
+                                <p id="dash-var" class="text-lg font-bold text-orange-700">R$ 0</p>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                                <p class="text-xs text-red-600 font-bold uppercase">Dívidas</p>
+                                <p id="dash-debt" class="text-lg font-bold text-red-700">R$ 0</p>
+                            </div>
+                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                                <p class="text-xs text-emerald-600 font-bold uppercase">Investido</p>
+                                <p id="dash-goal" class="text-lg font-bold text-emerald-700">R$ 0</p>
+                            </div>
                         </div>
 
+                        <!-- Saldo Final -->
                         <div class="text-center pt-4 border-t border-slate-100">
                             <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Saldo Livre</p>
                             <div id="final-balance" class="text-5xl font-extrabold text-slate-300 my-2 transition-colors">R$ 0,00</div>
@@ -189,13 +203,27 @@
                         </div>
                     </div>
 
+                    <!-- 🚀 BOTÕES DE AÇÃO RÁPIDA -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <button onclick="nav('variable')" class="bg-white p-4 rounded-xl shadow-sm border hover:bg-orange-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-cart-shopping text-orange-500"></i><span class="text-xs font-bold text-slate-600">Gasto Var.</span></button>
-                        <button onclick="nav('fixed')" class="bg-white p-4 rounded-xl shadow-sm border hover:bg-blue-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-file-invoice text-blue-500"></i><span class="text-xs font-bold text-slate-600">Conta Fixa</span></button>
-                        <button onclick="nav('goals')" class="bg-white p-4 rounded-xl shadow-sm border hover:bg-emerald-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-piggy-bank text-emerald-500"></i><span class="text-xs font-bold text-slate-600">Investir</span></button>
-                        <button onclick="askAI('general')" class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-xl shadow-md flex flex-col items-center gap-2 hover:opacity-90"><i class="fa-solid fa-robot"></i><span class="text-xs font-bold">Análise IA</span></button>
+                        <button onclick="nav('variable')" class="quick-btn bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-orange-50 group">
+                            <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center group-hover:bg-orange-200 transition"><i class="fa-solid fa-cart-shopping"></i></div>
+                            <span class="text-xs font-bold text-slate-600 group-hover:text-orange-700">Adicionar Gasto</span>
+                        </button>
+                        <button onclick="nav('fixed')" class="quick-btn bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-blue-50 group">
+                            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition"><i class="fa-solid fa-file-invoice"></i></div>
+                            <span class="text-xs font-bold text-slate-600 group-hover:text-blue-700">Adicionar Conta Fixa</span>
+                        </button>
+                        <button onclick="nav('goals')" class="quick-btn bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:bg-emerald-50 group">
+                            <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center group-hover:bg-emerald-200 transition"><i class="fa-solid fa-piggy-bank"></i></div>
+                            <span class="text-xs font-bold text-slate-600 group-hover:text-emerald-700">Investir</span>
+                        </button>
+                        <button onclick="askAI('general')" class="quick-btn bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-xl shadow-md flex flex-col items-center gap-2 hover:opacity-90">
+                            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+                            <span class="text-xs font-bold">Análise IA</span>
+                        </button>
                     </div>
 
+                    <!-- Gráfico -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
                         <canvas id="chart-main"></canvas>
                     </div>
@@ -216,13 +244,14 @@
                             <h2 class="font-bold text-slate-700">Gastos Variáveis</h2>
                             
                             <!-- BOTÃO IMPORTAR CSV -->
-                            <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded text-xs font-bold flex items-center gap-2">
-                                <i class="fa-solid fa-file-import"></i> Importar CSV
+                            <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 border border-slate-200 transition">
+                                <i class="fa-solid fa-file-import text-emerald-600"></i> Importar CSV
                                 <input type="file" id="file-import" accept=".csv" class="hidden" onchange="importCSV(this)">
                             </label>
                         </div>
+                        <p class="text-xs text-slate-400 mb-4 bg-slate-50 p-2 rounded">Formato do CSV: Coluna 1 (Data), Coluna 2 (Nome/Título), Coluna 3 (Valor)</p>
 
-                        <form onsubmit="addVar(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"><select id="var-cat" class="p-3 border rounded outline-none"><option>Alimentação</option><option>Mercado</option><option>Lazer</option><option>Transporte</option><option>Outros</option></select><input id="var-val" type="number" placeholder="Valor" class="p-3 border rounded outline-none" step="0.01" required><input id="var-date" type="date" class="p-3 border rounded outline-none md:col-span-1 col-span-2"><button class="bg-orange-500 text-white font-bold p-3 rounded md:col-span-1 col-span-2">Lançar</button></form>
+                        <form onsubmit="addVar(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"><select id="var-cat" class="p-3 border rounded outline-none"><option>Alimentação</option><option>Mercado</option><option>Lazer</option><option>Transporte</option><option>Delivery</option><option>Outros</option></select><input id="var-val" type="number" placeholder="Valor" class="p-3 border rounded outline-none" step="0.01" required><input id="var-date" type="date" class="p-3 border rounded outline-none md:col-span-1 col-span-2"><button class="bg-orange-500 text-white font-bold p-3 rounded md:col-span-1 col-span-2">Lançar</button></form>
                         <ul id="list-variable" class="divide-y text-sm"></ul>
                     </div>
                 </div>
@@ -273,7 +302,7 @@
 
         // CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyCzz0ntyKDngm6Yae0OIbD0fXHakEXm4Ck",
+            apiKey: "AIzaSyCL6XpBIm322dq2hW7z-Y5Nskxdn-T9OzU",
             authDomain: "fluxocash-b81f6.firebaseapp.com",
             projectId: "fluxocash-b81f6",
             storageBucket: "fluxocash-b81f6.firebasestorage.app",
@@ -318,12 +347,11 @@
             ui.msg.classList.remove('hidden');
         }
 
-        // FUNÇÃO DE TRATAMENTO DE ERRO BLINDADA
         function handleAuthError(err, btnId) {
             ui.setBtn(btnId, false);
             console.error("Auth Error:", err);
             
-            // SE A API ESTIVER BLOQUEADA, VAI PRO OFFLINE
+            // Auto Fallback se API Bloqueada
             if(err.code && (err.code.includes('blocked') || err.code.includes('requests-to-this-api'))) {
                 ui.msg.innerText = "Servidor instável. Entrando em modo offline seguro...";
                 ui.msg.classList.remove('hidden');
@@ -359,7 +387,9 @@
             document.getElementById('mode-badge').innerText = "Offline";
             document.getElementById('mode-badge').className = "text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-bold";
             const local = localStorage.getItem('fluxocash_local');
-            if(local) appData = JSON.parse(local);
+            if(local) {
+                appData = JSON.parse(local);
+            }
             if(!appData.extraIncomes) appData.extraIncomes = [];
             render();
         };
@@ -368,7 +398,7 @@
 
         if(auth) {
             onAuthStateChanged(auth, (user) => {
-                if(user) {
+                if (user) {
                     currentUser = user;
                     ui.screenAuth.classList.add('hidden');
                     ui.screenApp.classList.remove('hidden');
@@ -381,8 +411,7 @@
                         else { saveData(); }
                         render();
                     }, (err) => { 
-                        console.error(err); 
-                        if(err.code.includes('permission') || err.code.includes('unavailable')) window.forceOfflineMode();
+                        window.forceOfflineMode();
                     });
                 }
             });
@@ -393,7 +422,7 @@
             if(currentUser) await setDoc(doc(db, 'artifacts', 'fluxocash-app', 'users', currentUser.uid, 'app_data', 'main'), appData);
         };
 
-        // --- IMPORTAR CSV (NOVO) ---
+        // --- IMPORTAR CSV (REFACTOR) ---
         window.importCSV = (input) => {
             const file = input.files[0];
             if (!file) return;
@@ -404,28 +433,45 @@
                 const lines = text.split('\n');
                 let count = 0;
 
-                // Tenta processar CSV simples (Data, Descrição, Valor)
                 lines.forEach(line => {
-                    const cols = line.split(',');
-                    if (cols.length >= 2) {
-                        // Tenta achar valor numérico
-                        let val = null;
-                        let desc = "Importado";
-                        let date = new Date().toISOString().split('T')[0];
+                    if(!line.trim()) return;
+                    
+                    // Separa por vírgula ou ponto e vírgula
+                    let cols = line.split(',');
+                    if(cols.length < 3) cols = line.split(';');
 
-                        // Lógica básica de detecção
-                        cols.forEach(c => {
-                            const clean = c.replace(/[^\d.-]/g, '');
-                            if (clean && !isNaN(parseFloat(clean)) && c.includes('.')) {
-                                val = Math.abs(parseFloat(clean)); // Assume despesa
-                            } else if (c.length > 3 && !c.includes('/')) {
-                                desc = c.replace(/"/g, '').trim();
-                            }
-                        });
+                    if (cols.length >= 3) {
+                        // 1. Data
+                        let rawDate = cols[0].trim(); // Espera DD/MM/YYYY ou YYYY-MM-DD
+                        let date = rawDate;
+                        if(rawDate.includes('/') && rawDate.split('/').length === 3) {
+                            const parts = rawDate.split('/');
+                            date = `${parts[2]}-${parts[1]}-${parts[0]}`; // Vira YYYY-MM-DD
+                        }
 
-                        if (val) {
-                            appData.variable.push({ category: "Outros", value: val, date: date });
-                            count++;
+                        // 2. Título (Nome)
+                        let title = cols[1].trim().replace(/"/g, '');
+
+                        // 3. Valor
+                        let rawVal = cols[2].trim();
+                        // Remove tudo que não é numero, ponto, virgula ou menos
+                        let cleanVal = rawVal.replace(/[^\d.,-]/g, '');
+                        
+                        // Lógica simples: se tem virgula e não ponto, troca. Ex: 100,50 -> 100.50
+                        if(cleanVal.includes(',') && !cleanVal.includes('.')) {
+                             cleanVal = cleanVal.replace(',', '.');
+                        } else if(cleanVal.includes('.') && cleanVal.includes(',')) {
+                             // Ex: 1.000,50 -> 1000.50
+                             cleanVal = cleanVal.replace('.', '').replace(',', '.');
+                        }
+                        
+                        let val = parseFloat(cleanVal);
+
+                        // Validação Final
+                        if (!isNaN(val) && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                             val = Math.abs(val); // Garante positivo para despesa
+                             appData.variable.push({ category: title, value: val, date: date });
+                             count++;
                         }
                     }
                 });
@@ -479,7 +525,7 @@
             appData.fixed.forEach((i,x)=>lFix.innerHTML+=`<tr class="border-b hover:bg-slate-50"><td class="p-3">${i.name}</td><td class="p-3 text-right">${fmt(i.value)}</td><td class="p-3 text-right"><button onclick="delItem('fixed',${x})" class="text-red-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`);
 
             const lVar = document.getElementById('list-variable'); lVar.innerHTML='';
-            [...appData.variable].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach((i,x)=>lVar.innerHTML+=`<li class="bg-white p-3 rounded border flex justify-between mb-2"><div><span class="font-bold">${i.category}</span> <span class="text-xs text-slate-400">${i.date}</span></div><div class="flex gap-2 font-bold text-orange-600"><span>${fmt(i.value)}</span><button onclick="delItem('variable',${x})" class="text-red-300 hover:text-red-500">x</button></div></li>`);
+            [...appData.variable].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach((i,x)=>lVar.innerHTML+=`<li class="bg-white p-3 rounded border flex justify-between mb-2"><div><span class="font-bold block">${i.category}</span><span class="text-xs text-slate-400">${i.date}</span></div><div class="flex gap-2 font-bold text-orange-600"><span>${fmt(i.value)}</span><button onclick="delItem('variable',${x})" class="text-red-300 hover:text-red-500">x</button></div></li>`);
 
             const lDebt = document.getElementById('list-debts'); lDebt.innerHTML='';
             appData.debts.forEach((i,x)=>lDebt.innerHTML+=`<div class="bg-white p-3 rounded border-l-4 border-red-400 shadow-sm flex justify-between"><div><div class="font-bold">${i.name}</div><div class="text-xs">Total: ${fmt(i.total)}</div></div><div class="text-right font-bold text-red-600">${fmt(i.parcel)}<button onclick="delItem('debts',${x})" class="ml-2 text-slate-300 hover:text-red-500">x</button></div></div>`);
@@ -518,7 +564,6 @@
             content.innerHTML = '<div class="text-center"><i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600"></i><p class="mt-2 text-slate-500">Consultando o Pai Rico...</p></div>';
             
             try {
-                // Modelo Flash (estável)
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
                     method: 'POST', headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({contents:[{parts:[{text:`Analise como Robert Kiyosaki. Dados: ${JSON.stringify(appData)}. Foco: ${ctx}. Use Markdown.`}]}]})
