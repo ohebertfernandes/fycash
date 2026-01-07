@@ -18,12 +18,12 @@
         
         /* TELA DE LOGIN */
         #auth-screen { background: linear-gradient(135deg, #065f46 0%, #047857 100%); z-index: 50; }
-        .glass-panel { background: rgba(255, 255, 255, 0.98); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .glass-panel { background: rgba(255, 255, 255, 0.98); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
 
         /* NAVEGAÇÃO */
-        .nav-item { color: #64748b; transition: all 0.2s; border-bottom: 3px solid transparent; }
+        .nav-item { color: #64748b; transition: all 0.2s; border-bottom: 3px solid transparent; font-weight: 600; }
         .nav-item:hover { color: #059669; }
-        .nav-item.active { color: #059669; font-weight: 700; border-bottom-color: #059669; }
+        .nav-item.active { color: #059669; border-bottom-color: #059669; }
         .mob-item { color: #94a3b8; }
         .mob-item.active { color: #059669; transform: translateY(-2px); }
 
@@ -34,108 +34,200 @@
         .flex { display: flex !important; }
         .hidden { display: none !important; }
         .loading-btn { opacity: 0.7; cursor: wait; }
+        .card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* MODAIS */
+        .modal-overlay { z-index: 9999; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
         
         /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-
-        /* MODAL IA */
-        #ai-modal { z-index: 10000; }
     </style>
 </head>
 <body class="h-screen flex flex-col text-slate-800">
 
     <!-- LOGIN -->
     <div id="auth-screen" class="fixed inset-0 flex items-center justify-center p-4 transition-all duration-500">
-        <div class="glass-panel w-full max-w-md p-8 rounded-2xl relative">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600 text-3xl"><i class="fa-solid fa-seedling"></i></div>
-                <h1 class="text-2xl font-bold">FluxoCash</h1>
-                <p class="text-slate-500 text-sm">Gestão Financeira Inteligente</p>
-                <div id="status-badge" class="hidden mt-2 inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-bold">Offline</div>
-            </div>
+        <div class="glass-panel w-full max-w-md p-8 rounded-2xl relative text-center">
+            <div class="mb-6 inline-block p-4 bg-emerald-100 rounded-full text-emerald-600 text-4xl shadow-lg"><i class="fa-solid fa-chart-line"></i></div>
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">FluxoCash Pro</h1>
+            <p class="text-slate-500 text-sm mb-6">Planejamento Financeiro & Inteligência</p>
+            <div id="status-badge" class="hidden mt-2 inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-bold">Offline</div>
+            
             <div id="view-login">
                 <form id="form-login" class="space-y-4">
-                    <input type="email" id="log-email" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" placeholder="E-mail" required>
-                    <input type="password" id="log-pass" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Senha" required>
-                    <button type="submit" id="btn-login" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg hover:bg-slate-900 transition">Entrar</button>
+                    <input type="email" id="log-email" class="w-full p-3 border rounded-xl outline-none" placeholder="E-mail" required>
+                    <input type="password" id="log-pass" class="w-full p-3 border rounded-xl outline-none" placeholder="Senha" required>
+                    <button type="submit" id="btn-login" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 shadow-lg">ACESSAR PAINEL</button>
                 </form>
-                <div class="mt-4 text-center text-sm text-slate-500">Novo? <button onclick="toggleAuth('register')" class="text-emerald-600 font-bold hover:underline">Criar conta</button></div>
+                <div class="mt-4 text-sm text-slate-500">Novo? <button onclick="toggleAuth('register')" class="text-emerald-600 font-bold hover:underline">Criar conta</button></div>
             </div>
+
             <div id="view-register" class="hidden">
                 <form id="form-register" class="space-y-4">
-                    <input type="email" id="reg-email" class="w-full p-3 border rounded-lg outline-none" placeholder="E-mail" required>
-                    <input type="password" id="reg-pass" class="w-full p-3 border rounded-lg outline-none" placeholder="Senha (min 6)" required minlength="6">
-                    <input type="password" id="reg-confirm" class="w-full p-3 border rounded-lg outline-none" placeholder="Confirmar" required>
-                    <button type="submit" id="btn-reg" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-lg hover:bg-emerald-700">Cadastrar</button>
+                    <input type="email" id="reg-email" class="w-full p-3 border rounded-xl" placeholder="E-mail" required>
+                    <input type="password" id="reg-pass" class="w-full p-3 border rounded-xl" placeholder="Senha (min 6)" required minlength="6">
+                    <input type="password" id="reg-confirm" class="w-full p-3 border rounded-xl" placeholder="Confirmar" required>
+                    <button type="submit" id="btn-reg" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700">REGISTRAR</button>
                 </form>
-                <div class="mt-4 text-center text-sm text-slate-500">Já tem conta? <button onclick="toggleAuth('login')" class="text-emerald-600 font-bold hover:underline">Login</button></div>
+                <div class="mt-4 text-sm text-slate-500">Já tem conta? <button onclick="toggleAuth('login')" class="text-emerald-600 font-bold hover:underline">Login</button></div>
             </div>
-            <div class="mt-6 pt-4 border-t space-y-2 text-center">
-                <button onclick="forceOfflineMode()" class="w-full bg-slate-100 text-slate-700 py-2 rounded-lg text-sm font-bold border hover:bg-slate-200">Entrar Offline (Modo Seguro)</button>
+
+            <div class="mt-6 pt-4 border-t border-slate-200">
+                <button onclick="forceOfflineMode()" class="text-xs text-slate-400 font-bold hover:text-emerald-600 uppercase tracking-wide w-full">
+                    <i class="fa-solid fa-wifi-slash"></i> Modo Offline (Demo)
+                </button>
             </div>
-            <p id="auth-error" class="text-red-500 text-xs text-center mt-3 font-bold h-auto min-h-[1rem]"></p>
+            <p id="auth-error" class="text-red-500 text-xs mt-3 font-bold h-4"></p>
         </div>
     </div>
 
     <!-- APP -->
     <div id="app-screen" class="hidden flex-col h-full w-full">
-        <header class="bg-white border-b border-slate-200 z-30 flex-none">
-            <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-                <div class="flex items-center gap-2 text-emerald-700 font-bold text-lg"><i class="fa-solid fa-chart-pie"></i> FluxoCash <span id="mode-badge" class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-bold">...</span></div>
-                <nav class="hidden md:flex space-x-6 h-full">
-                    <button onclick="nav('dashboard')" class="nav-item active h-full flex items-center" id="nav-d-dashboard">Painel</button>
-                    <button onclick="nav('budget')" class="nav-item h-full flex items-center" id="nav-d-budget">Orçamento</button>
-                    <button onclick="nav('variable')" class="nav-item h-full flex items-center" id="nav-d-variable">Gastos</button>
-                    <button onclick="nav('debts')" class="nav-item h-full flex items-center" id="nav-d-debts">Passivos</button>
-                    <button onclick="nav('goals')" class="nav-item h-full flex items-center" id="nav-d-goals">Metas</button>
-                </nav>
-                <div class="flex items-center gap-3">
-                    <button onclick="openFeedback()" class="flex items-center gap-1 text-slate-500 hover:text-emerald-600 transition px-2 py-1" title="Sugerir Melhoria"><i class="fa-solid fa-box-open"></i> <span class="text-[10px] font-bold hidden sm:inline">(MELHORIAS)</span></button>
-                    <button onclick="openAdmin()" id="btn-admin" class="hidden relative text-white bg-slate-800 hover:bg-slate-900 transition px-3 py-1 rounded text-xs font-bold shadow"><i class="fa-solid fa-lock mr-1"></i> ADM <span id="admin-badge" class="absolute -top-2 -right-2 bg-red-500 w-5 h-5 rounded-full flex items-center justify-center text-[10px] hidden">0</span></button>
-                    <span id="user-label" class="text-xs text-slate-400 hidden sm:block">...</span>
-                    <button onclick="doLogout()" class="text-xs text-red-500 border border-red-200 px-3 py-1 rounded hover:bg-red-50">Sair</button>
+        <header class="bg-white border-b border-slate-200 z-30 flex-none shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 py-2">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-emerald-600 text-xl"></i>
+                        <span class="font-bold text-slate-800 text-lg">FluxoCash</span>
+                        <span id="mode-badge" class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-bold ml-1">...</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <button onclick="openFeedback()" class="text-slate-400 hover:text-emerald-600 text-sm font-bold flex items-center gap-1" title="Sugestão"><i class="fa-solid fa-box-open"></i> <span class="hidden sm:inline">Sugestões</span></button>
+                        <button onclick="openAdmin()" id="btn-admin" class="hidden text-slate-800 hover:text-emerald-600 relative"><i class="fa-solid fa-lock"></i> ADM <span id="admin-badge" class="absolute -top-2 -right-2 bg-red-500 w-4 h-4 rounded-full flex items-center justify-center text-[9px] text-white hidden">0</span></button>
+                        <div class="h-4 w-px bg-slate-300"></div>
+                        <span id="user-label" class="text-xs text-slate-400 hidden sm:block">...</span>
+                        <button onclick="doLogout()" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-power-off"></i></button>
+                    </div>
                 </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="bg-slate-50 border-t border-slate-200">
+                <nav class="max-w-7xl mx-auto px-4 flex space-x-6 overflow-x-auto justify-center">
+                    <button onclick="nav('dashboard')" class="nav-item active py-3 text-xs uppercase tracking-widest" id="nav-d-dashboard">Geral</button>
+                    <button onclick="nav('budget')" class="nav-item py-3 text-xs uppercase tracking-widest" id="nav-d-budget">Orçamento</button>
+                    <button onclick="nav('variable')" class="nav-item py-3 text-xs uppercase tracking-widest" id="nav-d-variable">Lançamentos</button>
+                    <button onclick="nav('fixed')" class="nav-item py-3 text-xs uppercase tracking-widest" id="nav-d-fixed">Fixas</button>
+                    <button onclick="nav('debts')" class="nav-item py-3 text-xs uppercase tracking-widest" id="nav-d-debts">Passivos</button>
+                    <button onclick="nav('goals')" class="nav-item py-3 text-xs uppercase tracking-widest" id="nav-d-goals">Metas</button>
+                </nav>
             </div>
         </header>
 
-        <main class="flex-grow overflow-y-auto bg-slate-50 p-4 pb-24">
-            <div class="max-w-5xl mx-auto">
-                <!-- DASHBOARD -->
-                <div id="page-dashboard" class="space-y-6 animate-fade-in">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-center mb-6"><h2 class="text-lg font-bold text-slate-700">Fluxo de Caixa</h2><div class="flex gap-2"><button onclick="saveCurrentMonth()" class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold hover:bg-emerald-200"><i class="fa-solid fa-save mr-1"></i> Salvar Mês</button><button onclick="resetAll()" class="text-xs text-slate-300 hover:text-red-500 px-2">Resetar</button></div></div>
-                        <div class="grid md:grid-cols-2 gap-8 mb-8">
-                            <div><label class="text-xs font-bold text-slate-400 uppercase">Renda Fixa</label><div class="flex items-center border-b-2 border-slate-200 focus-within:border-emerald-500 transition mt-1"><span class="text-xl text-slate-400 mr-2">R$</span><input type="number" id="inp-income" class="w-full text-2xl font-bold text-slate-800 bg-transparent outline-none py-1" placeholder="0.00"></div></div>
-                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100"><div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-emerald-700 uppercase">Renda Variável</label><span id="total-extra-income" class="font-bold text-emerald-600">R$ 0,00</span></div><ul id="list-extra-incomes" class="text-sm space-y-2 mb-3 max-h-32 overflow-y-auto"></ul><form onsubmit="addExtraIncome(event)" class="flex gap-2"><input id="extra-desc" type="text" placeholder="Ex: Freelance" class="w-full p-2 text-xs border rounded outline-none" required><input id="extra-val" type="number" placeholder="Valor" class="w-20 p-2 text-xs border rounded outline-none" step="0.01" required><button class="bg-emerald-600 text-white px-3 rounded hover:bg-emerald-700 text-xs"><i class="fa-solid fa-plus"></i></button></form></div>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><p class="text-xs text-slate-500 font-bold uppercase">Fixas</p><p id="dash-fix" class="text-lg font-bold text-slate-700">R$ 0</p></div>
-                            <div class="bg-orange-50 p-4 rounded-xl border border-orange-100"><p class="text-xs text-orange-600 font-bold uppercase">Variáveis</p><p id="dash-var" class="text-lg font-bold text-orange-700">R$ 0</p></div>
-                            <div class="bg-red-50 p-4 rounded-xl border border-red-100"><p class="text-xs text-red-600 font-bold uppercase">Passivos</p><p id="dash-debt" class="text-lg font-bold text-red-700">R$ 0</p></div>
-                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100"><p class="text-xs text-emerald-600 font-bold uppercase">Ativos</p><p id="dash-goal" class="text-lg font-bold text-emerald-700">R$ 0</p></div>
-                        </div>
-                        <div class="text-center pt-4 border-t border-slate-100"><p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Saldo Livre</p><div id="final-balance" class="text-5xl font-extrabold text-slate-300 my-2 transition-colors">R$ 0,00</div><p id="balance-msg" class="text-sm text-slate-500">...</p></div>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80"><h3 class="font-bold text-slate-700 mb-2 text-sm flex justify-between"><span>🚀 Projeção Futura</span></h3><div class="relative h-64 w-full"><canvas id="chart-projection"></canvas></div></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80"><h3 class="font-bold text-slate-700 mb-2 text-sm">⚠️ Gargalos (Por Categoria)</h3><div class="relative h-64 w-full"><canvas id="chart-variable-breakdown"></canvas></div></div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80"><h3 class="font-bold text-slate-700 mb-4">Evolução de Patrimônio</h3><div class="relative h-64 w-full"><canvas id="chart-history"></canvas></div></div>
+        <main class="flex-grow overflow-y-auto p-4 pb-24 scroll-smooth bg-slate-50">
+            <div class="max-w-6xl mx-auto space-y-6">
 
+                <!-- 1. GERAL (DASHBOARD) -->
+                <div id="page-dashboard" class="space-y-6 animate-fade-in">
+                    
+                    <!-- Resumo Rápido -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <button onclick="nav('budget')" class="bg-purple-50 p-4 rounded-xl border border-purple-100 hover:bg-purple-100 transition flex flex-col items-center gap-2"><i class="fa-solid fa-scale-balanced text-purple-600"></i><span class="text-xs font-bold text-purple-800">Orçamento</span></button>
-                        <button onclick="nav('variable')" class="bg-white p-4 rounded-xl border hover:bg-orange-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-cart-shopping text-orange-500"></i><span class="text-xs font-bold text-slate-600">Gastos</span></button>
-                        <button onclick="nav('goals')" class="bg-white p-4 rounded-xl border hover:bg-emerald-50 transition flex flex-col items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-500"></i><span class="text-xs font-bold text-slate-600">Metas</span></button>
-                        <button onclick="askAI('general')" class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-xl shadow-md flex flex-col items-center gap-2 hover:opacity-90"><i class="fa-solid fa-robot"></i><span class="text-xs font-bold">Análise IA</span></button>
+                        <div class="card p-4"><p class="text-[10px] text-slate-400 font-bold uppercase">Receita (Mês)</p><p id="dash-income" class="text-xl font-bold text-emerald-600">R$ 0</p></div>
+                        <div class="card p-4"><p class="text-[10px] text-slate-400 font-bold uppercase">Despesas (Mês)</p><p id="dash-expense" class="text-xl font-bold text-red-600">R$ 0</p></div>
+                        <div class="card p-4"><p class="text-[10px] text-slate-400 font-bold uppercase">Investido (Total)</p><p id="dash-invest" class="text-xl font-bold text-blue-600">R$ 0</p></div>
+                        <div class="card p-4 bg-slate-800 text-white border-none"><p class="text-[10px] text-slate-400 font-bold uppercase">Saldo Acumulado</p><p id="dash-balance" class="text-xl font-bold text-emerald-400">R$ 0</p></div>
+                    </div>
+
+                    <!-- 🆕 GESTÃO DE RECEITAS -->
+                    <div class="card p-6 border-l-4 border-l-emerald-500">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-money-bill-trend-up text-emerald-500"></i> Entradas & Receitas</h2>
+                            <div class="flex gap-2">
+                                <button onclick="resetAll()" class="text-xs text-slate-300 hover:text-red-500 px-2">Resetar</button>
+                            </div>
+                        </div>
+
+                        <form onsubmit="addIncome(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                            <input id="inc-desc" type="text" placeholder="Descrição (Ex: Salário)" class="p-2 border rounded text-sm outline-none bg-white" required>
+                            
+                            <!-- Input com Datalist para Origem -->
+                            <div>
+                                <input list="origins-list" id="inc-origin" type="text" placeholder="Origem (Ex: Freelance)" class="w-full p-2 border rounded text-sm outline-none bg-white" required autocomplete="off">
+                                <datalist id="origins-list">
+                                    <!-- Populated via JS -->
+                                </datalist>
+                            </div>
+
+                            <input id="inc-val" type="number" placeholder="Valor (R$)" class="p-2 border rounded text-sm outline-none bg-white font-bold text-emerald-700" step="0.01" required>
+                            <input id="inc-date" type="date" class="p-2 border rounded text-sm outline-none bg-white" required>
+                            
+                            <button class="bg-emerald-600 text-white font-bold p-2 rounded text-sm col-span-2 md:col-span-4 hover:bg-emerald-700 shadow transition">
+                                <i class="fa-solid fa-plus-circle mr-1"></i> Lançar Receita
+                            </button>
+                        </form>
+
+                        <!-- Lista de Receitas do Mês -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
+                                    <tr>
+                                        <th class="p-2">Data</th>
+                                        <th class="p-2">Descrição</th>
+                                        <th class="p-2">Origem</th>
+                                        <th class="p-2 text-right">Valor</th>
+                                        <th class="w-8"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="list-incomes-month" class="divide-y divide-slate-100">
+                                    <!-- Injected JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Meta em Foco -->
+                    <div class="card p-4 relative bg-white">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-slate-600 uppercase text-xs tracking-wide">🎯 Meta em Foco</h3>
+                            <div class="flex gap-2">
+                                <button onclick="prevGoal()" class="text-slate-400 hover:text-emerald-600"><i class="fa-solid fa-chevron-left"></i></button>
+                                <span id="goal-counter" class="text-xs text-slate-400">0/0</span>
+                                <button onclick="nextGoal()" class="text-slate-400 hover:text-emerald-600"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div id="goal-display-area" class="text-center py-2">
+                            <h2 class="text-2xl font-bold text-slate-800" id="dash-goal-name">Nenhuma Meta</h2>
+                            <p class="text-sm text-slate-500 mb-2">Faltam <span id="dash-goal-missing" class="font-bold text-red-500">R$ 0,00</span></p>
+                            <div class="w-full bg-slate-200 rounded-full h-4 mb-1">
+                                <div id="dash-goal-bar" class="bg-emerald-500 h-4 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-slate-400" id="dash-goal-pct">0% Concluído</p>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos Grid -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Receitas -->
+                        <div class="card p-5 h-80">
+                            <h3 class="font-bold text-slate-700 mb-4 text-xs uppercase flex justify-between"><span>📈 Receitas Anuais & Origem</span> <span class="text-emerald-500"><i class="fa-solid fa-arrow-trend-up"></i></span></h3>
+                            <div class="relative h-60 w-full"><canvas id="chart-revenue"></canvas></div>
+                        </div>
+                        
+                        <!-- Despesas -->
+                        <div class="card p-5 h-80">
+                            <h3 class="font-bold text-slate-700 mb-4 text-xs uppercase flex justify-between"><span>📉 Fixas vs Variáveis (Ano)</span> <span class="text-red-500"><i class="fa-solid fa-arrow-trend-down"></i></span></h3>
+                            <div class="relative h-60 w-full"><canvas id="chart-expenses"></canvas></div>
+                        </div>
+
+                        <!-- Gargalos -->
+                        <div class="card p-5 h-80">
+                            <h3 class="font-bold text-slate-700 mb-4 text-xs uppercase flex justify-between"><span>⚠️ Gargalos (Orçamento)</span> <i class="fa-solid fa-triangle-exclamation text-orange-500"></i></h3>
+                            <div class="relative h-60 w-full"><canvas id="chart-bottlenecks"></canvas></div>
+                        </div>
+
+                        <!-- Saldo -->
+                        <div class="card p-5 h-80">
+                            <h3 class="font-bold text-slate-700 mb-4 text-xs uppercase flex justify-between"><span>💰 Evolução de Saldo</span> <i class="fa-solid fa-scale-balanced text-blue-500"></i></h3>
+                            <div class="relative h-60 w-full"><canvas id="chart-balance"></canvas></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 🆕 ABA ORÇAMENTO (LIMITES) -->
-                <div id="page-budget" class="hidden space-y-6">
+                <!-- 2. ORÇAMENTO -->
+                <div id="page-budget" class="hidden space-y-6 animate-fade-in">
                     <div class="bg-purple-50 p-6 rounded-2xl border border-purple-100 mb-6">
                         <div class="flex justify-between items-center mb-4">
                             <div>
@@ -144,331 +236,596 @@
                             </div>
                             <button onclick="suggestBudget()" class="bg-purple-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow hover:bg-purple-700">Sugestão Pai Rico (50/30/20)</button>
                         </div>
-                        
-                        <div id="budget-list" class="space-y-4">
-                            <!-- Rendered via JS -->
+                        <div id="budget-list" class="grid md:grid-cols-2 gap-4"></div>
+                    </div>
+                </div>
+
+                <!-- 3. LANÇAMENTOS (VARIÁVEIS) -->
+                <div id="page-variable" class="hidden space-y-6 animate-fade-in">
+                    <div class="card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-bold text-slate-800">Novo Lançamento (Despesa)</h2>
+                            <label class="cursor-pointer text-slate-500 hover:text-emerald-600 text-xs font-bold flex items-center gap-1 border border-slate-200 px-2 py-1 rounded"><i class="fa-solid fa-file-import"></i> CSV <input type="file" class="hidden" onchange="importCSV(this)"></label>
                         </div>
-                    </div>
-                </div>
-
-                <!-- OUTRAS ABAS -->
-                <div id="page-fixed" class="hidden space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border"><h2 class="font-bold mb-4 text-slate-700">Contas Fixas</h2><form onsubmit="addFixed(event)" class="flex gap-3 mb-6"><input id="fix-name" type="text" placeholder="Nome" class="flex-grow p-3 border rounded outline-none" required><input id="fix-val" type="number" placeholder="Valor" class="w-32 p-3 border rounded outline-none" step="0.01" required><button class="bg-slate-800 text-white px-4 rounded"><i class="fa-solid fa-plus"></i></button></form><table class="w-full text-sm"><tbody id="list-fixed" class="divide-y"></tbody></table></div>
-                </div>
-
-                <!-- VARIAVEIS -->
-                <div id="page-variable" class="hidden space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                        <div class="flex justify-between items-center mb-4"><h2 class="font-bold text-slate-700">Gastos Variáveis</h2><label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 border border-slate-200 transition"><i class="fa-solid fa-file-import text-emerald-600"></i> CSV <input type="file" id="file-import" accept=".csv" class="hidden" onchange="importCSV(this)"></label></div>
-                        <form onsubmit="addVar(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200"><input id="var-desc" type="text" placeholder="Descrição (Ex: Uber)" class="p-3 border rounded outline-none bg-white" required><select id="var-cat" class="p-3 border rounded outline-none bg-white"><option value="Sem Categoria">Sem Categoria</option><option value="Transporte">Transporte</option><option value="Lazer">Lazer</option><option value="Alimentação">Alimentação</option><option value="Mercado">Mercado</option><option value="Delivery">Delivery</option><option value="Outros">Outros</option></select><input id="var-val" type="number" placeholder="Valor" class="p-3 border rounded outline-none bg-white" step="0.01" required><input id="var-date" type="date" class="p-3 border rounded outline-none bg-white"><button class="bg-orange-500 text-white font-bold p-3 rounded col-span-2 md:col-span-1 hover:bg-orange-600 transition">Lançar</button></form>
-                        <div id="pending-section" class="hidden mb-6 bg-red-50 p-4 rounded-xl border border-red-200"><h3 class="font-bold text-red-700 mb-2 flex items-center text-sm uppercase"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Classificar Pendentes</h3><ul id="list-pending" class="divide-y divide-red-200 bg-white rounded border border-red-100"></ul></div>
-                        <h3 class="font-bold text-slate-600 mb-2 text-sm uppercase mt-6">Histórico</h3><ul id="list-variable" class="divide-y text-sm"></ul>
-                    </div>
-                </div>
-
-                <div id="page-debts" class="hidden space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border"><div class="flex justify-between mb-4"><h2 class="font-bold text-slate-700">Passivos (Dívidas)</h2><button onclick="askAI('debts')" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">IA</button></div><form onsubmit="addDebt(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"><input id="debt-name" type="text" placeholder="Nome" class="p-3 border rounded col-span-2" required><input id="debt-tot" type="number" placeholder="Total" class="p-3 border rounded" step="0.01"><input id="debt-par" type="number" placeholder="Parcela" class="p-3 border rounded font-bold text-red-600" required step="0.01"><input id="debt-inst" type="number" placeholder="Qtd. Parc" class="p-3 border rounded" required><button class="bg-red-500 text-white font-bold p-3 rounded col-span-2 md:col-span-4 mt-2">Adicionar</button></form><div id="list-debts" class="grid gap-2"></div></div>
-                </div>
-
-                <!-- 🆕 ABA METAS (ATIVOS) -->
-                <div id="page-goals" class="hidden space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-center mb-4"><h2 class="text-lg font-bold text-slate-700">Metas & Ativos</h2><button onclick="askAI('goals')" class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold">IA</button></div>
-                        <p class="text-xs text-slate-500 mb-4">Defina o que quer conquistar. Se não aportar no mês, o valor mensal aumenta automaticamente para compensar.</p>
                         
-                        <form onsubmit="addGoal(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 bg-slate-50 p-4 rounded-xl">
-                            <input id="goal-name" type="text" placeholder="Meta (ex: Casamento)" class="p-3 border rounded col-span-2 outline-none" required>
-                            <input id="goal-total" type="number" placeholder="Valor Total (R$)" class="p-3 border rounded outline-none" step="0.01" required>
-                            <input id="goal-date" type="date" class="p-3 border rounded outline-none" required>
-                            <button class="bg-emerald-600 text-white px-4 py-3 rounded font-bold col-span-2 md:col-span-4 hover:bg-emerald-700">Criar Meta</button>
+                        <form onsubmit="addVar(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input id="var-desc" placeholder="Título (Ex: Uber)" class="p-3 border rounded outline-none w-full" required>
+                                <select id="var-cat" class="p-3 border rounded outline-none w-full">
+                                    <option value="MORADIA">MORADIA</option>
+                                    <option value="ALIMENTAÇÃO">ALIMENTAÇÃO</option>
+                                    <option value="MERCADO">MERCADO</option>
+                                    <option value="SAUDE">SAÚDE</option>
+                                    <option value="LAZER">LAZER</option>
+                                    <option value="VIAGENS">VIAGENS</option>
+                                    <option value="COMPRAS">COMPRAS</option>
+                                    <option value="PRESENTES">PRESENTES</option>
+                                    <option value="OUTROS">OUTROS</option>
+                                </select>
+                                <input id="var-sub" placeholder="Subcategoria (Opcional)" class="p-3 border rounded outline-none w-full">
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
+                                <input id="var-val" type="number" placeholder="Valor (R$)" class="p-3 border rounded outline-none w-full font-bold text-red-600" step="0.01" required>
+                                <input id="var-date" type="date" class="p-3 border rounded outline-none w-full" required>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-slate-500">Parcelas:</span>
+                                    <input id="var-parc" type="number" value="1" min="1" max="60" class="p-3 border rounded outline-none w-20 text-center">
+                                </div>
+                                <button class="bg-slate-800 text-white font-bold p-3 rounded hover:bg-slate-900 w-full shadow-lg">LANÇAR</button>
+                            </div>
                         </form>
-                        
-                        <div id="list-goals" class="space-y-4"></div>
+                    </div>
+
+                    <div class="card p-6">
+                        <h3 class="font-bold text-slate-600 text-sm uppercase mb-4 border-b pb-2">Histórico de Lançamentos</h3>
+                        <ul id="list-variable" class="divide-y text-sm max-h-96 overflow-y-auto"></ul>
                     </div>
                 </div>
+
+                <!-- 4. PASSIVOS -->
+                <div id="page-debts" class="hidden space-y-6 animate-fade-in">
+                    <div class="card p-6 border-l-4 border-l-red-500">
+                        <div class="flex justify-between mb-4"><h2 class="text-lg font-bold text-slate-800">Financiamentos & Passivos</h2><button onclick="askAI('debts')" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">Análise IA</button></div>
+                        <form onsubmit="addDebt(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
+                            <input id="debt-name" placeholder="Título (Ex: Carro)" class="p-3 border rounded md:col-span-2" required>
+                            <input id="debt-tot" type="number" placeholder="Total Financiado" class="p-3 border rounded" step="0.01" required>
+                            <input id="debt-rate" type="number" placeholder="Juros % a.m." class="p-3 border rounded" step="0.01">
+                            <input id="debt-inst" type="number" placeholder="Nº Parcelas" class="p-3 border rounded" required>
+                            <button class="bg-red-600 text-white font-bold p-3 rounded hover:bg-red-700 md:col-span-5 mt-2">Registrar Financiamento</button>
+                        </form>
+                        <div id="list-debts" class="grid gap-3"></div>
+                    </div>
+                </div>
+
+                <!-- 5. FIXAS -->
+                <div id="page-fixed" class="hidden space-y-6 animate-fade-in">
+                    <div class="card p-6">
+                        <h2 class="text-lg font-bold text-slate-800 mb-4">Custos Fixos Mensais</h2>
+                        <form onsubmit="addFixed(event)" class="flex gap-3 mb-6"><input id="fix-name" placeholder="Nome (Ex: Aluguel)" class="flex-grow p-3 border rounded outline-none" required><input id="fix-val" type="number" placeholder="Valor" class="w-32 p-3 border rounded outline-none" step="0.01" required><button class="bg-blue-600 text-white px-6 rounded font-bold hover:bg-blue-700">+</button></form>
+                        <table class="w-full text-sm text-left"><thead class="bg-slate-50 text-slate-500"><tr><th class="p-3">Item</th><th class="p-3 text-right">Valor</th><th class="w-10"></th></tr></thead><tbody id="list-fixed" class="divide-y"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- 6. METAS -->
+                <div id="page-goals" class="hidden space-y-6 animate-fade-in">
+                    <div class="card p-6 border-l-4 border-l-emerald-500">
+                        <div class="flex justify-between mb-4"><h2 class="font-bold text-slate-800 text-lg">Metas & Conquistas</h2><button onclick="askAI('goals')" class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold">Conselho</button></div>
+                        <form onsubmit="addGoal(event)" class="flex gap-3 mb-6"><input id="goal-name" placeholder="Objetivo (ex: Viagem)" class="flex-grow p-3 border rounded outline-none" required><input id="goal-val" type="number" placeholder="Total (R$)" class="w-32 p-3 border rounded outline-none" step="0.01" required><input id="goal-date" type="date" class="p-3 border rounded outline-none" required><button class="bg-emerald-600 text-white px-5 rounded font-bold hover:bg-emerald-700">Criar</button></form>
+                        <div id="list-goals-full" class="grid md:grid-cols-2 gap-4"></div>
+                    </div>
+                </div>
+
             </div>
         </main>
-        
-        <nav class="md:hidden flex-none bg-white border-t flex justify-around py-2 z-40">
+
+        <nav class="md:hidden flex-none bg-white border-t flex justify-around py-2 z-40 shadow-lg">
             <button onclick="nav('dashboard')" class="mob-item active flex flex-col items-center p-2" id="mob-dashboard"><i class="fa-solid fa-chart-pie text-xl mb-1"></i><span class="text-[10px]">Geral</span></button>
+            <button onclick="nav('variable')" class="mob-item flex flex-col items-center p-2" id="mob-variable"><i class="fa-solid fa-list-check text-xl mb-1"></i><span class="text-[10px]">Lançar</span></button>
             <button onclick="nav('budget')" class="mob-item flex flex-col items-center p-2" id="mob-budget"><i class="fa-solid fa-scale-balanced text-xl mb-1"></i><span class="text-[10px]">Orç</span></button>
-            <button onclick="nav('variable')" class="mob-item flex flex-col items-center p-2" id="mob-variable"><i class="fa-solid fa-cart-shopping text-xl mb-1"></i><span class="text-[10px]">Var</span></button>
             <button onclick="nav('debts')" class="mob-item flex flex-col items-center p-2" id="mob-debts"><i class="fa-solid fa-credit-card text-xl mb-1"></i><span class="text-[10px]">Pass</span></button>
             <button onclick="nav('goals')" class="mob-item flex flex-col items-center p-2" id="mob-goals"><i class="fa-solid fa-bullseye text-xl mb-1"></i><span class="text-[10px]">Metas</span></button>
         </nav>
     </div>
 
     <!-- MODALS -->
-    <div id="feedback-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6"><h3 class="font-bold mb-2">Sugestão 💡</h3><textarea id="feedback-text" class="w-full p-3 border rounded h-32 outline-none" placeholder="Escreva aqui..."></textarea><div class="flex justify-end gap-2 mt-4"><button onclick="document.getElementById('feedback-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500">Cancelar</button><button onclick="sendFeedback()" class="px-4 py-2 bg-emerald-600 text-white rounded font-bold">Enviar</button></div></div></div>
-    <div id="notify-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center"><div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"><i class="fa-solid fa-check"></i></div><h3 class="font-bold mb-2">Atendido!</h3><p class="text-sm text-slate-600 mb-4">Sua sugestão foi implementada.</p><button onclick="document.getElementById('notify-modal').classList.add('hidden')" class="w-full py-2 bg-green-600 text-white rounded font-bold">Ótimo!</button></div></div>
-    <div id="admin-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[80vh]"><div class="p-4 border-b flex justify-between bg-slate-800 text-white rounded-t-2xl"><h3 class="font-bold">Painel ADM</h3><button onclick="document.getElementById('admin-modal').classList.add('hidden')">x</button></div><div class="p-4 overflow-y-auto flex-grow bg-slate-50" id="admin-list"></div><div class="p-3 border-t bg-white text-right"><button onclick="loadAdminMessages()" class="text-blue-600 text-xs">Atualizar</button></div></div></div>
-    <div id="ai-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col max-h-[80vh]"><div class="p-4 border-b flex justify-between bg-slate-50 rounded-t-2xl"><span class="font-bold text-indigo-600">Consultor IA</span><button onclick="closeAI()" class="text-slate-400 text-2xl">&times;</button></div><div id="ai-content" class="p-6 overflow-y-auto prose prose-sm text-slate-700"></div></div></div>
+    <div id="feedback-modal" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-4"><div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6"><h3 class="font-bold mb-2">Sugestão</h3><textarea id="feedback-text" class="w-full p-2 border rounded h-24"></textarea><div class="flex justify-end gap-2 mt-4"><button onclick="document.getElementById('feedback-modal').classList.add('hidden')" class="text-sm">Cancelar</button><button onclick="sendFeedback()" class="bg-emerald-600 text-white px-4 py-1 rounded font-bold">Enviar</button></div></div></div>
+    <div id="admin-modal" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-4"><div class="bg-white w-full max-w-2xl rounded shadow-2xl flex flex-col max-h-[80vh]"><div class="p-4 border-b flex justify-between font-bold"><span>Admin</span><button onclick="document.getElementById('admin-modal').classList.add('hidden')">x</button></div><div class="p-4 overflow-y-auto flex-grow bg-slate-50" id="admin-list"></div><div class="p-3 border-t text-right"><button onclick="loadAdminMessages()" class="text-blue-600 text-xs">Atualizar</button></div></div></div>
+    <div id="ai-modal" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-4"><div class="bg-white w-full max-w-lg rounded shadow-2xl flex flex-col max-h-[80vh]"><div class="p-4 border-b flex justify-between"><span class="font-bold text-indigo-600">Consultor IA</span><button onclick="document.getElementById('ai-modal').classList.add('hidden')">x</button></div><div id="ai-content" class="p-6 overflow-y-auto prose text-sm"></div></div></div>
     <!-- Modal Aporte -->
-    <div id="aporte-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center p-4 backdrop-blur-sm"><div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6"><h3 class="font-bold text-lg mb-4 text-emerald-800">Novo Aporte</h3><input type="number" id="aporte-val" class="w-full p-3 border rounded mb-4 text-xl font-bold" placeholder="R$ 0,00" step="0.01"><div class="flex justify-end gap-2"><button onclick="document.getElementById('aporte-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500">Cancelar</button><button onclick="confirmAporte()" class="px-4 py-2 bg-emerald-600 text-white rounded font-bold">Confirmar</button></div></div></div>
+    <div id="aporte-modal" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-4"><div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6"><h3 class="font-bold text-lg mb-4 text-emerald-800">Novo Aporte</h3><input type="number" id="aporte-val" class="w-full p-3 border rounded mb-4 text-xl font-bold" placeholder="R$ 0,00" step="0.01"><div class="flex justify-end gap-2"><button onclick="document.getElementById('aporte-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500">Cancelar</button><button onclick="confirmAporte()" class="px-4 py-2 bg-emerald-600 text-white rounded font-bold">Confirmar</button></div></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, getDocs, orderBy, query, updateDoc, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const ADMIN_EMAIL = "ohebertgustavo@gmail.com";
-        const firebaseConfig = { apiKey: "AIzaSyCL6XpBIm322dq2hW7z-Y5Nskxdn-T9OzU", authDomain: "fluxocash-b81f6.firebaseapp.com", projectId: "fluxocash-b81f6", storageBucket: "fluxocash-b81f6.firebasestorage.app", messagingSenderId: "1021395240266", appId: "1:1021395240266:web:e44282819a1ab0c2feadb3" };
+        // CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyCzz0ntyKDngm6Yae0OIbD0fXHakEXm4Ck",
+            authDomain: "fluxocash-b81f6.firebaseapp.com",
+            projectId: "fluxocash-b81f6",
+            storageBucket: "fluxocash-b81f6.firebasestorage.app",
+            messagingSenderId: "1021395240266",
+            appId: "1:1021395240266:web:e44282819a1ab0c2feadb3"
+        };
         const geminiApiKey = "AIzaSyCzz0ntyKDngm6Yae0OIbD0fXHakEXm4Ck";
 
+        // SETUP
         let app, auth, db, currentUser = null;
-        let appData = { income: 0, extraIncomes: [], fixed: [], variable: [], debts: [], goals: [], history: [], budgets: [] }; 
+        // Incomes: array of {id, desc, origin, value, date}
+        // IncomeOrigins: array of strings
+        let appData = { incomes: [], incomeOrigins: ['Salário', 'Freelance', 'Investimentos'], fixed: [], variable: [], debts: [], goals: [], budgets: [] }; 
         let isOffline = false;
-        let chartInstance=null, historyChartInstance=null, varChart=null, projChart=null;
-        let currentGoalId = null;
+        let chartRev=null, chartExp=null, chartInv=null, chartBal=null, chartBottle=null;
+        let currentGoalId = null, currentGoalIndex = 0;
 
-        const VALID_CATEGORIES = ['Transporte','Lazer','Alimentação','Mercado','Delivery','Outros'];
+        const NEW_CATEGORIES = ['MORADIA','ALIMENTAÇÃO','MERCADO','SAUDE','LAZER','VIAGENS','COMPRAS','PRESENTES','OUTROS'];
 
         try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch(e) { console.error(e); }
 
-        // --- AUTH & MIGRATION ---
-        const ui = { screenAuth: document.getElementById('auth-screen'), screenApp: document.getElementById('app-screen'), msg: document.getElementById('auth-error'), setBtn: (id, l) => { const b=document.getElementById(id); b.disabled=l; b.innerText=l?"...":b.dataset.txt||b.innerText; if(!b.dataset.txt)b.dataset.txt=b.innerText; } };
-        window.toggleAuth = (v) => { ui.msg.classList.add('hidden'); document.getElementById('view-login').classList.toggle('hidden', v!=='login'); document.getElementById('view-register').classList.toggle('hidden', v!=='register'); };
-        
-        function checkMigration() {
-            if(appData.fixed.length===0 && appData.variable.length===0) { const old = localStorage.getItem('richDadApp'); if(old) { try { const o = JSON.parse(old); appData = {...appData, ...o}; saveData(); } catch(e) {} } }
-            if(!appData.extraIncomes) appData.extraIncomes=[]; if(!appData.history) appData.history=[]; if(!appData.variable) appData.variable=[]; if(!appData.budgets) appData.budgets=[];
+        // UI HELPERS
+        const ui = {
+            screenAuth: document.getElementById('auth-screen'),
+            screenApp: document.getElementById('app-screen'),
+            msg: document.getElementById('auth-error'),
+            setBtn: (id, loading) => {
+                const btn = document.getElementById(id);
+                btn.disabled = loading;
+                btn.innerText = loading ? "..." : (btn.dataset.txt || btn.innerText);
+                if(!btn.dataset.txt) btn.dataset.txt = btn.innerText;
+            }
+        };
+
+        window.toggleAuth = (view) => {
+            ui.msg.classList.add('hidden');
+            document.getElementById('view-login').classList.toggle('hidden', view !== 'login');
+            document.getElementById('view-register').classList.toggle('hidden', view !== 'register');
+        };
+
+        // AUTH + DATA LOGIC
+        function showError(msg) {
+            ui.msg.innerText = msg;
+            ui.msg.classList.remove('hidden');
         }
 
         function handleAuthError(err, btnId) {
             ui.setBtn(btnId, false);
-            if(err.code&&(err.code.includes('blocked')||err.code.includes('requests'))) { ui.msg.innerText="Conexão bloqueada. Ativando Offline..."; ui.msg.classList.remove('hidden'); setTimeout(()=>window.forceOfflineMode(),1500); } 
-            else { ui.msg.innerText="Erro: "+err.code; ui.msg.classList.remove('hidden'); }
+            console.error("Auth Error:", err);
+            
+            // Auto Fallback se API Bloqueada
+            if(err.code && (err.code.includes('blocked') || err.code.includes('requests-to-this-api'))) {
+                ui.msg.innerText = "Servidor instável. Entrando em modo offline seguro...";
+                ui.msg.classList.remove('hidden');
+                setTimeout(() => window.forceOfflineMode(), 1500);
+            } else {
+                showError("Erro: " + err.code);
+            }
         }
 
-        document.getElementById('form-login').onsubmit = async (e) => { e.preventDefault(); ui.setBtn('btn-login', true); try { await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value); } catch(err) { handleAuthError(err, 'btn-login'); } };
-        document.getElementById('form-register').onsubmit = async (e) => { e.preventDefault(); if(document.getElementById('reg-pass').value!==document.getElementById('reg-confirm').value){ui.msg.innerText="Senhas diferem";ui.msg.classList.remove('hidden');return;} ui.setBtn('btn-reg', true); try { await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); } catch(err) { handleAuthError(err, 'btn-reg'); } };
-        window.forceOfflineMode = () => { isOffline=true; ui.screenAuth.classList.add('hidden'); ui.screenApp.classList.remove('hidden'); ui.screenApp.classList.add('flex'); document.getElementById('user-label').innerText="Offline"; document.getElementById('mode-badge').innerText="Offline"; const l=localStorage.getItem('fluxocash_local'); if(l)appData=JSON.parse(l); checkMigration(); render(); };
+        document.getElementById('form-login').onsubmit = async (e) => {
+            e.preventDefault();
+            ui.setBtn('btn-login', true);
+            try { await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value); }
+            catch(err) { handleAuthError(err, 'btn-login'); }
+        };
+
+        document.getElementById('form-register').onsubmit = async (e) => {
+            e.preventDefault();
+            const p1 = document.getElementById('reg-pass').value;
+            const p2 = document.getElementById('reg-confirm').value;
+            if(p1 !== p2) { showError("Senhas diferem"); return; }
+            ui.setBtn('btn-reg', true);
+            try { await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, p1); }
+            catch(err) { handleAuthError(err, 'btn-reg'); }
+        };
+
+        window.forceOfflineMode = () => {
+            isOffline = true;
+            ui.screenAuth.classList.add('hidden');
+            ui.screenApp.classList.remove('hidden');
+            ui.screenApp.classList.add('flex');
+            document.getElementById('user-label').innerText = "Offline";
+            document.getElementById('mode-badge').innerText = "Offline";
+            document.getElementById('mode-badge').className = "text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-bold";
+            const local = localStorage.getItem('fluxocash_local');
+            if(local) {
+                appData = JSON.parse(local);
+            }
+            checkMigration();
+            render();
+        };
+
         window.doLogout = () => { if(isOffline) location.reload(); else if(confirm("Sair?")) signOut(auth).then(()=>location.reload()); };
 
-        if(auth) { onAuthStateChanged(auth, (user) => { if (user) { currentUser = user; ui.screenAuth.classList.add('hidden'); ui.screenApp.classList.remove('hidden'); ui.screenApp.classList.add('flex'); document.getElementById('user-label').innerText = user.email||"Convidado"; document.getElementById('mode-badge').innerText="Cloud"; if(user.email===ADMIN_EMAIL){document.getElementById('btn-admin').classList.remove('hidden');checkAdminNotifications();} checkUserNotifications(user.uid); const docRef=doc(db,'artifacts','fluxocash-app','users',user.uid,'app_data','main'); onSnapshot(docRef,(s)=>{ if(s.exists()){appData=s.data(); checkMigration(); }else{saveData();} render(); },(err)=>{window.forceOfflineMode();}); } }); }
-        const saveData = async () => { if(isOffline){localStorage.setItem('fluxocash_local',JSON.stringify(appData));return;} if(currentUser)await setDoc(doc(db,'artifacts','fluxocash-app','users',currentUser.uid,'app_data','main'),appData); };
+        if(auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    ui.screenAuth.classList.add('hidden');
+                    ui.screenApp.classList.remove('hidden');
+                    ui.screenApp.classList.add('flex');
+                    document.getElementById('user-label').innerText = user.email || "Convidado";
+                    document.getElementById('mode-badge').innerText = "Cloud";
+                    const docRef = doc(db, 'artifacts', 'fluxocash-app', 'users', user.uid, 'app_data', 'main');
+                    onSnapshot(docRef, (s) => {
+                        if(s.exists()) {
+                            appData = s.data();
+                            checkMigration();
+                        } else {
+                            // First time defaults
+                            appData = { incomes: [], incomeOrigins: ['Salário', 'Freelance'], fixed: [], variable: [], debts: [], goals: [], budgets: [] }; 
+                            saveData();
+                        }
+                        render();
+                    }, (err) => { 
+                        // Fallback se leitura falhar
+                        window.forceOfflineMode();
+                    });
+                }
+            });
+        }
 
-        // --- ADMIN ---
-        window.openFeedback = () => document.getElementById('feedback-modal').classList.remove('hidden');
-        window.sendFeedback = async () => { const t=document.getElementById('feedback-text').value; if(!t)return; try{if(isOffline)throw new Error("Online apenas."); await addDoc(collection(db,'artifacts','fluxocash-app','global_feedback'),{text:t,user:currentUser.email,userId:currentUser.uid,status:'pending',date:new Date().toISOString()}); alert("Enviado!"); document.getElementById('feedback-modal').classList.add('hidden'); }catch(e){alert(e.message);} };
-        window.openAdmin = () => { document.getElementById('admin-modal').classList.remove('hidden'); window.loadAdminMessages(); };
-        window.loadAdminMessages = async () => { const l=document.getElementById('admin-list'); l.innerHTML='Carregando...'; const q=query(collection(db,'artifacts','fluxocash-app','global_feedback'),orderBy("date","desc")); const s=await getDocs(q); l.innerHTML=""; s.forEach(d=>{ const da=d.data(); const c=da.status==='done'?'bg-green-100':(da.status==='doing'?'bg-blue-100':'bg-yellow-100'); l.innerHTML+=`<div class="bg-white p-3 border mb-2"><div class="flex justify-between"><b>${da.user}</b><select onchange="updateStatus('${d.id}',this.value)" class="${c} p-1 rounded text-xs"><option value="pending" ${da.status=='pending'?'selected':''}>PENDENTE</option><option value="doing" ${da.status=='doing'?'selected':''}>EXECUTANDO</option><option value="done" ${da.status=='done'?'selected':''}>CONCLUIDO</option></select></div><p class="text-sm mt-1">${da.text}</p></div>`; }); };
-        window.updateStatus = async (id,st) => { await updateDoc(doc(db,'artifacts','fluxocash-app','global_feedback',id),{status:st}); loadAdminMessages(); checkAdminNotifications(); };
-        async function checkAdminNotifications(){ try{ const q=query(collection(db,'artifacts','fluxocash-app','global_feedback'),where('status','==','pending')); const s=await getDocs(q); const b=document.getElementById('admin-badge'); if(s.size>0){b.innerText=s.size;b.classList.remove('hidden');}else b.classList.add('hidden'); }catch(e){} }
-        async function checkUserNotifications(uid){ try{ const q=query(collection(db,'artifacts','fluxocash-app','global_feedback'),where('userId','==',uid),where('status','==','done')); const s=await getDocs(q); let show=false; s.forEach(d=>{if(!localStorage.getItem(`read_${d.id}`)){show=true;localStorage.setItem(`read_${d.id}`,'true');}}); if(show)document.getElementById('notify-modal').classList.remove('hidden'); }catch(e){} }
-
-        // --- CORE FUNCTIONS ---
-        window.addFixed=(e)=>{e.preventDefault();const n=document.getElementById('fix-name').value,v=parseFloat(document.getElementById('fix-val').value);if(n&&v){appData.fixed.push({name:n,value:v});e.target.reset();saveData();}};
-        window.addVar=(e)=>{e.preventDefault();const n=document.getElementById('var-desc').value, c=document.getElementById('var-cat').value,v=parseFloat(document.getElementById('var-val').value),d=document.getElementById('var-date').value;if(c&&v){appData.variable.push({name:n, category:c,value:v,date:d});document.getElementById('var-val').value='';document.getElementById('var-desc').value='';saveData();}};
-        window.addDebt=(e)=>{e.preventDefault();const n=document.getElementById('debt-name').value,p=parseFloat(document.getElementById('debt-par').value),inst=parseInt(document.getElementById('debt-inst').value)||1;if(n&&p){appData.debts.push({name:n,parcel:p,installments:inst});e.target.reset();saveData();}};
-        window.addExtraIncome=(e)=>{e.preventDefault();const d=document.getElementById('extra-desc').value,v=parseFloat(document.getElementById('extra-val').value);if(d&&v){appData.extraIncomes.push({desc:d,value:v});e.target.reset();saveData();render();}};
-        window.updateCat = (index, newCat) => { if(newCat) { appData.variable[index].category = newCat; saveData(); render(); } };
-        window.delItem = (t, i) => { if(confirm("Remover?")) { appData[t].splice(i,1); saveData(); render(); } };
-        window.delExtra = (i) => { if(confirm("Remover?")) { appData.extraIncomes.splice(i,1); saveData(); render(); } };
-        window.resetAll = () => { if(confirm("Zerar?")) { appData={income:0,extraIncomes:[],fixed:[],variable:[],debts:[],goals:[],history:[],budgets:[]}; saveData(); render(); } };
-        document.getElementById('inp-income').addEventListener('input', (e) => { appData.income = parseFloat(e.target.value)||0; saveData(); render(); });
-        window.saveCurrentMonth=()=>{const l=prompt("Mês (ex: Jan/24):",new Date().toLocaleDateString('pt-BR',{month:'short'}));if(!l)return;const bal=(appData.income||0)+(appData.extraIncomes||[]).reduce((a,b)=>a+b.value,0)-(appData.fixed.reduce((a,b)=>a+b.value,0)+appData.variable.reduce((a,b)=>a+b.value,0)+appData.debts.reduce((a,b)=>a+b.parcel,0));appData.history.push({label:l,balance:bal});saveData();render();};
-        window.clearHistory=()=>{if(confirm("Limpar histórico?")){appData.history=[];saveData();render();}};
-        window.importCSV=(i)=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=(e)=>{e.target.result.split('\n').forEach(l=>{const c=l.split(/[,;]/);if(c.length>=3){const v=parseFloat(c[2].replace(/[^\d.,]/g,'').replace(',','.'));if(!isNaN(v)){let cat=c[1].replace(/"/g,'').trim();if(!VALID_CATEGORIES.includes(cat))cat='Sem Categoria';appData.variable.push({name:c[1].replace(/"/g,''),category:cat,value:Math.abs(v),date:c[0]});}}});alert("Importado! Verifique itens pendentes.");saveData();render();};r.readAsText(f);};
-
-        // --- NEW: BUDGET LOGIC ---
-        window.suggestBudget = () => {
-            if(!confirm("Aplicar sugestão do Pai Rico (50/30/20)? Isso ajustará seus limites.")) return;
-            const income = (appData.income || 0) + (appData.extraIncomes || []).reduce((a,b) => a+b.value, 0);
-            if(income === 0) return alert("Defina sua renda primeiro!");
-            
-            // Rich Dad Logic: 50% Needs, 30% Wants, 20% Invest
-            // Mapping categories to this logic
-            appData.budgets = [
-                { category: 'Alimentação', limit: income * 0.20 }, // Part of 50%
-                { category: 'Mercado', limit: income * 0.20 }, // Part of 50%
-                { category: 'Transporte', limit: income * 0.10 }, // Part of 50%
-                { category: 'Lazer', limit: income * 0.15 }, // Part of 30%
-                { category: 'Delivery', limit: income * 0.10 }, // Part of 30%
-                { category: 'Outros', limit: income * 0.05 }  // Part of 30%
-            ];
-            saveData();
-            render();
+        const saveData = async () => {
+            if(isOffline) { localStorage.setItem('fluxocash_local', JSON.stringify(appData)); return; }
+            if(currentUser) await setDoc(doc(db, 'artifacts', 'fluxocash-app', 'users', currentUser.uid, 'app_data', 'main'), appData);
         };
-
-        window.updateBudgetLimit = (cat, val) => {
+        
+        function checkMigration() {
+            // Se existia 'income' (numero) e não 'incomes' (array), converte
+            if(typeof appData.income === 'number' && (!appData.incomes || appData.incomes.length === 0) && appData.income > 0) {
+                 appData.incomes = [{
+                     id: Date.now(),
+                     description: "Salário Antigo",
+                     origin: "Salário",
+                     value: appData.income,
+                     date: new Date().toISOString().split('T')[0]
+                 }];
+                 delete appData.income; // Remove old field
+            }
+            if(!appData.incomes) appData.incomes = [];
+            if(!appData.incomeOrigins) appData.incomeOrigins = ['Salário', 'Freelance', 'Investimentos'];
+            
+            // Ensure other arrays exist
+            if(!appData.extraIncomes) appData.extraIncomes = []; 
+            if(!appData.fixed) appData.fixed = []; 
+            if(!appData.variable) appData.variable = []; 
+            if(!appData.debts) appData.debts = []; 
+            if(!appData.goals) appData.goals = []; 
             if(!appData.budgets) appData.budgets = [];
-            const idx = appData.budgets.findIndex(b => b.category === cat);
-            if(idx > -1) appData.budgets[idx].limit = parseFloat(val);
-            else appData.budgets.push({ category: cat, limit: parseFloat(val) });
-            saveData();
-            render();
+        }
+
+        // --- IMPORTAR CSV (REFACTOR) ---
+        window.importCSV = (input) => {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                let count = 0;
+
+                lines.forEach(line => {
+                    if(!line.trim()) return;
+                    let cols = line.split(',');
+                    if(cols.length < 3) cols = line.split(';');
+                    if (cols.length >= 3) {
+                        let rawDate = cols[0].trim();
+                        let date = rawDate;
+                        if(rawDate.includes('/') && rawDate.split('/').length === 3) {
+                            const parts = rawDate.split('/');
+                            date = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                        }
+                        let title = cols[1].trim().replace(/"/g, '');
+                        let rawVal = cols[2].trim();
+                        let cleanVal = rawVal.replace(/[^\d.,-]/g, '');
+                        if(cleanVal.includes(',') && !cleanVal.includes('.')) cleanVal = cleanVal.replace(',', '.');
+                        else if(cleanVal.includes('.') && cleanVal.includes(',')) cleanVal = cleanVal.replace('.', '').replace(',', '.');
+                        let val = parseFloat(cleanVal);
+                        if (!isNaN(val)) {
+                             val = Math.abs(val);
+                             appData.variable.push({ name: title, category: 'OUTROS', subcategory: 'Importado', value: val, date: date, originalId: Date.now() });
+                             count++;
+                        }
+                    }
+                });
+                alert(`${count} itens importados!`);
+                saveData();
+                render();
+            };
+            reader.readAsText(file);
         };
 
-        // --- NEW: ADVANCED GOALS LOGIC ---
-        window.addGoal = (e) => {
+        // --- APP FUNCTIONS ---
+        // INCOME FUNCTIONS
+        window.addIncome = (e) => {
             e.preventDefault();
-            const name = document.getElementById('goal-name').value;
-            const total = parseFloat(document.getElementById('goal-total').value);
-            const date = document.getElementById('goal-date').value;
+            const desc = document.getElementById('inc-desc').value;
+            const origin = document.getElementById('inc-origin').value;
+            const val = parseFloat(document.getElementById('inc-val').value);
+            const date = document.getElementById('inc-date').value;
             
-            if(name && total && date) {
-                appData.goals.push({
+            if(desc && val && date) {
+                // Add to list
+                appData.incomes.push({
                     id: Date.now(),
-                    name: name,
-                    totalValue: total,
-                    deadline: date,
-                    saved: 0,
-                    history: []
+                    description: desc,
+                    origin: origin || 'Outros',
+                    value: val,
+                    date: date
                 });
+                
+                // Add to origin list if new
+                if(origin && !appData.incomeOrigins.includes(origin)) {
+                    appData.incomeOrigins.push(origin);
+                }
+                
                 e.target.reset();
+                // Reset date to today
+                document.getElementById('inc-date').valueAsDate = new Date();
                 saveData();
                 render();
             }
         };
 
-        window.openAporte = (id) => {
-            currentGoalId = id;
-            document.getElementById('aporte-modal').classList.remove('hidden');
+        window.delIncome = (index) => {
+            if(confirm("Remover receita?")) {
+                appData.incomes.splice(index, 1);
+                saveData();
+                render();
+            }
         };
 
-        window.confirmAporte = () => {
-            const val = parseFloat(document.getElementById('aporte-val').value);
-            if(currentGoalId && val) {
-                const goal = appData.goals.find(g => g.id === currentGoalId);
-                if(goal) {
-                    goal.saved += val;
-                    goal.history.push({ date: new Date().toISOString(), amount: val });
-                    saveData();
-                    render();
+        window.addFixed = (e) => { e.preventDefault(); const n=document.getElementById('fix-name').value, v=parseFloat(document.getElementById('fix-val').value); if(n&&v){ appData.fixed.push({name:n,value:v}); e.target.reset(); saveData(); } };
+        window.addVar = (e) => { e.preventDefault(); const n=document.getElementById('var-desc').value, c=document.getElementById('var-cat').value,v=parseFloat(document.getElementById('var-val').value),d=document.getElementById('var-date').value;if(c&&v){appData.variable.push({category:c,value:v,date:d});document.getElementById('var-val').value=''; saveData(); } };
+        window.addDebt = (e) => { e.preventDefault(); const n=document.getElementById('debt-name').value, t=parseFloat(document.getElementById('debt-tot').value)||0, p=parseFloat(document.getElementById('debt-par').value); if(n&&p){ appData.debts.push({name:n,total:t,parcel:p}); e.target.reset(); saveData(); } };
+        window.addGoal = (e) => { e.preventDefault(); const n=document.getElementById('goal-name').value, v=parseFloat(document.getElementById('goal-val').value); if(n&&v){ appData.goals.push({name:n,value:v}); e.target.reset(); saveData(); } };
+        window.addExtraIncome = (e) => { e.preventDefault(); const d=document.getElementById('extra-desc').value, v=parseFloat(document.getElementById('extra-val').value); if(d&&v){ if(!appData.extraIncomes) appData.extraIncomes=[]; appData.extraIncomes.push({desc:d,value:v}); e.target.reset(); saveData(); render(); } };
+
+        window.delItem = (type, i) => { if(confirm("Remover?")) { appData[type].splice(i,1); saveData(); render(); } };
+        window.delExtra = (i) => { if(confirm("Remover?")) { appData.extraIncomes.splice(i,1); saveData(); render(); } };
+        window.resetAll = () => { if(confirm("Zerar?")) { appData={income:0,extraIncomes:[],fixed:[],variable:[],debts:[],goals:[],budgets:[]}; saveData(); render(); } };
+        
+        // NOVO: VARIABLE WITH INSTALLMENTS & SUBCAT
+        window.addVar = (e) => {
+            e.preventDefault();
+            const desc = document.getElementById('var-desc').value;
+            const cat = document.getElementById('var-cat').value;
+            const sub = document.getElementById('var-sub').value || '';
+            const val = parseFloat(document.getElementById('var-val').value);
+            const dateStr = document.getElementById('var-date').value;
+            const parc = parseInt(document.getElementById('var-parc').value) || 1;
+
+            if(desc && val && dateStr) {
+                const baseDate = new Date(dateStr);
+                const valPerMonth = val / parc;
+
+                for(let i=0; i<parc; i++) {
+                    const d = new Date(baseDate);
+                    d.setMonth(d.getMonth() + i);
+                    const isoDate = d.toISOString().split('T')[0];
+                    const label = parc > 1 ? `${desc} (${i+1}/${parc})` : desc;
+                    
+                    appData.variable.push({
+                        name: label,
+                        category: cat,
+                        subcategory: sub,
+                        value: valPerMonth,
+                        date: isoDate,
+                        originalId: Date.now() 
+                    });
                 }
+                
+                document.getElementById('var-desc').value = '';
+                document.getElementById('var-val').value = '';
+                document.getElementById('var-parc').value = '1';
+                saveData();
+                render();
             }
-            document.getElementById('aporte-modal').classList.add('hidden');
-            document.getElementById('aporte-val').value = '';
         };
 
         // --- RENDER ---
-        function fmt(n){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);}
-        function render(){
-            // ... (Income Calc same as before) ...
-            if(document.activeElement.id!=='inp-income')document.getElementById('inp-income').value=appData.income||"";
-            const ext=(appData.extraIncomes||[]).reduce((a,b)=>a+b.value,0), inc=(appData.income||0)+ext, fix=appData.fixed.reduce((a,b)=>a+b.value,0), vari=appData.variable.reduce((a,b)=>a+b.value,0), debt=appData.debts.reduce((a,b)=>a+b.parcel,0), bal=inc-(fix+vari+debt); // Removed goals from direct expense deduction to treat as Asset Building
-            
-            document.getElementById('total-extra-income').innerText=fmt(ext); document.getElementById('dash-fix').innerText=fmt(fix); document.getElementById('dash-var').innerText=fmt(vari); document.getElementById('dash-debt').innerText=fmt(debt); 
-            // Sum actual saved amount for dashboard
+        function fmt(n) { return new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'}).format(n); }
+        
+        function render() {
+            const monthlyData = getMonthlyData();
+            const currentMonthIdx = new Date().getMonth();
+            const currentData = monthlyData[currentMonthIdx];
+
+            // RENDER INCOME ORIGINS DATALIST
+            const dl = document.getElementById('origins-list');
+            if(dl) {
+                dl.innerHTML = '';
+                (appData.incomeOrigins || []).forEach(org => {
+                    const opt = document.createElement('option');
+                    opt.value = org;
+                    dl.appendChild(opt);
+                });
+            }
+
+            // RENDER INCOME LIST (Current Month)
+            const incomeList = document.getElementById('list-incomes-month');
+            if(incomeList) {
+                incomeList.innerHTML = '';
+                const currentMonthIncomes = appData.incomes.filter(inc => {
+                    const d = new Date(inc.date);
+                    return d.getMonth() === currentMonthIdx && d.getFullYear() === new Date().getFullYear();
+                });
+
+                if(currentMonthIncomes.length === 0) {
+                    incomeList.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nenhuma receita lançada este mês.</td></tr>';
+                } else {
+                    currentMonthIncomes.forEach((inc) => {
+                        // Find index in main array to delete
+                        const globalIndex = appData.incomes.indexOf(inc);
+                        incomeList.innerHTML += `
+                            <tr class="border-b hover:bg-slate-50">
+                                <td class="p-2 text-slate-500">${new Date(inc.date).toLocaleDateString('pt-BR')}</td>
+                                <td class="p-2 font-bold text-slate-700">${inc.description}</td>
+                                <td class="p-2 text-xs"><span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">${inc.origin}</span></td>
+                                <td class="p-2 text-right font-bold text-emerald-600">${fmt(inc.value)}</td>
+                                <td class="p-2 text-center"><button onclick="delIncome(${globalIndex})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+
+            document.getElementById('dash-income').innerText = fmt(currentData.revenue);
+            document.getElementById('dash-expense').innerText = fmt(currentData.expenses);
             const totalSaved = appData.goals.reduce((a,b) => a + (b.saved || 0), 0);
-            document.getElementById('dash-goal').innerText=fmt(totalSaved);
-
-            const elBal=document.getElementById('final-balance'); elBal.innerText=fmt(bal - totalSaved); 
+            document.getElementById('dash-invest').innerText = fmt(totalSaved);
+            document.getElementById('dash-balance').innerText = fmt(currentData.accumulated); // Year Balance
             
-            // ... (Lists Rendering same as before) ...
-            const lEx=document.getElementById('list-extra-incomes'); lEx.innerHTML=''; (appData.extraIncomes||[]).forEach((i,x)=>lEx.innerHTML+=`<li class="flex justify-between border-b pb-1 text-sm"><span>${i.desc}</span><div class="font-bold text-emerald-600">${fmt(i.value)} <button onclick="delExtra(${x})" class="text-red-400">x</button></div></li>`);
-            const lFix=document.getElementById('list-fixed'); lFix.innerHTML=''; appData.fixed.forEach((i,x)=>lFix.innerHTML+=`<tr class="border-b"><td class="p-3">${i.name}</td><td class="text-right">${fmt(i.value)}</td><td class="text-right"><button onclick="delItem('fixed',${x})"><i class="fa-solid fa-trash text-red-300"></i></button></td></tr>`);
-            const lDebt=document.getElementById('list-debts'); lDebt.innerHTML=''; appData.debts.forEach((i,x)=>lDebt.innerHTML+=`<div class="bg-white p-3 rounded border-l-4 border-red-400 shadow-sm flex justify-between"><div><div class="font-bold">${i.name}</div><div class="text-xs">${i.installments||'∞'}x restantes</div></div><div class="text-right font-bold text-red-600">${fmt(i.parcel)}<button onclick="delItem('debts',${x})" class="ml-2 text-slate-300">x</button></div></div>`);
+            const lEx=document.getElementById('list-extra-incomes'); 
+            if(lEx) { lEx.innerHTML=''; (appData.extraIncomes||[]).forEach((i,x)=>lEx.innerHTML+=`<li class="flex justify-between border-b pb-1 text-sm"><span>${i.desc}</span><div class="font-bold text-emerald-600">${fmt(i.value)} <button onclick="delExtra(${x})" class="text-red-400">x</button></div></li>`); }
 
-            // Variable Lists
-            const lVar=document.getElementById('list-variable'); lVar.innerHTML=''; const lPend=document.getElementById('list-pending'); lPend.innerHTML=''; let hasPending=false;
-            appData.variable.forEach((item, index) => {
-                const isPending = !item.category || item.category === 'Sem Categoria' || !VALID_CATEGORIES.includes(item.category);
-                if(isPending) { hasPending = true; lPend.innerHTML += `<li class="bg-white p-3 flex flex-col md:flex-row justify-between items-center gap-3 border rounded shadow-sm"><div class="flex-grow w-full md:w-auto"><span class="block font-bold text-slate-700">${item.name||"Item"}</span><span class="text-xs text-slate-400">${item.date} • ${fmt(item.value)}</span></div><div class="flex items-center gap-2"><select onchange="updateCat(${index}, this.value)" class="bg-red-50 text-red-800 text-xs p-2 rounded border"><option value="">Classificar...</option>${VALID_CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join('')}</select><button onclick="delItem('variable',${index})" class="bg-red-100 text-red-600 p-2 rounded">X</button></div></li>`; } 
-                else { lVar.innerHTML += `<li class="bg-white p-3 rounded border flex justify-between mb-2"><div><span class="font-bold block">${item.name}</span><span class="text-xs text-slate-500 bg-slate-100 px-1 rounded">${item.category}</span></div><div class="font-bold text-orange-600">${fmt(item.value)}<button onclick="delItem('variable',${index})" class="ml-2 text-red-300">X</button></div></li>`; }
+            const lFix=document.getElementById('list-fixed'); lFix.innerHTML=''; appData.fixed.forEach((i,x)=>lFix.innerHTML+=`<tr class="border-b hover:bg-slate-50"><td class="p-3">${i.name}</td><td class="p-3 text-right">${fmt(i.value)}</td><td class="p-3 text-right"><button onclick="delItem('fixed',${x})" class="text-red-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`);
+
+            const lVar=document.getElementById('list-variable'); lVar.innerHTML=''; 
+            [...appData.variable].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach((i,x)=>lVar.innerHTML+=`<li class="bg-white p-3 rounded border flex justify-between mb-2"><div><span class="font-bold block">${i.name} <small class="text-slate-400">(${i.subcategory||'-'})</small></span><span class="text-xs text-slate-500 bg-slate-100 px-1 rounded">${i.category}</span></div><div class="flex gap-2 font-bold text-orange-600"><span>${fmt(i.value)}</span><button onclick="delItem('variable',${x})" class="text-red-300 hover:text-red-500">x</button></div></li>`);
+
+            const lDebt=document.getElementById('list-debts'); lDebt.innerHTML=''; 
+            appData.debts.forEach((i,x)=> {
+                // ... (existing debt logic) ...
+                lDebt.innerHTML+=`<div class="bg-white p-3 rounded border-l-4 border-red-400 shadow-sm flex justify-between"><div><div class="font-bold">${i.name}</div><div class="text-xs">Total: ${fmt(i.totalValue)}</div></div><div class="text-right font-bold text-red-600">${fmt(i.installmentValue)} <button onclick="delItem('debts',${x})" class="ml-2 text-slate-300 hover:text-red-500">x</button></div></div>`;
             });
-            document.getElementById('pending-section').classList.toggle('hidden', !hasPending);
 
-            // --- RENDER BUDGET (ORÇAMENTO) ---
-            const budgetList = document.getElementById('budget-list');
-            if(budgetList) {
-                budgetList.innerHTML = '';
-                VALID_CATEGORIES.forEach(cat => {
-                    const limitObj = (appData.budgets || []).find(b => b.category === cat);
-                    const limit = limitObj ? limitObj.limit : 0;
-                    const spent = appData.variable.filter(v => v.category === cat).reduce((a,b) => a + b.value, 0);
-                    const pct = limit > 0 ? (spent / limit) * 100 : 0;
-                    const color = pct > 100 ? 'bg-red-500' : (pct > 80 ? 'bg-yellow-500' : 'bg-emerald-500');
-                    
-                    budgetList.innerHTML += `
-                        <div class="bg-white p-4 rounded-xl border border-slate-100">
-                            <div class="flex justify-between items-end mb-2">
-                                <span class="font-bold text-slate-700">${cat}</span>
-                                <div class="text-right">
-                                    <span class="text-xs text-slate-400">Gasto: ${fmt(spent)}</span>
-                                    <input type="number" value="${limit}" onchange="updateBudgetLimit('${cat}', this.value)" class="w-24 text-right text-sm font-bold border-b border-slate-300 focus:border-purple-500 outline-none" placeholder="Limite">
-                                </div>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                <div class="${color} h-2.5 rounded-full progress-bar" style="width: ${Math.min(pct, 100)}%"></div>
-                            </div>
-                            <p class="text-[10px] text-right mt-1 ${pct > 100 ? 'text-red-500 font-bold' : 'text-slate-400'}">${pct.toFixed(0)}% do limite</p>
-                        </div>
-                    `;
+            // GOALS CAROUSEL & LIST
+            const gFull = document.getElementById('list-goals-full'); if(gFull) gFull.innerHTML = '';
+            appData.goals.forEach((g, idx) => {
+                 if(gFull) gFull.innerHTML += `<div class="bg-white p-4 rounded border border-emerald-200"><div class="flex justify-between"><b>${g.name}</b><span>${fmt(g.saved)} / ${fmt(g.totalValue)}</span></div><div class="w-full bg-slate-100 h-2 rounded mt-2"><div class="bg-emerald-500 h-2 rounded" style="width:${(g.saved/g.totalValue)*100}%"></div></div><div class="flex justify-between mt-2"><button onclick="openAporte(${g.id})" class="text-xs bg-emerald-600 text-white px-2 py-1 rounded">Aportar</button><button onclick="deleteGoal(${idx})" class="text-xs text-red-400">Excluir</button></div></div>`;
+            });
+            renderGoalCarousel();
+
+            // BUDGET RENDER
+            const bList = document.getElementById('budget-list'); if(bList) {
+                bList.innerHTML = '';
+                NEW_CATEGORIES.forEach(cat => {
+                    const lim = (appData.budgets||[]).find(b=>b.cat===cat)?.lim || 0;
+                    const spent = appData.variable.filter(v=>v.category===cat && new Date(v.date).getMonth()===currentMonthIdx).reduce((a,b)=>a+b.value,0);
+                    const pct = lim>0?(spent/lim)*100:0;
+                    const col = pct>100?'bg-red-500':(pct>80?'bg-yellow-500':'bg-emerald-500');
+                    bList.innerHTML += `<div class="bg-white p-3 rounded border"><div class="flex justify-between text-sm font-bold"><span>${cat}</span><span class="${pct>100?'text-red-600':''}">${fmt(spent)} / <input type="number" value="${lim}" onchange="updateBudgetLimit('${cat}',this.value)" class="w-20 text-right border-b outline-none"></span></div><div class="w-full bg-slate-100 h-2 mt-1"><div class="${col} h-2 rounded" style="width:${Math.min(pct,100)}%"></div></div></div>`;
                 });
             }
 
-            // --- RENDER GOALS (METAS) ---
-            const goalsList = document.getElementById('list-goals');
-            if(goalsList) {
-                goalsList.innerHTML = '';
-                appData.goals.forEach((g) => {
-                    const saved = g.saved || 0;
-                    const remaining = g.totalValue - saved;
-                    const today = new Date();
-                    const end = new Date(g.deadline);
-                    const monthsLeft = Math.max(1, (end.getFullYear() - today.getFullYear()) * 12 + (end.getMonth() - today.getMonth()));
-                    const monthlyNeed = remaining > 0 ? remaining / monthsLeft : 0;
-                    const pct = (saved / g.totalValue) * 100;
-
-                    goalsList.innerHTML += `
-                        <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-bold text-emerald-800 text-lg">${g.name}</h3>
-                                <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded font-bold">${pct.toFixed(0)}%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-3 mb-3">
-                                <div class="bg-emerald-500 h-3 rounded-full" style="width: ${Math.min(pct, 100)}%"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-                                <div><span class="text-slate-400 text-xs block">Guardado</span> <span class="font-bold text-slate-700">${fmt(saved)}</span></div>
-                                <div><span class="text-slate-400 text-xs block">Meta Total</span> <span class="font-bold text-slate-700">${fmt(g.totalValue)}</span></div>
-                                <div><span class="text-slate-400 text-xs block">Prazo</span> <span class="font-bold text-slate-700">${end.toLocaleDateString('pt-BR')}</span></div>
-                                <div><span class="text-red-500 text-xs block font-bold">Necessário/Mês</span> <span class="font-bold text-red-600">${fmt(monthlyNeed)}</span></div>
-                            </div>
-                            <button onclick="openAporte(${g.id})" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold shadow flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-plus-circle"></i> Adicionar Aporte
-                            </button>
-                        </div>
-                    `;
-                });
+            // --- CHARTS ---
+            const ctxRev = document.getElementById('chart-revenue');
+            if(ctxRev) {
+                 if(chartRev) chartRev.destroy();
+                 chartRev = new Chart(ctxRev.getContext('2d'), {
+                     type: 'bar',
+                     data: { labels: monthlyData.map(d=>d.month), datasets: [{ label: 'Receita', data: monthlyData.map(d=>d.revenue), backgroundColor: '#10b981' }] },
+                     options: { responsive: true, maintainAspectRatio: false }
+                 });
             }
 
-            // --- CHARTS REFRESH ---
-            const cP=document.getElementById('chart-projection'), cV=document.getElementById('chart-variable-breakdown'), cH=document.getElementById('chart-history'), cM=document.getElementById('chart-main');
-            
-            if(cP) {
-                const maxM = Math.max(6, ...appData.debts.map(d=>d.installments||1));
-                const lP=[], dP=[]; for(let i=1;i<=maxM;i++){ lP.push(`Mês ${i}`); let m=fix; appData.debts.forEach(d=>{if((d.installments||999)>=i)m+=d.parcel;}); dP.push(m); }
-                if(window.projChart)window.projChart.destroy(); window.projChart=new Chart(cP.getContext('2d'),{type:'bar',data:{labels:lP,datasets:[{label:'Custo Futuro',data:dP,backgroundColor:'#64748b'}]},options:{responsive:true,maintainAspectRatio:false}});
+            const ctxExp = document.getElementById('chart-expenses');
+            if(ctxExp) {
+                 const yearlyFixed = appData.fixed.reduce((a,b)=>a+b.value,0);
+                 const fixedData = monthlyData.map(() => yearlyFixed); 
+                 const varData = monthlyData.map(d => d.expenses - yearlyFixed); 
+                 if(chartExp) chartExp.destroy();
+                 chartExp = new Chart(ctxExp.getContext('2d'), {
+                     type: 'bar',
+                     data: { labels: monthlyData.map(d=>d.month), datasets: [{ label: 'Fixas', data: fixedData, backgroundColor: '#64748b' }, { label: 'Variáveis', data: varData, backgroundColor: '#f97316' }] },
+                     options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
+                 });
             }
-            if(cV) {
-                const cats={}; appData.variable.forEach(v=>{ const cName = VALID_CATEGORIES.includes(v.category) ? v.category : 'Outros'; cats[cName]=(cats[cName]||0)+v.value; });
-                if(window.varChart)window.varChart.destroy(); window.varChart=new Chart(cV.getContext('2d'),{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:['#f87171','#fb923c','#fbbf24','#a3e635','#34d399','#22d3ee']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:10}}}}});
+
+            const ctxBot = document.getElementById('chart-bottlenecks');
+            if(ctxBot) {
+                 const catTotals = {};
+                 appData.variable.filter(v=>new Date(v.date).getMonth()===currentMonthIdx).forEach(v => { catTotals[v.category] = (catTotals[v.category]||0)+v.value; });
+                 if(chartBottle) chartBottle.destroy();
+                 chartBottle = new Chart(ctxBot.getContext('2d'), {
+                     type: 'doughnut',
+                     data: { labels: Object.keys(catTotals), datasets: [{ data: Object.values(catTotals), backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#a855f7'] }] },
+                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
+                 });
             }
-            if(cH) {
-                if(window.historyChartInstance)window.historyChartInstance.destroy();
-                const hD=appData.history||[]; window.historyChartInstance=new Chart(cH.getContext('2d'),{type:'line',data:{labels:hD.map(h=>h.label),datasets:[{label:'Evolução Saldo',data:hD.map(h=>h.balance),borderColor:'#059669',tension:0.3}]},options:{responsive:true,maintainAspectRatio:false}});
-            }
-            if(cM) {
-                if(window.chartInstance)window.chartInstance.destroy();
-                window.chartInstance=new Chart(cM.getContext('2d'),{type:'doughnut',data:{labels:['Fixas','Var','Passivos','Ativos','Livre'],datasets:[{data:[fix,vari,debt,totalSaved,Math.max(0,bal-totalSaved)],backgroundColor:['#64748b','#f97316','#ef4444','#10b981','#cbd5e1'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'right'}}}});
+
+            const ctxBal = document.getElementById('chart-balance');
+            if(ctxBal) {
+                 if(chartBal) chartBal.destroy();
+                 chartBal = new Chart(ctxBal.getContext('2d'), {
+                     type: 'line',
+                     data: { labels: monthlyData.map(d=>d.month), datasets: [{ label: 'Saldo Acumulado', data: monthlyData.map(d=>d.accumulated), borderColor: '#059669', fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' }] },
+                     options: { responsive: true, maintainAspectRatio: false }
+                 });
             }
         }
 
-        window.nav = (id) => {
-            ['dashboard','fixed','variable','debts','goals','budget'].forEach(t => { document.getElementById('page-'+t).classList.add('hidden'); document.getElementById('nav-d-'+t)?.classList.remove('active'); document.getElementById('mob-'+t)?.classList.remove('active'); });
-            document.getElementById('page-'+id).classList.remove('hidden'); document.getElementById('nav-d-'+id)?.classList.add('active'); document.getElementById('mob-'+id)?.classList.add('active');
-            if(id==='dashboard') render();
-        };
+        // --- HELPER: GROUP DATA BY MONTH ---
+        function getMonthlyData() {
+            const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+            const currentYear = new Date().getFullYear();
+            const data = months.map(m => ({ month: m, revenue: 0, expenses: 0, balance: 0 }));
+            
+            // 1. Receitas: Sum incomes per month
+            if (appData.incomes) {
+                appData.incomes.forEach(inc => {
+                    const d = new Date(inc.date);
+                    if (d.getFullYear() === currentYear) {
+                        data[d.getMonth()].revenue += inc.value;
+                    }
+                });
+            }
+            
+            // 2. Despesas Fixas (Assume-se mensal)
+            const yearlyFixed = appData.fixed.reduce((a,b)=>a+b.value,0);
+            data.forEach(d => d.expenses += yearlyFixed);
+            
+            // 3. Despesas Variáveis
+            appData.variable.forEach(v => {
+                const date = new Date(v.date);
+                if(date.getFullYear() === currentYear) {
+                    data[date.getMonth()].expenses += v.value;
+                }
+            });
 
+            // 4. Passivos
+            const debtMonthly = appData.debts.reduce((a,b)=>a+b.installmentValue,0);
+            data.forEach(d => d.expenses += debtMonthly);
+
+            let accum = 0;
+            data.forEach(d => {
+                d.balance = d.revenue - d.expenses;
+                accum += d.balance;
+                d.accumulated = accum;
+            });
+            
+            return data;
+        }
+
+        // CAROUSEL LOGIC
+        function renderGoalCarousel() {
+            const area = document.getElementById('goal-display-area');
+            const goals = appData.goals;
+            if(!goals || goals.length === 0) {
+                document.getElementById('dash-goal-name').innerText = "Sem Metas";
+                return;
+            }
+            if(currentGoalIndex >= goals.length) currentGoalIndex = 0;
+            if(currentGoalIndex < 0) currentGoalIndex = goals.length - 1;
+            
+            const g = goals[currentGoalIndex];
+            const pct = (g.saved / g.totalValue) * 100;
+            document.getElementById('dash-goal-name').innerText = g.name;
+            document.getElementById('dash-goal-missing').innerText = fmt(g.totalValue - g.saved);
+            document.getElementById('dash-goal-bar').style.width = `${Math.min(pct,100)}%`;
+            document.getElementById('dash-goal-pct').innerText = `${pct.toFixed(0)}% Concluído`;
+            document.getElementById('goal-counter').innerText = `${currentGoalIndex+1}/${goals.length}`;
+        }
+        window.nextGoal = () => { currentGoalIndex++; renderGoalCarousel(); };
+        window.prevGoal = () => { currentGoalIndex--; renderGoalCarousel(); };
+
+        window.nav = (id) => { ['dashboard','fixed','variable','debts','goals','budget'].forEach(t => document.getElementById('page-'+t).classList.add('hidden')); document.getElementById('page-'+id).classList.remove('hidden'); if(id==='dashboard') render(); };
         window.closeAI = () => document.getElementById('ai-modal').classList.add('hidden');
-        window.askAI = async (ctx) => {
-            document.getElementById('ai-modal').classList.remove('hidden'); document.getElementById('ai-content').innerText = "Pensando...";
-            try { const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({contents:[{parts:[{text:`Analise como Robert Kiyosaki. Dados: ${JSON.stringify(appData)}. Foco: ${ctx}. Markdown.`}]}]}) }); const d = await res.json(); document.getElementById('ai-content').innerHTML = marked.parse(d.candidates[0].content.parts[0].text); } catch(e) { document.getElementById('ai-content').innerText = "Erro IA"; }
-        };
+        window.askAI = async (ctx) => { document.getElementById('ai-modal').classList.remove('hidden'); document.getElementById('ai-content').innerText = "Pensando..."; try { const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({contents:[{parts:[{text:`Analise como Robert Kiyosaki. Dados: ${JSON.stringify(appData)}. Foco: ${ctx}. Markdown.`}]}]}) }); const d = await res.json(); document.getElementById('ai-content').innerHTML = marked.parse(d.candidates[0].content.parts[0].text); } catch(e) { document.getElementById('ai-content').innerText = "Erro IA"; } };
 
+        document.getElementById('inc-date').valueAsDate = new Date();
         document.getElementById('var-date').valueAsDate = new Date();
     </script>
 </body>
