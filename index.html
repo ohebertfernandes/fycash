@@ -671,10 +671,28 @@
         // CONFIG
         const ADMIN_EMAIL = "ohebertgustavo@gmail.com";
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "API_KEY_MISSING" };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fluxocash-app'; // Use environment variable
         const apiKey = ""; 
+
+        // ... init app ...
+
+        // Fix 3: Init Auth with token check
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const initAuth = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                try { await signInWithCustomToken(auth, __initial_auth_token); } catch(e) { console.error("Token Auth Failed", e); }
+            }
+            // Note: I am NOT forcing signInAnonymously here to preserve the Login Screen functionality 
+            // requested by the app design. The user can still register/login manually.
+        };
+        initAuth();
+
         const DEFAULT_CATEGORIES = ['Moradia', 'Alimentação', 'Transporte', 'Saúde e Cuidados', 'Educação', 'Lazer', 'Investimentos'];
 
-        let app, auth, db, currentUser = null;
+        let currentUser = null;
         let unsubscribeUser = null;
         let appData = { incomes: [], incomeOrigins: [], fixed: [], variable: [], debts: [], goals: [], budgets: [], categories: [] };
         let isOffline = false;
@@ -682,8 +700,6 @@
         let currentGoalIndex = 0;
         let currentGoalId = null;
         let currentAdminTab = 'pending';
-
-        try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch(e) { console.error(e); }
 
         // --- CORE LOGIC ---
         function fmt(n) { return new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'}).format(n); }
@@ -701,7 +717,7 @@
 
         async function saveData() { 
             if(isOffline){ localStorage.setItem('fluxocash_local',JSON.stringify(appData)); return; } 
-            if(currentUser) await setDoc(doc(db,'artifacts','fluxocash-app','users',currentUser.uid,'app_data','main'),appData); 
+            if(currentUser) await setDoc(doc(db,'artifacts',appId,'users',currentUser.uid,'app_data','main'),appData); 
         }
 
         function getMonthlyData() {
@@ -1277,7 +1293,7 @@
             const txt = document.getElementById('feedback-text').value;
             const type = document.getElementById('feedback-type').value;
             if(txt) {
-                await addDoc(collection(db,'artifacts','fluxocash-app','global_feedback'), { text: txt, type, user: currentUser?.email, date: new Date().toISOString(), status: 'pending' });
+                await addDoc(collection(db,'artifacts',appId,'global_feedback'), { text: txt, type, user: currentUser?.email, date: new Date().toISOString(), status: 'pending' });
                 alert("Feedback enviado!");
                 document.getElementById('feedback-modal').classList.add('hidden');
             }
@@ -1287,7 +1303,7 @@
         window.switchAdminTab = (t) => { currentAdminTab = t; loadAdmin(); };
         async function loadAdmin() {
             const el = document.getElementById('admin-list'); el.innerHTML = 'Carregando...';
-            const q = query(collection(db,'artifacts','fluxocash-app','global_feedback'), orderBy('date','desc'));
+            const q = query(collection(db,'artifacts',appId,'global_feedback'), orderBy('date','desc'));
             const s = await getDocs(q);
             el.innerHTML = '';
             s.forEach(doc => {
@@ -1297,7 +1313,7 @@
                 el.innerHTML += `<div class="bg-white p-3 mb-2 rounded border shadow-sm dark:bg-slate-700"><div><span class="font-bold text-xs uppercase bg-slate-200 px-2 py-1 rounded mr-2">${d.type}</span> <span class="font-bold">${d.user}</span></div><p class="text-sm mt-2">${d.text}</p>${d.status!=='done'?`<button onclick="solveFeedback('${doc.id}')" class="text-xs text-green-600 mt-2 font-bold">Resolver</button>`:''}</div>`;
             });
         }
-        window.solveFeedback = async (id) => { await updateDoc(doc(db,'artifacts','fluxocash-app','global_feedback',id), {status: 'done'}); loadAdmin(); };
+        window.solveFeedback = async (id) => { await updateDoc(doc(db,'artifacts',appId,'global_feedback',id), {status: 'done'}); loadAdmin(); };
 
         window.askAI = async (ctx) => {
             document.getElementById('ai-modal').classList.remove('hidden');
@@ -1381,10 +1397,10 @@
                     document.getElementById('auth-screen').classList.add('hidden');
                     document.getElementById('app-screen').classList.remove('hidden');
                     document.getElementById('app-screen').classList.add('flex');
-                    document.getElementById('user-name-display').innerText = user.email.split('@')[0];
+                    document.getElementById('user-name-display').innerText = user.email ? user.email.split('@')[0] : "Convidado";
                     if(user.email === ADMIN_EMAIL) document.getElementById('btn-admin').classList.remove('hidden');
                     
-                    const docRef = doc(db,'artifacts','fluxocash-app','users',user.uid,'app_data','main');
+                    const docRef = doc(db,'artifacts',appId,'users',user.uid,'app_data','main');
                     if(unsubscribeUser) unsubscribeUser();
                     unsubscribeUser = onSnapshot(docRef, (s) => {
                         if(s.exists()) { appData = s.data(); checkMigration(); }
