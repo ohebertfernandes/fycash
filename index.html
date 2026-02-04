@@ -34,9 +34,26 @@
                             dark: '#0f172a'
                         }
                     },
-                    boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'glow': '0 0 15px rgba(6, 182, 212, 0.3)'
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'enter': 'enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        enter: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
                     }
                 }
             }
@@ -61,15 +78,17 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
 
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        /* Animations & Transitions */
+        .page-enter { animation: enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
         
         /* Sidebar Link Active State */
-        .nav-link { transition: all 0.2s ease; border-radius: 12px; }
-        .nav-link:hover { background-color: #f1f5f9; color: #0f172a; }
+        .nav-link { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 12px; }
+        .nav-link:hover { background-color: #f1f5f9; color: #0f172a; transform: translateX(4px); }
         .dark .nav-link:hover { background-color: #334155; color: #fff; }
-        .nav-link.active { background-color: #0ea5e9; color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); }
+        .nav-link.active { background-color: #0ea5e9; color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); transform: translateX(4px); }
         .dark .nav-link.active { background-color: #0ea5e9; color: white; }
         .nav-link.active i { color: white; }
 
@@ -79,44 +98,49 @@
             border-radius: 20px; 
             border: 1px solid #f1f5f9; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+        .card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
         .dark .card { background: #1e293b; border-color: #334155; box-shadow: none; }
 
+        /* Buttons */
+        button:active { transform: scale(0.95); }
+        
         /* Inputs */
-        input, select { transition: all 0.2s; }
-        input:focus, select:focus { ring: 2px; ring-color: #0ea5e9; border-color: transparent; }
+        input, select { transition: all 0.3s ease; }
+        input:focus, select:focus { ring: 2px; ring-color: #0ea5e9; border-color: transparent; transform: translateY(-1px); }
 
         /* Mobile Nav */
-        .mob-nav-item.active { color: #0ea5e9; }
+        .mob-nav-item.active { color: #0ea5e9; transform: scale(1.1); }
         .mob-nav-item.active i { transform: translateY(-2px); }
 
-        /* Score Circle from original */
+        /* Score Circle */
         .score-circle {
             width: 100px; height: 100px; border-radius: 50%;
             background: conic-gradient(var(--score-color) var(--score-deg), rgba(255,255,255,0.1) 0deg);
             display: flex; align-items: center; justify-content: center;
             position: relative;
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .score-circle::before {
             content: ""; position: absolute; width: 80px; height: 80px;
-            border-radius: 50%; background: #1e293b; /* Matches dark card bg */
+            border-radius: 50%; background: #1e293b; 
         }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden selection:bg-primary selection:text-white">
 
     <!-- AUTH SCREEN -->
-    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50 dark:bg-slate-900 transition-all duration-500">
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50 dark:bg-slate-900 transition-all duration-700">
         <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-400/20 blur-[100px]"></div>
-            <div class="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-purple-400/20 blur-[100px]"></div>
+            <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-400/20 blur-[100px] animate-blob"></div>
+            <div class="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-purple-400/20 blur-[100px] animate-blob animation-delay-2000"></div>
+            <div class="absolute -bottom-[20%] left-[20%] w-[30%] h-[30%] rounded-full bg-pink-400/20 blur-[100px] animate-blob animation-delay-4000"></div>
         </div>
         
-        <div class="glass w-full max-w-md p-8 rounded-3xl relative shadow-2xl mx-4">
+        <div class="glass w-full max-w-md p-8 rounded-3xl relative shadow-2xl mx-4 page-enter">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg mx-auto mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg mx-auto mb-4 animate-float">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
                 <h1 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">Fycash.</h1>
@@ -125,16 +149,16 @@
 
             <div id="view-login" class="space-y-4">
                 <div class="space-y-4">
-                    <div class="relative">
-                        <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <div class="relative group">
+                        <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"></i>
                         <input type="email" id="log-email" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Seu e-mail" required>
                     </div>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <div class="relative group">
+                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"></i>
                         <input type="password" id="log-pass" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Sua senha" required>
                     </div>
                 </div>
-                <button onclick="document.getElementById('form-login-btn').click()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg dark:bg-primary dark:hover:bg-primary-dark">
+                <button onclick="document.getElementById('form-login-btn').click()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg dark:bg-primary dark:hover:bg-primary-dark active:scale-95">
                     Entrar na Plataforma
                 </button>
                 <button id="form-login-btn" class="hidden" onclick="handleLogin()"></button>
@@ -145,11 +169,11 @@
 
             <div id="view-register" class="space-y-4 hidden">
                 <div class="space-y-4">
-                    <input type="email" id="reg-email" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="E-mail" required>
-                    <input type="password" id="reg-pass" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Senha (min 6)" required>
-                    <input type="password" id="reg-confirm" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Confirmar Senha" required>
+                    <input type="email" id="reg-email" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all" placeholder="E-mail" required>
+                    <input type="password" id="reg-pass" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all" placeholder="Senha (min 6)" required>
+                    <input type="password" id="reg-confirm" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white transition-all" placeholder="Confirmar Senha" required>
                 </div>
-                <button onclick="handleRegister()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-primary-dark transition shadow-lg">
+                <button onclick="handleRegister()" class="w-full bg-primary text-white font-bold py-3.5 rounded-xl hover:bg-primary-dark transition shadow-lg active:scale-95">
                     Cadastrar Gratuitamente
                 </button>
                 <div class="text-center pt-2">
@@ -158,7 +182,7 @@
             </div>
 
             <div class="mt-8 border-t border-slate-100 pt-6 dark:border-slate-700">
-                <button onclick="forceOfflineMode()" class="w-full flex items-center justify-center gap-2 text-xs font-bold text-slate-400 hover:text-primary uppercase tracking-wider transition">
+                <button onclick="forceOfflineMode()" class="w-full flex items-center justify-center gap-2 text-xs font-bold text-slate-400 hover:text-primary uppercase tracking-wider transition hover:scale-105">
                     <i class="fa-solid fa-wifi"></i> Testar Modo Offline
                 </button>
             </div>
@@ -166,19 +190,19 @@
     </div>
 
     <!-- MAIN APP LAYOUT -->
-    <div id="app-screen" class="hidden w-full h-full">
+    <div id="app-screen" class="hidden w-full h-full opacity-0 transition-opacity duration-500">
         
         <!-- SIDEBAR (Desktop) -->
         <aside class="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 h-full z-20 dark:bg-slate-900 dark:border-slate-800">
             <div class="p-6 flex items-center gap-3">
-                <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md">
+                <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md animate-bounce">
                     <i class="fa-solid fa-bolt text-sm"></i>
                 </div>
                 <span class="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Fycash.</span>
             </div>
 
             <div class="px-4 py-2">
-                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center gap-3 dark:bg-slate-800 dark:border-slate-700">
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center gap-3 dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-100 transition cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold dark:bg-slate-700 dark:text-slate-300 user-avatar-initials">U</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold text-slate-800 truncate dark:text-white" id="user-name-display">Usuário</p>
@@ -238,8 +262,8 @@
                     <span class="font-bold text-lg text-slate-800 dark:text-white">Fycash</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="openWhatsAppModal()" class="w-9 h-9 rounded-full bg-green-500 text-white shadow-lg shadow-green-500/30 flex items-center justify-center"><i class="fa-solid fa-microphone"></i></button>
-                    <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 flex items-center justify-center"><i class="fa-solid fa-moon"></i></button>
+                    <button onclick="openWhatsAppModal()" class="w-9 h-9 rounded-full bg-green-500 text-white shadow-lg shadow-green-500/30 flex items-center justify-center active:scale-95 transition"><i class="fa-solid fa-microphone"></i></button>
+                    <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 flex items-center justify-center active:scale-95 transition"><i class="fa-solid fa-moon"></i></button>
                 </div>
             </header>
 
@@ -248,16 +272,16 @@
                 <div class="max-w-6xl mx-auto pb-24 md:pb-0">
                     
                     <!-- Desktop Header Action -->
-                    <div class="hidden md:flex justify-between items-center mb-8">
+                    <div class="hidden md:flex justify-between items-center mb-8 page-enter">
                         <div>
                             <h1 class="text-2xl font-bold text-slate-800 dark:text-white" id="page-title">Visão Geral</h1>
                             <p class="text-sm text-slate-500 dark:text-slate-400">Bem-vindo de volta ao seu controle financeiro.</p>
                         </div>
                         <div class="flex gap-3">
-                            <button onclick="openWhatsAppModal()" class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-600/20 transition font-bold text-sm">
+                            <button onclick="openWhatsAppModal()" class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-600/20 transition font-bold text-sm hover:-translate-y-1">
                                 <i class="fa-solid fa-microphone"></i> IA Voice
                             </button>
-                            <button onclick="nav('launch')" class="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 transition font-bold text-sm dark:bg-primary dark:hover:bg-primary-dark">
+                            <button onclick="nav('launch')" class="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 transition font-bold text-sm dark:bg-primary dark:hover:bg-primary-dark hover:-translate-y-1">
                                 <i class="fa-solid fa-plus"></i> Novo Lançamento
                             </button>
                         </div>
@@ -266,12 +290,12 @@
                     <!-- PAGES -->
                     
                     <!-- 1. DASHBOARD -->
-                    <div id="page-dashboard" class="space-y-6 animate-fade-in">
+                    <div id="page-dashboard" class="space-y-6">
                         <!-- Score & Stats -->
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <!-- Score Card -->
-                            <div class="card p-6 relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0">
-                                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[50px] rounded-full"></div>
+                            <div class="card p-6 relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 text-white border-0 page-enter">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[50px] rounded-full animate-pulse"></div>
                                 <div class="relative z-10 flex justify-between items-start">
                                     <div>
                                         <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Score Financeiro</p>
@@ -287,25 +311,25 @@
                                     </div>
                                 </div>
                                 <div class="mt-6 flex gap-2">
-                                    <button onclick="openArcaModal()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold backdrop-blur-sm transition">Metodologia ARCA</button>
+                                    <button onclick="openArcaModal()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold backdrop-blur-sm transition hover:scale-105">Metodologia ARCA</button>
                                 </div>
                             </div>
 
                             <!-- Balance & Summary -->
                             <div class="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="card p-5 flex flex-col justify-between">
+                                <div class="card p-5 flex flex-col justify-between page-enter delay-100">
                                     <div class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center mb-2 dark:bg-green-900/20 dark:text-green-400"><i class="fa-solid fa-arrow-up"></i></div>
                                     <div><p class="text-xs text-slate-500 font-bold uppercase">Entradas</p><p class="text-lg font-bold text-slate-800 dark:text-white" id="dash-income">R$ 0</p></div>
                                 </div>
-                                <div class="card p-5 flex flex-col justify-between">
+                                <div class="card p-5 flex flex-col justify-between page-enter delay-200">
                                     <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-2 dark:bg-red-900/20 dark:text-red-400"><i class="fa-solid fa-arrow-down"></i></div>
                                     <div><p class="text-xs text-slate-500 font-bold uppercase">Saídas</p><p class="text-lg font-bold text-slate-800 dark:text-white" id="dash-expense">R$ 0</p></div>
                                 </div>
-                                <div class="card p-5 flex flex-col justify-between">
+                                <div class="card p-5 flex flex-col justify-between page-enter delay-300">
                                     <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2 dark:bg-indigo-900/20 dark:text-indigo-400"><i class="fa-solid fa-piggy-bank"></i></div>
                                     <div><p class="text-xs text-slate-500 font-bold uppercase">Investido</p><p class="text-lg font-bold text-slate-800 dark:text-white" id="dash-invest">R$ 0</p></div>
                                 </div>
-                                <div class="card p-5 flex flex-col justify-between border-primary/20 bg-primary/5 dark:bg-primary/10">
+                                <div class="card p-5 flex flex-col justify-between border-primary/20 bg-primary/5 dark:bg-primary/10 page-enter delay-300">
                                     <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center mb-2 shadow-lg shadow-primary/30"><i class="fa-solid fa-wallet"></i></div>
                                     <div><p class="text-xs text-primary font-bold uppercase">Saldo Atual</p><p class="text-lg font-bold text-primary dark:text-primary-light" id="dash-balance">R$ 0</p></div>
                                 </div>
@@ -313,14 +337,14 @@
                         </div>
 
                         <!-- Quick Goals -->
-                        <div class="card p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-0 shadow-lg shadow-indigo-500/20 relative overflow-hidden">
+                        <div class="card p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-0 shadow-lg shadow-indigo-500/20 relative overflow-hidden page-enter delay-100">
                             <div class="relative z-10 flex justify-between items-end">
                                 <div>
                                     <div class="flex items-center gap-2 mb-2">
                                         <span class="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold uppercase">Meta em Foco</span>
                                         <div class="flex gap-1 ml-2">
-                                            <button onclick="prevGoal()" class="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                                            <button onclick="nextGoal()" class="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                            <button onclick="prevGoal()" class="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition hover:scale-110"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                            <button onclick="nextGoal()" class="w-6 h-6 bg-white/10 hover:bg-white/20 rounded flex items-center justify-center transition hover:scale-110"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                                         </div>
                                     </div>
                                     <h3 class="text-2xl font-bold mb-1" id="dash-goal-name">Sem Metas</h3>
@@ -332,26 +356,26 @@
                                 </div>
                             </div>
                             <div class="w-full bg-black/20 h-2 mt-4 rounded-full overflow-hidden">
-                                <div id="dash-goal-bar" class="bg-white h-full rounded-full" style="width: 0%"></div>
+                                <div id="dash-goal-bar" class="bg-white h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
 
                         <!-- Charts Section -->
                         <div class="grid md:grid-cols-2 gap-6">
-                            <div class="card p-6">
+                            <div class="card p-6 page-enter delay-200">
                                 <div class="flex justify-between items-center mb-6">
                                     <h3 class="font-bold text-slate-800 dark:text-white">Receita vs Despesas</h3>
                                 </div>
                                 <div class="h-64 relative"><canvas id="chart-expenses"></canvas></div>
                             </div>
-                            <div class="card p-6">
+                            <div class="card p-6 page-enter delay-200">
                                 <div class="flex justify-between items-center mb-6">
                                     <h3 class="font-bold text-slate-800 dark:text-white">Gastos por Categoria</h3>
                                 </div>
                                 <div class="h-64 relative flex items-center justify-center"><canvas id="chart-pie-expenses"></canvas></div>
                             </div>
                             <!-- Bottlenecks Chart (Hidden by default, shown via JS) -->
-                            <div id="bottleneck-chart-container" class="hidden card p-6 col-span-2 border-red-200 bg-red-50 dark:bg-red-900/10">
+                            <div id="bottleneck-chart-container" class="hidden card p-6 col-span-2 border-red-200 bg-red-50 dark:bg-red-900/10 page-enter">
                                 <h3 class="font-bold text-red-700 dark:text-red-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Categorias Acima do Orçamento</h3>
                                 <div class="h-48 w-full"><canvas id="chart-bottlenecks"></canvas></div>
                             </div>
@@ -359,14 +383,14 @@
                     </div>
 
                     <!-- 2. LANÇAMENTOS (New Design) -->
-                    <div id="page-launch" class="hidden space-y-6 animate-fade-in">
+                    <div id="page-launch" class="hidden space-y-6">
                         <div class="grid md:grid-cols-3 gap-6">
                             <!-- Input Form -->
-                            <div class="md:col-span-1 space-y-6">
+                            <div class="md:col-span-1 space-y-6 page-enter">
                                 <div class="card p-6">
                                     <h3 class="text-lg font-bold text-slate-800 mb-4 dark:text-white">Novo Registro</h3>
                                     <div class="flex p-1 bg-slate-100 rounded-xl mb-6 dark:bg-slate-800">
-                                        <button onclick="setLaunchMode('expense')" id="btn-mode-exp" class="flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm">Despesa</button>
+                                        <button onclick="setLaunchMode('expense')" id="btn-mode-exp" class="flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm transform">Despesa</button>
                                         <button onclick="setLaunchMode('income')" id="btn-mode-inc" class="flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700">Receita</button>
                                     </div>
 
@@ -396,7 +420,7 @@
                                             <span class="text-xs font-bold text-slate-500 uppercase">Parcelas</span>
                                             <input id="var-parc" type="number" min="1" max="48" value="1" class="w-16 px-2 py-1 text-center font-bold bg-white border border-slate-200 rounded-lg text-sm dark:bg-slate-800 dark:border-slate-700">
                                         </div>
-                                        <button id="btn-save-exp" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-500/20 transition">Confirmar Saída</button>
+                                        <button id="btn-save-exp" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-red-500/20 transition hover:-translate-y-1">Confirmar Saída</button>
                                     </form>
 
                                     <form id="form-income" onsubmit="addIncome(event)" class="space-y-4 hidden">
@@ -411,13 +435,13 @@
                                         <input list="origins-list" id="inc-origin" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none dark:bg-slate-900 dark:border-slate-700" placeholder="Origem (Ex: Salário)">
                                         <datalist id="origins-list"></datalist>
                                         <input type="date" id="inc-date" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none dark:bg-slate-900 dark:border-slate-700" required>
-                                        <button id="btn-save-inc" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-500/20 transition">Confirmar Entrada</button>
+                                        <button id="btn-save-inc" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-500/20 transition hover:-translate-y-1">Confirmar Entrada</button>
                                     </form>
                                 </div>
                             </div>
 
                             <!-- List -->
-                            <div class="md:col-span-2 card p-6 flex flex-col h-[600px]">
+                            <div class="md:col-span-2 card p-6 flex flex-col h-[600px] page-enter delay-100">
                                 <div class="flex justify-between items-center mb-4">
                                     <h3 class="text-lg font-bold text-slate-800 dark:text-white">Últimas Movimentações</h3>
                                     <div class="flex gap-2">
@@ -427,7 +451,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div id="pending-section" class="hidden mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between dark:bg-yellow-900/20 dark:border-yellow-800">
+                                <div id="pending-section" class="hidden mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between dark:bg-yellow-900/20 dark:border-yellow-800 animate-pulse">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-exclamation"></i></div>
                                         <span class="text-sm font-bold text-yellow-800 dark:text-yellow-200">Itens Pendentes</span>
@@ -455,8 +479,8 @@
                     </div>
 
                     <!-- 3. DRE (Robust) -->
-                    <div id="page-dre" class="hidden space-y-6 animate-fade-in">
-                        <div class="card p-8">
+                    <div id="page-dre" class="hidden space-y-6">
+                        <div class="card p-8 page-enter">
                             <h2 class="text-2xl font-bold text-slate-800 mb-6 dark:text-white border-l-4 border-purple-500 pl-4">Demonstrativo de Resultados</h2>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-sm">
@@ -467,57 +491,57 @@
                                 </table>
                             </div>
                             <div class="mt-6 flex justify-end">
-                                <div class="bg-slate-900 text-white px-6 py-4 rounded-xl flex items-center gap-6 shadow-xl dark:bg-slate-950">
+                                <div class="bg-slate-900 text-white px-6 py-4 rounded-xl flex items-center gap-6 shadow-xl dark:bg-slate-950 hover:scale-105 transition">
                                     <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Lucro Líquido</span>
                                     <span class="text-2xl font-bold" id="dre-net-profit">R$ 0,00</span>
                                 </div>
                             </div>
                         </div>
                         <div class="grid md:grid-cols-2 gap-6">
-                            <div class="card p-6"><h4 class="font-bold mb-4">Tendência</h4><div class="h-48 relative"><canvas id="chart-dre-trend"></canvas></div></div>
-                            <div class="card p-6"><h4 class="font-bold mb-4">Composição</h4><div class="h-48 relative"><canvas id="chart-dre-comp"></canvas></div></div>
+                            <div class="card p-6 page-enter delay-100"><h4 class="font-bold mb-4">Tendência</h4><div class="h-48 relative"><canvas id="chart-dre-trend"></canvas></div></div>
+                            <div class="card p-6 page-enter delay-200"><h4 class="font-bold mb-4">Composição</h4><div class="h-48 relative"><canvas id="chart-dre-comp"></canvas></div></div>
                         </div>
                     </div>
 
                     <!-- 4. ORÇAMENTO (Restored) -->
-                    <div id="page-budget" class="hidden animate-fade-in">
-                        <div class="card p-6 mb-6">
+                    <div id="page-budget" class="hidden">
+                        <div class="card p-6 mb-6 page-enter">
                             <div class="flex justify-between items-center mb-6">
                                 <h2 class="text-xl font-bold dark:text-white">Orçamento</h2>
                                 <div class="flex gap-2">
-                                    <button onclick="applyBudgetMethod('PADRAO')" class="px-3 py-1 bg-slate-100 rounded text-xs font-bold hover:bg-slate-200">Padrão 50/30/20</button>
-                                    <button onclick="applyBudgetMethod('WAR')" class="px-3 py-1 bg-slate-100 rounded text-xs font-bold hover:bg-slate-200">Modo Guerra</button>
+                                    <button onclick="applyBudgetMethod('PADRAO')" class="px-3 py-1 bg-slate-100 rounded text-xs font-bold hover:bg-slate-200 transition">Padrão 50/30/20</button>
+                                    <button onclick="applyBudgetMethod('WAR')" class="px-3 py-1 bg-slate-100 rounded text-xs font-bold hover:bg-slate-200 transition">Modo Guerra</button>
                                 </div>
                             </div>
                             <div id="budget-list" class="grid md:grid-cols-2 gap-4"></div>
                         </div>
-                        <div class="card p-6">
+                        <div class="card p-6 page-enter delay-100">
                             <h3 class="font-bold mb-4">Gerenciar Categorias</h3>
                             <ul id="category-list-manage" class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4"></ul>
                             <div class="flex gap-2">
                                 <input id="new-cat-input" class="border p-2 rounded flex-1 dark:bg-slate-900 dark:border-slate-700" placeholder="Nova Categoria">
-                                <button onclick="addNewCategory()" class="bg-primary text-white px-4 rounded font-bold">Add</button>
+                                <button onclick="addNewCategory()" class="bg-primary text-white px-4 rounded font-bold hover:bg-primary-dark transition">Add</button>
                             </div>
                         </div>
                     </div>
 
                     <!-- 5. METAS & JUROS (Restored) -->
-                    <div id="page-goals" class="hidden space-y-6 animate-fade-in">
-                        <div class="card p-6">
+                    <div id="page-goals" class="hidden space-y-6">
+                        <div class="card p-6 page-enter">
                             <div class="flex justify-between mb-4">
                                 <h2 class="text-xl font-bold dark:text-white">Metas</h2>
-                                <button onclick="askAI('goals')" class="text-xs bg-purple-100 text-purple-600 px-3 py-1 rounded font-bold">Consultar IA</button>
+                                <button onclick="askAI('goals')" class="text-xs bg-purple-100 text-purple-600 px-3 py-1 rounded font-bold hover:bg-purple-200 transition">Consultar IA</button>
                             </div>
                             <form onsubmit="addGoal(event)" class="flex gap-3 mb-6">
                                 <input id="goal-name" placeholder="Nome" class="flex-[2] p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required>
                                 <input id="goal-val" type="number" placeholder="Valor" class="flex-1 p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required>
                                 <input id="goal-date" type="date" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required>
-                                <button class="bg-primary text-white px-6 rounded-xl font-bold">Criar</button>
+                                <button class="bg-primary text-white px-6 rounded-xl font-bold hover:bg-primary-dark transition">Criar</button>
                             </form>
                             <div id="list-goals-full" class="grid md:grid-cols-2 gap-4"></div>
                         </div>
                         <!-- Compound Interest Calculator -->
-                        <div class="card p-6 border-l-4 border-l-purple-500">
+                        <div class="card p-6 border-l-4 border-l-purple-500 page-enter delay-100">
                             <h2 class="font-bold text-lg mb-4 text-purple-600">Calculadora de Juros Compostos</h2>
                             <div class="grid md:grid-cols-4 gap-4 mb-4">
                                 <input id="comp-initial" type="number" placeholder="Inicial" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700">
@@ -525,7 +549,7 @@
                                 <input id="comp-rate" type="number" placeholder="Taxa % a.a." class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700">
                                 <input id="comp-years" type="number" placeholder="Anos" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700">
                             </div>
-                            <button onclick="simulateCompoundInterest()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl hover:bg-purple-700 transition mb-6">Simular Futuro</button>
+                            <button onclick="simulateCompoundInterest()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl hover:bg-purple-700 transition mb-6 hover:shadow-lg">Simular Futuro</button>
                             <div id="comp-result-area" class="hidden">
                                 <div class="grid md:grid-cols-3 gap-4 mb-6 text-center">
                                     <div class="bg-slate-50 p-4 rounded-xl dark:bg-slate-800"><p class="text-xs uppercase text-slate-400 font-bold">Total</p><p class="text-xl font-bold text-purple-600" id="comp-result-total">R$ 0</p></div>
@@ -538,13 +562,13 @@
                     </div>
 
                     <!-- 6. DÍVIDAS & FIXAS (Restored) -->
-                    <div id="page-debts" class="hidden animate-fade-in">
-                        <div class="card p-6 border-l-4 border-l-red-500">
+                    <div id="page-debts" class="hidden">
+                        <div class="card p-6 border-l-4 border-l-red-500 page-enter">
                             <div class="flex justify-between mb-4">
                                 <h2 class="text-xl font-bold dark:text-white">Dívidas</h2>
                                 <div class="flex gap-2">
-                                    <button onclick="simulateDebtStrategy('snowball')" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold">Bola de Neve</button>
-                                    <button onclick="simulateDebtStrategy('avalanche')" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold">Avalanche</button>
+                                    <button onclick="simulateDebtStrategy('snowball')" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold hover:bg-red-200 transition">Bola de Neve</button>
+                                    <button onclick="simulateDebtStrategy('avalanche')" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold hover:bg-red-200 transition">Avalanche</button>
                                 </div>
                             </div>
                             <form onsubmit="addDebt(event)" class="grid md:grid-cols-5 gap-3 mb-6">
@@ -552,19 +576,19 @@
                                 <input id="debt-tot" type="number" placeholder="Total" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required>
                                 <input id="debt-rate" type="number" placeholder="Juros %" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700">
                                 <input id="debt-inst" type="number" placeholder="Parcelas" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required>
-                                <button class="bg-red-500 text-white font-bold rounded-xl md:col-span-5 py-3">Adicionar</button>
+                                <button class="bg-red-500 text-white font-bold rounded-xl md:col-span-5 py-3 hover:bg-red-600 transition">Adicionar</button>
                             </form>
                             <div id="list-debts" class="space-y-3"></div>
                         </div>
                     </div>
 
-                    <div id="page-fixed" class="hidden animate-fade-in">
-                        <div class="card p-6">
+                    <div id="page-fixed" class="hidden">
+                        <div class="card p-6 page-enter">
                             <h2 class="text-xl font-bold mb-4 dark:text-white">Custos Fixos</h2>
                             <form onsubmit="addFixed(event)" class="flex gap-2 mb-6">
                                 <input id="fix-name" placeholder="Nome (Ex: Aluguel)" class="p-3 border rounded-xl w-full dark:bg-slate-900 dark:border-slate-700" required>
                                 <input id="fix-val" type="number" placeholder="Valor" class="p-3 border rounded-xl w-32 dark:bg-slate-900 dark:border-slate-700" required>
-                                <button class="bg-blue-600 text-white px-6 rounded-xl font-bold">Salvar</button>
+                                <button class="bg-blue-600 text-white px-6 rounded-xl font-bold hover:bg-blue-700 transition">Salvar</button>
                             </form>
                             <table class="w-full text-left text-sm"><thead class="bg-slate-50 dark:bg-slate-800"><tr><th class="p-3">Nome</th><th class="p-3 text-right">Valor</th><th class="w-10"></th></tr></thead><tbody id="list-fixed" class="divide-y dark:divide-slate-700"></tbody></table>
                         </div>
@@ -595,19 +619,19 @@
     
     <!-- WhatsApp AI Modal -->
     <div id="whatsapp-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden dark:bg-slate-800 border border-slate-200 dark:border-slate-700 animate-enter">
             <div class="bg-[#075e54] p-4 text-white flex justify-between items-center">
                 <div class="flex items-center gap-3"><div class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-teal-800"><i class="fa-solid fa-robot"></i></div><div><span class="font-bold block text-sm">Fycash AI</span><span class="text-[10px] opacity-80">Online</span></div></div>
                 <button onclick="closeWhatsAppModal()"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="h-80 bg-[#efe7dd] p-4 overflow-y-auto flex flex-col gap-2" id="whatsapp-chat-area"><div class="self-start bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm max-w-[80%]">Olá! Sou sua IA financeira. 🤖<br>Diga algo como: <i>"Gastei 50 no almoço"</i>.</div></div>
-            <div class="p-2 bg-white dark:bg-slate-800 flex gap-2"><input id="ai-input-text" class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-full px-4 py-2 text-sm outline-none border border-transparent focus:border-teal-500" placeholder="Digite..." onkeypress="if(event.key==='Enter') sendAIMessage()"><button onclick="sendAIMessage()" class="w-10 h-10 rounded-full bg-[#075e54] text-white flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button></div>
+            <div class="p-2 bg-white dark:bg-slate-800 flex gap-2"><input id="ai-input-text" class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-full px-4 py-2 text-sm outline-none border border-transparent focus:border-teal-500" placeholder="Digite..." onkeypress="if(event.key==='Enter') sendAIMessage()"><button onclick="sendAIMessage()" class="w-10 h-10 rounded-full bg-[#075e54] text-white flex items-center justify-center hover:scale-105 transition"><i class="fa-solid fa-paper-plane"></i></button></div>
         </div>
     </div>
     
     <!-- Edit Category Modal -->
     <div id="edit-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-6 dark:bg-slate-800 shadow-2xl">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-6 dark:bg-slate-800 shadow-2xl animate-enter">
             <h3 class="font-bold mb-4 dark:text-white text-lg">Classificar Gasto</h3>
             <input type="hidden" id="edit-index">
             <input id="edit-name" class="w-full p-3 bg-slate-50 rounded-xl mb-3 text-slate-500 text-sm border border-slate-100" readonly>
@@ -618,7 +642,7 @@
 
     <!-- Aporte Modal -->
     <div id="aporte-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-6 dark:bg-slate-800 shadow-2xl">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-6 dark:bg-slate-800 shadow-2xl animate-enter">
             <h3 class="font-bold mb-4 dark:text-white text-lg">Realizar Aporte</h3>
             <input id="aporte-val" type="number" class="w-full p-4 text-2xl font-bold text-center border rounded-xl mb-6 dark:bg-slate-900 dark:border-slate-700 outline-none focus:border-primary text-primary" placeholder="R$ 0,00">
             <div class="flex justify-end gap-2"><button onclick="document.getElementById('aporte-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-lg">Cancelar</button><button onclick="confirmAporte()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:bg-green-700">Confirmar</button></div>
@@ -627,7 +651,7 @@
 
     <!-- Arca Modal -->
     <div id="arca-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-lg rounded-2xl p-6 dark:bg-slate-800 shadow-2xl relative">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 dark:bg-slate-800 shadow-2xl relative animate-enter">
             <button onclick="document.getElementById('arca-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
             <h3 class="font-bold mb-6 dark:text-white text-lg flex items-center gap-2"><i class="fa-solid fa-chart-pie text-primary"></i> Metodologia ARCA</h3>
             <div class="h-64 mb-4"><canvas id="chart-arca"></canvas></div>
@@ -637,17 +661,17 @@
 
     <!-- Feedback Modal -->
     <div id="feedback-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl p-6 dark:bg-slate-800">
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 dark:bg-slate-800 animate-enter">
             <h3 class="font-bold mb-4 dark:text-white">Enviar Feedback</h3>
             <select id="feedback-type" class="w-full p-2 border rounded mb-2 dark:bg-slate-900"><option value="Melhoria">Sugestão</option><option value="Bug">Erro</option></select>
             <textarea id="feedback-text" class="w-full p-3 border rounded h-32 mb-4 dark:bg-slate-900" placeholder="Descreva..."></textarea>
-            <div class="flex justify-end gap-2"><button onclick="document.getElementById('feedback-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500">Cancelar</button><button onclick="sendFeedback()" class="bg-primary text-white px-4 py-2 rounded font-bold">Enviar</button></div>
+            <div class="flex justify-end gap-2"><button onclick="document.getElementById('feedback-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500">Cancelar</button><button onclick="sendFeedback()" class="bg-primary text-white px-4 py-2 rounded font-bold hover:bg-primary-dark transition">Enviar</button></div>
         </div>
     </div>
 
     <!-- Admin Modal -->
     <div id="admin-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-4xl rounded-2xl p-6 dark:bg-slate-800 h-[80vh] flex flex-col">
+        <div class="bg-white w-full max-w-4xl rounded-2xl p-6 dark:bg-slate-800 h-[80vh] flex flex-col animate-enter">
             <div class="flex justify-between mb-4"><h3 class="font-bold text-lg dark:text-white">Painel Admin</h3><button onclick="document.getElementById('admin-modal').classList.add('hidden')">x</button></div>
             <div class="flex gap-2 mb-4"><button onclick="switchAdminTab('pending')" class="px-3 py-1 bg-blue-100 text-blue-600 rounded font-bold">Pendentes</button><button onclick="switchAdminTab('done')" class="px-3 py-1 bg-slate-100 text-slate-500 rounded font-bold">Concluídos</button></div>
             <div id="admin-list" class="flex-1 overflow-y-auto bg-slate-50 p-4 rounded dark:bg-slate-900"></div>
@@ -656,7 +680,7 @@
 
     <!-- AI Text Modal -->
     <div id="ai-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-lg rounded-2xl p-6 dark:bg-slate-800 max-h-[80vh] overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 dark:bg-slate-800 max-h-[80vh] overflow-y-auto animate-enter">
             <div class="flex justify-between mb-4 border-b pb-2"><span class="font-bold text-primary">Consultoria IA</span><button onclick="document.getElementById('ai-modal').classList.add('hidden')">x</button></div>
             <div id="ai-content" class="prose text-sm dark:prose-invert"></div>
         </div>
@@ -671,12 +695,9 @@
         // CONFIG
         const ADMIN_EMAIL = "ohebertgustavo@gmail.com";
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "API_KEY_MISSING" };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fluxocash-app'; // Use environment variable
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fluxocash-app'; 
         const apiKey = ""; 
 
-        // ... init app ...
-
-        // Fix 3: Init Auth with token check
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -685,8 +706,6 @@
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 try { await signInWithCustomToken(auth, __initial_auth_token); } catch(e) { console.error("Token Auth Failed", e); }
             }
-            // Note: I am NOT forcing signInAnonymously here to preserve the Login Screen functionality 
-            // requested by the app design. The user can still register/login manually.
         };
         initAuth();
 
@@ -755,7 +774,24 @@
             if(appData.debts.length > 0) { score -= (appData.debts.length * 50); if(score<400) action = "Foque em quitar dívidas."; }
             
             score = Math.max(0, Math.min(1000, score));
-            document.getElementById('score-val').innerText = score;
+            const scoreEl = document.getElementById('score-val');
+            // Animate Score Number
+            let currentScore = parseInt(scoreEl.innerText) || 0;
+            const diff = score - currentScore;
+            if(diff !== 0) {
+                const step = diff > 0 ? 5 : -5;
+                const interval = setInterval(() => {
+                    currentScore += step;
+                    if((step > 0 && currentScore >= score) || (step < 0 && currentScore <= score)) {
+                        currentScore = score;
+                        clearInterval(interval);
+                    }
+                    scoreEl.innerText = currentScore;
+                }, 10);
+            } else {
+                scoreEl.innerText = score;
+            }
+
             document.getElementById('score-msg').innerText = score > 700 ? "Saúde Excelente!" : "Atenção.";
             
             // Alert Box
@@ -809,10 +845,11 @@
             const all = [...appData.variable.map((x,i)=>({...x, type:'exp', idx:i})), ...appData.incomes.map((x,i)=>({...x, type:'inc', idx:i}))];
             all.sort((a,b) => new Date(b.date) - new Date(a.date));
             
-            all.forEach(item => {
+            all.forEach((item, index) => {
                 const isExp = item.type === 'exp';
                 const dateArr = item.date.split('-');
                 const dateStr = `${dateArr[2]}/${dateArr[1]}`;
+                const delayClass = `delay-${Math.min((index % 5) * 100, 300)}`; // Stagger effect
                 
                 if(isExp && (!item.category || item.category === 'Sem Categoria')) {
                     hasPending = true;
@@ -821,7 +858,7 @@
 
                 if(lVar.childElementCount < 50) {
                     lVar.innerHTML += `
-                        <tr class="group hover:bg-slate-50 transition dark:hover:bg-slate-800">
+                        <tr class="group hover:bg-slate-50 transition dark:hover:bg-slate-800 page-enter ${delayClass}">
                             <td class="py-3 text-xs text-slate-400 font-medium border-b border-slate-50 dark:border-slate-800">${dateStr}</td>
                             <td class="py-3 font-bold text-slate-700 dark:text-slate-200 border-b border-slate-50 dark:border-slate-800">${item.name || item.description}</td>
                             <td class="py-3 border-b border-slate-50 dark:border-slate-800"><span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${isExp ? 'bg-slate-100 text-slate-500' : 'bg-green-100 text-green-600'}">${isExp ? (item.category||'Geral') : 'Entrada'}</span></td>
@@ -840,7 +877,7 @@
             appData.goals.forEach((g, i) => {
                 const saved = g.saved || 0;
                 const pct = g.totalValue > 0 ? (saved / g.totalValue) * 100 : 0;
-                el.innerHTML += `<div class="p-4 border rounded-xl bg-slate-50 dark:bg-slate-800 dark:border-slate-700"><div class="flex justify-between font-bold mb-2"><span>${g.name}</span><span class="text-primary">${pct.toFixed(0)}%</span></div><div class="h-2 bg-slate-200 rounded-full mb-2"><div class="h-2 bg-primary rounded-full" style="width:${Math.min(pct,100)}%"></div></div><div class="flex justify-between text-xs text-slate-500"><span>${fmt(saved)} de ${fmt(g.totalValue)}</span><div class="flex gap-2"><button onclick="openAporte(${g.id})" class="text-primary font-bold hover:underline">Aportar</button><button onclick="delItem('goals',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
+                el.innerHTML += `<div class="p-4 border rounded-xl bg-slate-50 dark:bg-slate-800 dark:border-slate-700 page-enter"><div class="flex justify-between font-bold mb-2"><span>${g.name}</span><span class="text-primary">${pct.toFixed(0)}%</span></div><div class="h-2 bg-slate-200 rounded-full mb-2"><div class="h-2 bg-primary rounded-full" style="width:${Math.min(pct,100)}%"></div></div><div class="flex justify-between text-xs text-slate-500"><span>${fmt(saved)} de ${fmt(g.totalValue)}</span><div class="flex gap-2"><button onclick="openAporte(${g.id})" class="text-primary font-bold hover:underline">Aportar</button><button onclick="delItem('goals',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
             });
         }
 
@@ -848,7 +885,7 @@
             const el = document.getElementById('list-debts'); if(!el) return;
             el.innerHTML = '';
             appData.debts.forEach((d, i) => {
-                el.innerHTML += `<div class="p-3 bg-white border-l-4 border-red-500 shadow-sm rounded flex justify-between items-center dark:bg-slate-800"><div class="text-sm"><strong>${d.name}</strong><br><span class="text-xs text-slate-500">Total: ${fmt(d.totalValue)} (${d.installments}x)</span></div><button onclick="delItem('debts',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div>`;
+                el.innerHTML += `<div class="p-3 bg-white border-l-4 border-red-500 shadow-sm rounded flex justify-between items-center dark:bg-slate-800 page-enter"><div class="text-sm"><strong>${d.name}</strong><br><span class="text-xs text-slate-500">Total: ${fmt(d.totalValue)} (${d.installments}x)</span></div><button onclick="delItem('debts',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div>`;
             });
         }
 
@@ -856,14 +893,14 @@
             const el = document.getElementById('budget-list'); if(!el) return;
             el.innerHTML = '';
             const currMonth = new Date().getMonth();
-            appData.categories.forEach(cat => {
+            appData.categories.forEach((cat, index) => {
                 const b = appData.budgets.find(x => x.cat === cat);
                 const lim = b ? b.lim : 0;
                 const spent = appData.variable.filter(v => v.category === cat && new Date(v.date).getMonth() === currMonth).reduce((a,x)=>a+x.value,0);
                 const pct = lim > 0 ? (spent/lim)*100 : 0;
                 const color = pct > 100 ? 'bg-red-500' : (pct > 80 ? 'bg-yellow-500' : 'bg-primary');
                 
-                el.innerHTML += `<div class="p-3 border rounded-xl bg-white dark:bg-slate-800 dark:border-slate-700"><div class="flex justify-between text-sm font-bold mb-1"><span>${cat}</span><span class="${pct>100?'text-red-500':'text-slate-500'}">${fmt(spent)} / <input type="number" value="${lim}" onchange="updateBudgetLimit('${cat}',this.value)" class="w-16 bg-transparent border-b text-right outline-none"></span></div><div class="h-2 bg-slate-100 rounded-full"><div class="h-2 rounded-full ${color}" style="width:${Math.min(pct,100)}%"></div></div></div>`;
+                el.innerHTML += `<div class="p-3 border rounded-xl bg-white dark:bg-slate-800 dark:border-slate-700 page-enter delay-${index%3}00"><div class="flex justify-between text-sm font-bold mb-1"><span>${cat}</span><span class="${pct>100?'text-red-500':'text-slate-500'}">${fmt(spent)} / <input type="number" value="${lim}" onchange="updateBudgetLimit('${cat}',this.value)" class="w-16 bg-transparent border-b text-right outline-none"></span></div><div class="h-2 bg-slate-100 rounded-full"><div class="h-2 rounded-full ${color} transition-all duration-1000" style="width:${Math.min(pct,100)}%"></div></div></div>`;
             });
         }
 
@@ -871,7 +908,7 @@
             const el = document.getElementById('list-fixed'); if(!el) return;
             el.innerHTML = '';
             appData.fixed.forEach((f, i) => {
-                el.innerHTML += `<tr class="border-b dark:border-slate-700"><td class="p-3 font-medium">${f.name}</td><td class="p-3 text-right">${fmt(f.value)}</td><td class="p-3"><button onclick="delItem('fixed',${i})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                el.innerHTML += `<tr class="border-b dark:border-slate-700 page-enter"><td class="p-3 font-medium">${f.name}</td><td class="p-3 text-right">${fmt(f.value)}</td><td class="p-3"><button onclick="delItem('fixed',${i})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
             });
         }
 
@@ -879,7 +916,7 @@
             const el = document.getElementById('category-list-manage'); if(!el) return;
             el.innerHTML = '';
             appData.categories.forEach((c, i) => {
-                el.innerHTML += `<li class="flex justify-between bg-slate-50 p-2 rounded border text-xs dark:bg-slate-800 dark:border-slate-700"><span>${c}</span><button onclick="removeCategory(${i})" class="text-red-400 hover:text-red-600">x</button></li>`;
+                el.innerHTML += `<li class="flex justify-between bg-slate-50 p-2 rounded border text-xs dark:bg-slate-800 dark:border-slate-700 page-enter"><span>${c}</span><button onclick="removeCategory(${i})" class="text-red-400 hover:text-red-600 transition hover:scale-110">x</button></li>`;
             });
         }
 
@@ -890,7 +927,7 @@
                 chartBal = new Chart(document.getElementById('chart-balance'), {
                     type: 'line',
                     data: { labels: mData.map(d=>d.month), datasets: [{ label: 'Saldo', data: mData.map(d=>d.accumulated), borderColor: '#0ea5e9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.4 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x: {display: false}, y: {display: false} } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x: {display: false}, y: {display: false} }, animation: { duration: 1500, easing: 'easeOutQuart' } }
                 });
             }
             // Pie Chart
@@ -901,7 +938,7 @@
                 chartPie = new Chart(document.getElementById('chart-pie-expenses'), {
                     type: 'doughnut',
                     data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5ae4'] }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } }, animation: { animateScale: true, animateRotate: true } }
                 });
             }
             // Expenses Bar
@@ -910,7 +947,7 @@
                 chartExp = new Chart(document.getElementById('chart-expenses'), {
                     type: 'bar',
                     data: { labels: mData.map(d=>d.month), datasets: [{ label: 'Receita', data: mData.map(d=>d.revenue), backgroundColor: '#10b981' }, { label: 'Despesa', data: mData.map(d=>d.expenses), backgroundColor: '#ef4444' }] },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { x: {stacked: true}, y: {stacked: true} } }
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: {stacked: true}, y: {stacked: true} }, animation: { duration: 1000 } }
                 });
             }
             // Bottleneck
@@ -960,8 +997,19 @@
 
         // --- GLOBAL ACTIONS ---
         window.nav = (id) => {
-            document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-'+id).classList.remove('hidden');
+            const pages = document.querySelectorAll('[id^="page-"]');
+            pages.forEach(p => {
+                p.classList.add('hidden');
+                p.classList.remove('page-enter'); // Reset animation class
+            });
+            
+            const target = document.getElementById('page-'+id);
+            if(target) {
+                target.classList.remove('hidden');
+                // Trigger reflow to restart animation
+                void target.offsetWidth; 
+                target.classList.add('page-enter');
+            }
             
             document.querySelectorAll('.nav-link, .mob-nav-item').forEach(l => l.classList.remove('active'));
             const dLink = document.getElementById('nav-d-'+id); if(dLink) dLink.classList.add('active');
@@ -975,10 +1023,19 @@
         };
 
         window.setLaunchMode = (m) => {
+            const expenseBtn = document.getElementById('btn-mode-exp');
+            const incomeBtn = document.getElementById('btn-mode-inc');
+            
             document.getElementById('form-expense').classList.toggle('hidden', m !== 'expense');
             document.getElementById('form-income').classList.toggle('hidden', m !== 'income');
-            document.getElementById('btn-mode-exp').className = m === 'expense' ? 'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200' : 'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700';
-            document.getElementById('btn-mode-inc').className = m === 'income' ? 'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200' : 'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700';
+            
+            if (m === 'expense') {
+                expenseBtn.className = 'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200 transform scale-105';
+                incomeBtn.className = 'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-50';
+            } else {
+                incomeBtn.className = 'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200 transform scale-105';
+                expenseBtn.className = 'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-50';
+            }
         };
 
         window.addVar = async (e) => {
@@ -1099,8 +1156,15 @@
         window.forceOfflineMode = () => {
             isOffline = true;
             document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('app-screen').classList.remove('hidden');
-            document.getElementById('app-screen').classList.add('flex');
+            const appScreen = document.getElementById('app-screen');
+            appScreen.classList.remove('hidden');
+            appScreen.classList.add('flex');
+            
+            // Trigger entry animation
+            setTimeout(() => {
+                appScreen.classList.remove('opacity-0');
+            }, 100);
+
             checkMigration();
             render();
         };
@@ -1113,13 +1177,31 @@
         };
 
         window.addNewCategory = () => {
-            const n = document.getElementById('new-cat-input').value;
+            const n = document.getElementById('new-cat-input').value.trim();
             if(n && !appData.categories.includes(n)) {
-                appData.categories.push(n); saveData(); renderCategoryManagementList(); document.getElementById('new-cat-input').value = '';
+                appData.categories.push(n); 
+                saveData(); 
+                renderCategoryManagementList(); 
+                renderBudgetList(); 
+                updateSelects(); 
+                document.getElementById('new-cat-input').value = '';
             }
         };
         window.removeCategory = (i) => {
-            if(confirm("Remover categoria?")) { appData.categories.splice(i,1); saveData(); renderCategoryManagementList(); }
+            if(confirm("Remover categoria?")) { 
+                const categoryName = appData.categories[i];
+                appData.categories.splice(i,1); 
+                
+                // Remove from budget list
+                if(appData.budgets) {
+                    appData.budgets = appData.budgets.filter(b => b.cat !== categoryName);
+                }
+
+                saveData(); 
+                renderCategoryManagementList(); 
+                renderBudgetList(); 
+                updateSelects(); 
+            }
         };
 
         window.toggleTheme = () => {
@@ -1395,9 +1477,16 @@
                 if(user) {
                     currentUser = user;
                     document.getElementById('auth-screen').classList.add('hidden');
-                    document.getElementById('app-screen').classList.remove('hidden');
-                    document.getElementById('app-screen').classList.add('flex');
-                    document.getElementById('user-name-display').innerText = user.email ? user.email.split('@')[0] : "Convidado";
+                    const appScreen = document.getElementById('app-screen');
+                    appScreen.classList.remove('hidden');
+                    appScreen.classList.add('flex');
+                    
+                    setTimeout(() => { appScreen.classList.remove('opacity-0'); }, 100);
+
+                    // Fix: Check for email before split
+                    const displayEmail = user.email || "Convidado";
+                    document.getElementById('user-name-display').innerText = displayEmail.includes('@') ? displayEmail.split('@')[0] : displayEmail;
+                    
                     if(user.email === ADMIN_EMAIL) document.getElementById('btn-admin').classList.remove('hidden');
                     
                     const docRef = doc(db,'artifacts',appId,'users',user.uid,'app_data','main');
