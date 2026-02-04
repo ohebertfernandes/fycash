@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FYCASH | App</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/q1hqZw2.png">
     
     <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -102,7 +102,6 @@
         .score-circle { width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(var(--score-color) var(--score-deg), rgba(255,255,255,0.1) 0deg); display: flex; align-items: center; justify-content: center; position: relative; transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .score-circle::before { content: ""; position: absolute; width: 80px; height: 80px; border-radius: 50%; background: #1e293b; }
         
-        /* Profile Image Hover */
         .profile-upload-overlay { background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.2s; }
         .profile-img-container:hover .profile-upload-overlay { opacity: 1; }
     </style>
@@ -111,19 +110,22 @@
 
     <!-- AUTH SCREEN -->
     <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50 dark:bg-slate-900 transition-all duration-700">
-        <!-- ... (Auth screen content same as before) ... -->
         <div class="absolute inset-0 overflow-hidden">
             <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-brand-purple/20 blur-[100px] animate-blob"></div>
             <div class="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-brand-cyan/20 blur-[100px] animate-blob animation-delay-2000"></div>
             <div class="absolute -bottom-[20%] left-[20%] w-[30%] h-[30%] rounded-full bg-purple-400/20 blur-[100px] animate-blob animation-delay-4000"></div>
         </div>
+        
         <div class="glass w-full max-w-md p-8 rounded-3xl relative shadow-2xl mx-4 page-enter">
             <div class="text-center mb-8">
-                <img src="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png" alt="Fycash Logo" class="h-32 w-auto mx-auto mb-2 animate-float object-contain drop-shadow-lg">
+                <!-- NOVA LOGO -->
+                <img src="https://i.imgur.com/q1hqZw2.png" alt="Fycash Logo" class="h-32 w-auto mx-auto mb-2 animate-float object-contain drop-shadow-lg">
                 <h1 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight hidden">Fycash.</h1>
                 <p class="text-slate-500 dark:text-slate-400 font-medium">Controle financeiro inteligente.</p>
             </div>
+
             <div id="view-login" class="space-y-6">
+                <!-- Formulário de Login -->
                 <div class="space-y-4">
                     <div class="relative group">
                         <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-purple transition-colors"></i>
@@ -138,18 +140,22 @@
                     Entrar na Conta
                 </button>
                 <button id="form-login-btn" class="hidden" onclick="handleLogin()"></button>
+
                 <div class="relative flex py-2 items-center">
                     <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
                     <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-medium">OU</span>
                     <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
                 </div>
+
                 <button onclick="forceOfflineMode()" class="w-full bg-white border border-slate-200 text-slate-600 font-bold py-3.5 rounded-xl hover:bg-slate-50 transition active:scale-95 flex items-center justify-center gap-2 dark:bg-slate-800 dark:border-slate-700 dark:text-white hover:border-brand-cyan/30">
                     <i class="fa-solid fa-user-secret"></i> Acessar sem Conta
                 </button>
+                
                 <p class="text-center text-[10px] text-slate-400">
                     <i class="fa-solid fa-info-circle"></i> O modo sem conta não armazena dados na nuvem.
                 </p>
             </div>
+            
             <p id="auth-error" class="text-red-500 text-xs mt-3 font-bold h-4 text-center"></p>
         </div>
     </div>
@@ -160,7 +166,8 @@
         <!-- SIDEBAR (Desktop) -->
         <aside class="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 h-full z-20 dark:bg-slate-900 dark:border-slate-800">
             <div class="p-6 flex items-center justify-center">
-                <img src="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png" alt="Fycash Logo" class="h-16 w-auto object-contain animate-float">
+                <!-- Logo Sidebar -->
+                <img src="https://i.imgur.com/q1hqZw2.png" alt="Fycash Logo" class="h-16 w-auto object-contain animate-float">
             </div>
 
             <div class="px-4 py-2">
@@ -229,7 +236,7 @@
             <header class="md:hidden bg-white/80 backdrop-blur-md border-b border-slate-200 p-4 flex justify-between items-center z-20 dark:bg-slate-900/80 dark:border-slate-800">
                 <div class="flex items-center gap-2">
                     <!-- Logo Mobile -->
-                    <img src="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png" alt="Fycash Logo" class="h-8 w-auto object-contain">
+                    <img src="https://i.imgur.com/q1hqZw2.png" alt="Fycash Logo" class="h-8 w-auto object-contain">
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="openWhatsAppModal()" class="w-9 h-9 rounded-full bg-green-500 text-white shadow-lg shadow-green-500/30 flex items-center justify-center active:scale-95 transition"><i class="fa-solid fa-microphone"></i></button>
@@ -362,7 +369,6 @@
 
                     <!-- 3. DRE -->
                     <div id="page-dre" class="hidden space-y-6">
-                        <!-- ... (Same as previous) ... -->
                          <div class="card p-8 page-enter">
                             <h2 class="text-2xl font-bold text-slate-800 mb-6 dark:text-white border-l-4 border-brand-purple pl-4">Demonstrativo de Resultados</h2>
                             <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold dark:bg-slate-800 dark:text-slate-400"><tr><th class="p-4 text-left rounded-l-lg">Conta</th><th class="p-4 text-right">Valor</th><th class="p-4 text-right rounded-r-lg w-24">%</th></tr></thead><tbody id="dre-body" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody></table></div>
@@ -376,7 +382,6 @@
 
                     <!-- 4. ORÇAMENTO -->
                     <div id="page-budget" class="hidden">
-                        <!-- ... (Same as previous) ... -->
                          <div class="card p-6 mb-6 page-enter">
                             <div class="flex justify-between items-center mb-6"><h2 class="text-xl font-bold dark:text-white">Orçamento</h2><div class="flex gap-2"><button onclick="applyBudgetMethod('PADRAO')" class="px-3 py-1 bg-slate-100 rounded text-xs font-bold hover:bg-slate-200 transition">Padrão 50/30/20</button><button onclick="applyBudgetMethod('WAR')" class="px-3 py-1 bg-slate-100 rounded text-xs font-bold hover:bg-slate-200 transition">Modo Guerra</button></div></div>
                             <div id="budget-list" class="grid md:grid-cols-2 gap-4"></div>
@@ -406,7 +411,6 @@
 
                     <!-- 6. DÍVIDAS & FIXAS -->
                     <div id="page-debts" class="hidden">
-                        <!-- ... (Same as previous) ... -->
                         <div class="card p-6 border-l-4 border-l-red-500 page-enter">
                             <div class="flex justify-between mb-4"><h2 class="text-xl font-bold dark:text-white">Dívidas</h2><div class="flex gap-2"><button onclick="simulateDebtStrategy('snowball')" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold hover:bg-red-200 transition">Bola de Neve</button><button onclick="simulateDebtStrategy('avalanche')" class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold hover:bg-red-200 transition">Avalanche</button></div></div>
                             <form onsubmit="addDebt(event)" class="grid md:grid-cols-5 gap-3 mb-6"><input id="debt-name" placeholder="Nome" class="md:col-span-2 p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required><input id="debt-tot" type="number" placeholder="Total" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required><input id="debt-rate" type="number" placeholder="Juros %" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700"><input id="debt-inst" type="number" placeholder="Parcelas" class="p-3 border rounded-xl dark:bg-slate-900 dark:border-slate-700" required><button class="bg-red-500 text-white font-bold rounded-xl md:col-span-5 py-3 hover:bg-red-600 transition">Adicionar</button></form>
