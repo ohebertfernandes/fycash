@@ -28,8 +28,8 @@
                 extend: {
                     colors: {
                         slate: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a' },
-                        primary: { DEFAULT: '#8D5AE4', light: '#a78bfa', dark: '#7c3aed' }, // Roxo
-                        secondary: { DEFAULT: '#21E9CA', light: '#5eead4', dark: '#0d9488' }, // Ciano
+                        primary: { DEFAULT: '#8D5AE4', light: '#a78bfa', dark: '#7c3aed' }, 
+                        secondary: { DEFAULT: '#21E9CA', light: '#5eead4', dark: '#0d9488' },
                         brand: {
                             cyan: '#21E9CA',
                             purple: '#8D5AE4',
@@ -973,17 +973,7 @@
         window.closeWhatsAppModal = () => document.getElementById('whatsapp-modal').classList.add('hidden');
         window.sendAIMessage = async () => { const input = document.getElementById('ai-input-text'); const text = input.value.trim(); if (!text) return; const chatArea = document.getElementById('whatsapp-chat-area'); chatArea.innerHTML += `<div class="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm text-sm max-w-[80%] mb-2">${text}<span class="text-[9px] text-slate-500 block text-right mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></div>`; input.value = ''; chatArea.scrollTop = chatArea.scrollHeight; const lower = text.toLowerCase(); let responseText = "Desculpe, não entendi. Tente 'Gastei 50 em mercado' ou 'Recebi 1000'."; const spendMatch = lower.match(/(?:gastei|comprei|paguei)\s+(?:r\$)?\s*(\d+(?:[.,]\d{1,2})?)\s*(?:em|no|na|com)\s+(.+)/i); const incomeMatch = lower.match(/(?:recebi|ganhei)\s+(?:r\$)?\s*(\d+(?:[.,]\d{1,2})?)/i); if (spendMatch) { const val = parseFloat(spendMatch[1].replace(',', '.')); const desc = spendMatch[2].trim(); if (!isNaN(val)) { appData.variable.push({ name: desc, value: val, date: new Date().toISOString().split('T')[0], category: 'Sem Categoria', originalId: Date.now() }); await saveData(); render(); responseText = `✅ Anotado: R$ ${fmt(val)} em "${desc}".`; } } else if (incomeMatch) { const val = parseFloat(incomeMatch[1].replace(',', '.')); if (!isNaN(val)) { appData.incomes.push({ description: 'Nova Entrada', value: val, date: new Date().toISOString().split('T')[0], origin: 'Outros', id: Date.now() }); await saveData(); render(); responseText = `💰 Boa! Adicionei uma receita de R$ ${fmt(val)}.`; } } setTimeout(() => { chatArea.innerHTML += `<div class="self-start bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm max-w-[80%] mb-2">${responseText}<span class="text-[9px] text-slate-400 block text-right mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></div>`; chatArea.scrollTop = chatArea.scrollHeight; }, 600); };
         window.openEditCat = (idx) => { document.getElementById('edit-index').value = idx; document.getElementById('edit-name').value = appData.variable[idx].name; updateSelects(); document.getElementById('edit-cat').value = appData.variable[idx].category; document.getElementById('edit-modal').classList.remove('hidden'); };
-        window.confirmEditCat = () => { 
-            const idx = document.getElementById('edit-index').value; 
-            const newCat = document.getElementById('edit-cat').value;
-            appData.variable[idx].category = newCat; 
-            
-            // LEARN & APPLY
-            const count = learnAndApply(appData.variable[idx].name, newCat);
-            if(count > 0) alert(`${count} outros itens atualizados automaticamente.`);
-
-            saveData(); render(); document.getElementById('edit-modal').classList.add('hidden'); 
-        };
+        window.confirmEditCat = () => { const idx = document.getElementById('edit-index').value; appData.variable[idx].category = document.getElementById('edit-cat').value; saveData(); render(); document.getElementById('edit-modal').classList.add('hidden'); };
         window.prevGoal = () => { currentGoalIndex = Math.max(0, currentGoalIndex - 1); render(); };
         window.nextGoal = () => { currentGoalIndex = Math.min(appData.goals.length - 1, currentGoalIndex + 1); render(); };
         window.openAporte = (id) => { currentGoalId = id; document.getElementById('aporte-modal').classList.remove('hidden'); };
