@@ -132,7 +132,8 @@
                         <input type="password" id="log-pass" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/50 dark:bg-slate-800 dark:border-slate-700 dark:text-white" placeholder="Senha" required>
                     </div>
                 </div>
-                <button onclick="document.getElementById('form-login-btn').click()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg dark:bg-primary dark:hover:bg-primary-dark active:scale-95">
+                <!-- Botão de Login Modificado com ID para Feedback -->
+                <button id="login-visible-btn" onclick="document.getElementById('form-login-btn').click()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg dark:bg-primary dark:hover:bg-primary-dark active:scale-95 disabled:opacity-50 disabled:cursor-wait">
                     Entrar na Conta
                 </button>
                 <button id="form-login-btn" class="hidden" onclick="handleLogin()"></button>
@@ -475,20 +476,20 @@
 
         // CONFIG
         const ADMIN_EMAIL = "ohebertgustavo@gmail.com";
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "API_KEY_MISSING" };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fluxocash-app'; 
+        const firebaseConfig = {
+          apiKey: "AIzaSyCL6XpBIm322dq2hW7z-Y5Nskxdn-T9OzU",
+          authDomain: "fluxocash-b81f6.firebaseapp.com",
+          projectId: "fluxocash-b81f6",
+          storageBucket: "fluxocash-b81f6.firebasestorage.app",
+          messagingSenderId: "1021395240266",
+          appId: "1:1021395240266:web:e44282819a1ab0c2feadb3"
+        };
+        const appId = firebaseConfig.appId; 
         const apiKey = ""; 
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
-        const initAuth = async () => {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                try { await signInWithCustomToken(auth, __initial_auth_token); } catch(e) { console.error("Token Auth Failed", e); }
-            }
-        };
-        initAuth();
 
         const DEFAULT_CATEGORIES = ['Moradia', 'Alimentação', 'Transporte', 'Saúde e Cuidados', 'Educação', 'Lazer', 'Investimentos'];
 
@@ -533,7 +534,6 @@
             return data;
         }
 
-        // --- Helper for Safe DOM Updates ---
         function setText(id, val) { const el = document.getElementById(id); if(el) el.innerText = val; }
 
         function render() {
@@ -660,8 +660,30 @@
         window.addDebt=async(e)=>{e.preventDefault();const name=document.getElementById('debt-name').value;const tot=parseFloat(document.getElementById('debt-tot').value);const rate=parseFloat(document.getElementById('debt-rate').value)||0;const inst=parseInt(document.getElementById('debt-inst').value);if(name&&tot){const final=tot*(1+rate/100);appData.debts.push({name,totalValue:final,installments:inst,installmentValue:final/inst});await saveData();e.target.reset();render();}};
         window.delItem=async(type,idx)=>{if(confirm('Excluir este item?')){appData[type].splice(idx,1);await saveData();render();}};
         window.updateBudgetLimit=(cat,val)=>{const idx=appData.budgets.findIndex(b=>b.cat===cat);if(idx>-1)appData.budgets[idx].lim=parseFloat(val);else appData.budgets.push({cat,lim:parseFloat(val)});saveData();render();};
-        window.handleLogin=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById('log-email').value,document.getElementById('log-pass').value);}catch(e){alert("Erro ao logar: "+e.code);}};
-        // Removed handleRegister as requested
+        
+        // --- LOGIN HANDLER WITH FEEDBACK ---
+        window.handleLogin = async () => {
+            const btn = document.querySelector('button[onclick*="form-login-btn"]'); // Find the visual button that triggers this
+            const originalText = btn ? btn.innerText : "Entrar";
+            
+            if (btn) {
+                btn.innerText = "Entrando...";
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value);
+            } catch(e) {
+                alert("Erro ao logar: " + e.code);
+                if (btn) {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+        };
+
         window.toggleAuth=(mode)=>{document.getElementById('view-login').classList.toggle('hidden',mode!=='login');};
         window.doLogout=()=>signOut(auth).then(()=>location.reload());
         
