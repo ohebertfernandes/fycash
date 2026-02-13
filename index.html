@@ -686,11 +686,7 @@
         function getMonthlyData() {
             const currentYear = new Date().getFullYear();
             const data = Array(12).fill(0).map((_, i) => ({ month: i, revenue: 0, expenses: 0, balance: 0, accumulated: 0 }));
-            
-            const parseDate = (dateStr) => {
-                const parts = dateStr.split('-');
-                return new Date(parts[0], parts[1]-1, parts[2]); 
-            };
+            const parseDate = (dateStr) => { const parts = dateStr.split('-'); return new Date(parts[0], parts[1]-1, parts[2]); };
 
             appData.incomes.forEach(inc => { 
                 const d = parseDate(inc.date); 
@@ -711,7 +707,7 @@
 
         function setText(id, val) { const el = document.getElementById(id); if(el) el.innerText = val; }
 
-        const normalizeKey = (str) => str.trim().toUpperCase();
+        const normalizeKey = (str) => str.replace(/[^a-zA-Z\s]/g, '').trim().toUpperCase();
 
         function learnAndApply(name, category) {
             if(!name || !category) return;
@@ -738,7 +734,6 @@
             
             const investList = appData.investments || [];
             const totalInvested = investList.reduce((a,b) => a + (b.value || 0), 0);
-            
             setText('dash-invest', fmt(totalInvested));
 
             const userDispName = appData.profile?.name || (currentUser?.user_metadata?.name || (currentUser?.email ? currentUser.email.split('@')[0] : "Usuário"));
@@ -766,7 +761,23 @@
             score = Math.max(0, Math.min(1000, score));
             
             const scoreEl = document.getElementById('score-val');
-            if(scoreEl) scoreEl.innerText = score;
+            if(scoreEl) {
+                let currentScore = parseInt(scoreEl.innerText) || 0;
+                const diff = score - currentScore;
+                if(diff !== 0) {
+                    const step = diff > 0 ? 5 : -5;
+                    const interval = setInterval(() => {
+                        currentScore += step;
+                        if((step > 0 && currentScore >= score) || (step < 0 && currentScore <= score)) {
+                            currentScore = score;
+                            clearInterval(interval);
+                        }
+                        if(scoreEl) scoreEl.innerText = currentScore;
+                    }, 10);
+                } else {
+                    scoreEl.innerText = score;
+                }
+            }
 
             setText('score-msg', score > 700 ? "Saúde Excelente!" : "Atenção.");
             const alertBox = document.getElementById('score-alert-box');
@@ -810,6 +821,7 @@
             updateArcaAdvice();
         }
 
+        // Functions shortened for brevity but fully functional
         function renderTransactionsList() { const lVar=document.getElementById('list-all-transactions'); const lPend=document.getElementById('list-pending'); const pendSec=document.getElementById('pending-section'); if(!lVar)return; lVar.innerHTML=''; lPend.innerHTML=''; let hasPending=false; const all=[...appData.variable.map((x,i)=>({...x,type:'exp',idx:i})),...appData.incomes.map((x,i)=>({...x,type:'inc',idx:i}))]; all.sort((a,b)=>new Date(b.date)-new Date(a.date)); all.forEach((item,index)=>{ const isExp=item.type==='exp'; const dateArr=item.date.split('-'); const dateStr=`${dateArr[2]}/${dateArr[1]}`; const delayClass=`delay-${Math.min((index%5)*100,300)}`; if(isExp&&(!item.category||item.category==='Sem Categoria')){hasPending=true;lPend.innerHTML+=`<li class="bg-yellow-50 p-2 rounded border border-yellow-200 flex justify-between items-center text-sm"><span class="font-bold text-yellow-800">${item.name} (${fmt(item.value)})</span> <button onclick="openEditCat(${item.idx})" class="bg-white border text-xs px-2 py-1 rounded">Classificar</button></li>`;} if(lVar.childElementCount<50){lVar.innerHTML+=`<tr class="group hover:bg-slate-50 transition dark:hover:bg-slate-800 page-enter ${delayClass}"><td class="py-3 text-xs text-slate-400 font-medium border-b border-slate-50 dark:border-slate-800">${dateStr}</td><td class="py-3 font-bold text-slate-700 dark:text-slate-200 border-b border-slate-50 dark:border-slate-800">${item.name||item.description}</td><td class="py-3 border-b border-slate-50 dark:border-slate-800"><span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${isExp?'bg-slate-100 text-slate-500':'bg-green-100 text-green-600'}">${isExp?(item.category||'Geral'):'Entrada'}</span></td><td class="py-3 text-right font-bold ${isExp?'text-slate-800 dark:text-white':'text-green-500'} border-b border-slate-50 dark:border-slate-800">${isExp?'-':'+'} ${fmt(item.value)}</td><td class="py-3 text-right border-b border-slate-50 dark:border-slate-800"><button onclick="delItem('${item.type==='exp'?'variable':'incomes'}', ${item.idx})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash"></i></button></td></tr>`;}}); if(pendSec)pendSec.classList.toggle('hidden',!hasPending); }
         function renderGoalsList() { const el=document.getElementById('list-goals-full'); if(!el)return; el.innerHTML=''; appData.goals.forEach((g,i)=>{ const saved=g.saved||0; const pct=g.totalValue>0?(saved/g.totalValue)*100:0; el.innerHTML+=`<div class="p-4 border rounded-xl bg-slate-50 dark:bg-slate-800 dark:border-slate-700 page-enter"><div class="flex justify-between font-bold mb-2"><span>${g.name}</span><span class="text-primary">${pct.toFixed(0)}%</span></div><div class="h-2 bg-slate-200 rounded-full mb-2"><div class="h-2 bg-primary rounded-full" style="width:${Math.min(pct,100)}%"></div></div><div class="flex justify-between text-xs text-slate-500"><span>${fmt(saved)} de ${fmt(g.totalValue)}</span><div class="flex gap-2"><button onclick="openAporte(${g.id})" class="text-primary font-bold hover:underline">Aportar</button><button onclick="delItem('goals',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div></div></div>`; }); }
         function renderDebtsList() { const el=document.getElementById('list-debts'); if(!el)return; el.innerHTML=''; appData.debts.forEach((d,i)=>{ el.innerHTML+=`<div class="p-3 bg-white border-l-4 border-red-500 shadow-sm rounded flex justify-between items-center dark:bg-slate-800 page-enter"><div class="text-sm"><strong>${d.name}</strong><br><span class="text-xs text-slate-500">Total: ${fmt(d.totalValue)} (${d.installments}x)</span></div><button onclick="delItem('debts',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div>`; }); }
@@ -847,7 +859,17 @@
         window.closeWhatsAppModal = () => document.getElementById('whatsapp-modal').classList.add('hidden');
         window.sendAIMessage = async () => { const input = document.getElementById('ai-input-text'); const text = input.value.trim(); if (!text) return; const chatArea = document.getElementById('whatsapp-chat-area'); chatArea.innerHTML += `<div class="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm text-sm max-w-[80%] mb-2">${text}<span class="text-[9px] text-slate-500 block text-right mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></div>`; input.value = ''; chatArea.scrollTop = chatArea.scrollHeight; const lower = text.toLowerCase(); let responseText = "Desculpe, não entendi. Tente 'Gastei 50 em mercado' ou 'Recebi 1000'."; const spendMatch = lower.match(/(?:gastei|comprei|paguei)\s+(?:r\$)?\s*(\d+(?:[.,]\d{1,2})?)\s*(?:em|no|na|com)\s+(.+)/i); const incomeMatch = lower.match(/(?:recebi|ganhei)\s+(?:r\$)?\s*(\d+(?:[.,]\d{1,2})?)/i); if (spendMatch) { const val = parseFloat(spendMatch[1].replace(',', '.')); const desc = spendMatch[2].trim(); if (!isNaN(val)) { appData.variable.push({ name: desc, value: val, date: new Date().toISOString().split('T')[0], category: 'Sem Categoria', originalId: Date.now() }); await saveData(); render(); responseText = `✅ Anotado: R$ ${fmt(val)} em "${desc}".`; } } else if (incomeMatch) { const val = parseFloat(incomeMatch[1].replace(',', '.')); if (!isNaN(val)) { appData.incomes.push({ description: 'Nova Entrada', value: val, date: new Date().toISOString().split('T')[0], origin: 'Outros', id: Date.now() }); await saveData(); render(); responseText = `💰 Boa! Adicionei uma receita de R$ ${fmt(val)}.`; } } setTimeout(() => { chatArea.innerHTML += `<div class="self-start bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm max-w-[80%] mb-2">${responseText}<span class="text-[9px] text-slate-400 block text-right mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></div>`; chatArea.scrollTop = chatArea.scrollHeight; }, 600); };
         window.openEditCat = (idx) => { document.getElementById('edit-index').value = idx; document.getElementById('edit-name').value = appData.variable[idx].name; updateSelects(); document.getElementById('edit-cat').value = appData.variable[idx].category; document.getElementById('edit-modal').classList.remove('hidden'); };
-        window.confirmEditCat = () => { const idx = document.getElementById('edit-index').value; appData.variable[idx].category = document.getElementById('edit-cat').value; saveData(); render(); document.getElementById('edit-modal').classList.add('hidden'); };
+        window.confirmEditCat = () => { 
+            const idx = document.getElementById('edit-index').value; 
+            const newCat = document.getElementById('edit-cat').value;
+            appData.variable[idx].category = newCat; 
+            
+            // LEARN & APPLY
+            const count = learnAndApply(appData.variable[idx].name, newCat);
+            if(count > 0) alert(`${count} outros lançamentos similares foram atualizados automaticamente!`);
+
+            saveData(); render(); document.getElementById('edit-modal').classList.add('hidden'); 
+        };
         window.prevGoal = () => { currentGoalIndex = Math.max(0, currentGoalIndex - 1); render(); };
         window.nextGoal = () => { currentGoalIndex = Math.min(appData.goals.length - 1, currentGoalIndex + 1); render(); };
         window.openAporte = (id) => { currentGoalId = id; document.getElementById('aporte-modal').classList.remove('hidden'); };
@@ -857,13 +879,13 @@
         window.simulateCompoundInterest = () => { const init = parseFloat(document.getElementById('comp-initial').value); const month = parseFloat(document.getElementById('comp-monthly').value); const rate = parseFloat(document.getElementById('comp-rate').value); const years = parseFloat(document.getElementById('comp-years').value); if(init && month && rate && years) { let total = init, invested = init; const months = years * 12; const mRate = rate / 100 / 12; const data = [], labels = []; for(let i=1; i<=months; i++) { total = (total + month) * (1 + mRate); invested += month; if(i%12===0) { labels.push(i/12); data.push(total); } } document.getElementById('comp-result-area').classList.remove('hidden'); document.getElementById('comp-result-total').innerText = fmt(total); document.getElementById('comp-result-invested').innerText = fmt(invested); document.getElementById('comp-result-interest').innerText = fmt(total-invested); if(compoundChart) compoundChart.destroy(); compoundChart = new Chart(document.getElementById('chart-compound'), { type: 'line', data: { labels, datasets: [{label: 'Evolução', data, borderColor: '#8b5ae4', fill: true}] } }); } };
         window.simulateDebtStrategy = (type) => { if(appData.debts.length === 0) return alert("Sem dívidas."); let debts = [...appData.debts]; if(type === 'snowball') debts.sort((a,b) => a.totalValue - b.totalValue); else debts.sort((a,b) => b.totalValue - a.totalValue); let msg = type === 'snowball' ? "❄️ Bola de Neve (Pague as menores primeiro):\n" : "🏔️ Avalanche (Pague as maiores primeiro):\n"; debts.forEach((d,i) => msg += `${i+1}. ${d.name} (${fmt(d.totalValue)})\n`); alert(msg); };
         window.openFeedback = () => document.getElementById('feedback-modal').classList.remove('hidden');
-        window.sendFeedback = async () => { const txt = document.getElementById('feedback-text').value; const type = document.getElementById('feedback-type').value; if(txt) { await supabase.from('global_feedback').insert({ text: txt, type, user_email: currentUser?.email, date: new Date().toISOString(), status: 'pending' }); alert("Feedback enviado!"); document.getElementById('feedback-modal').classList.add('hidden'); } };
+        window.sendFeedback = async () => { const txt = document.getElementById('feedback-text').value; const type = document.getElementById('feedback-type').value; if(txt) { await addDoc(collection(db,'artifacts',appId,'global_feedback'), { text: txt, type, user: currentUser?.email, date: new Date().toISOString(), status: 'pending' }); alert("Feedback enviado!"); document.getElementById('feedback-modal').classList.add('hidden'); } };
         window.openAdmin = () => { document.getElementById('admin-modal').classList.remove('hidden'); loadAdmin(); };
         window.switchAdminTab = (t) => { currentAdminTab = t; loadAdmin(); };
         async function loadAdmin() { const el = document.getElementById('admin-list'); el.innerHTML = 'Carregando...'; const { data, error } = await supabase.from('global_feedback').select('*').order('date', {ascending: false}); if(error) { el.innerHTML = 'Erro'; return; } el.innerHTML = ''; data.forEach(d => { if(currentAdminTab === 'pending' && d.status === 'done') return; if(currentAdminTab === 'done' && d.status !== 'done') return; el.innerHTML += `<div class="bg-white p-3 mb-2 rounded border shadow-sm dark:bg-slate-700"><div><span class="font-bold text-xs uppercase bg-slate-200 px-2 py-1 rounded mr-2">${d.type}</span> <span class="font-bold">${d.user_email}</span></div><p class="text-sm mt-2">${d.text}</p>${d.status!=='done'?`<button onclick="solveFeedback('${d.id}')" class="text-xs text-green-600 mt-2 font-bold">Resolver</button>`:''}</div>`; }); }
         window.solveFeedback = async (id) => { await supabase.from('global_feedback').update({ status: 'done' }).eq('id', id); loadAdmin(); };
         window.askAI = async (ctx) => { document.getElementById('ai-modal').classList.remove('hidden'); document.getElementById('ai-content').innerText = "Pensando..."; try { const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({contents:[{parts:[{text:`Analise dados financeiros (JSON): ${JSON.stringify(appData)}. Contexto: ${ctx}. Responda como consultor financeiro.`}]}]}) }); const d = await res.json(); document.getElementById('ai-content').innerHTML = marked.parse(d.candidates[0].content.parts[0].text); } catch(e) { document.getElementById('ai-content').innerText = "Erro na IA."; } };
-        window.importCSV = (input) => { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; lines.forEach(l => { const c = l.split(','); if(c.length >= 3) { const val = parseFloat(c[2]); if(!isNaN(val)) { appData.variable.push({ name: c[1] || 'Importado', value: Math.abs(val), date: c[0], category: 'Sem Categoria' }); count++; } } }); saveData(); render(); alert(`${count} itens importados.`); }; reader.readAsText(file); };
+        window.importCSV = (input) => { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; lines.forEach(l => { const c = l.split(','); if(c.length >= 3) { const val = parseFloat(c[2]); const name = c[1] || 'Importado'; let cat = 'Sem Categoria'; if(appData.categoryRules && appData.categoryRules[normalizeKey(name)]) { cat = appData.categoryRules[normalizeKey(name)]; } if(!isNaN(val)) { appData.variable.push({ name: name, value: Math.abs(val), date: c[0], category: cat }); count++; } } }); saveData(); render(); alert(`${count} itens importados.`); }; reader.readAsText(file); };
         
         window.addInvestment = async (e) => { e.preventDefault(); const name=document.getElementById('inv-name').value; const type=document.getElementById('inv-type').value; const value=parseFloat(document.getElementById('inv-val').value); if(name&&value){ appData.investments=appData.investments||[]; appData.investments.push({id:Date.now(),name,type,value,date:new Date().toISOString()}); await saveData(); e.target.reset(); renderInvestmentsList(); updateArcaAdvice(); alert("Ativo adicionado!"); } };
         window.loadProfile = () => { const nameEl=document.getElementById('profile-name'); const emailEl=document.getElementById('profile-email'); if(nameEl)nameEl.value=appData.profile?.name||(currentUser?.user_metadata?.name||"Usuário"); if(emailEl)emailEl.value=currentUser?.email||"Sem email (Modo Offline)"; };
