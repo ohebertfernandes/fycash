@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FYCASH | App</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/NMHjPFL_d.png?maxwidth=520&shape=thumb&fidelity=high">
     
     <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- SUPABASE SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,7 +121,7 @@
         <div class="glass w-full max-w-md p-8 rounded-3xl relative shadow-2xl mx-4 page-enter">
             <div class="text-center mb-8">
                 <!-- NOVA LOGO -->
-                <img src="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png" alt="Fycash Logo" class="h-32 w-auto mx-auto mb-2 animate-float object-contain drop-shadow-lg">
+                <img src="https://i.imgur.com/NMHjPFL_d.png?maxwidth=520&shape=thumb&fidelity=high" alt="Fycash Logo" class="h-32 w-auto mx-auto mb-2 animate-float object-contain drop-shadow-lg">
                 <h1 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight hidden">Fycash.</h1>
                 <p class="text-slate-500 dark:text-slate-400 font-medium">Controle financeiro inteligente.</p>
             </div>
@@ -137,10 +139,9 @@
                     </div>
                 </div>
                 <!-- Botão de Login (Purple) -->
-                <button id="login-visible-btn" onclick="document.getElementById('form-login-btn').click()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg dark:bg-brand-purple dark:hover:bg-purple-700 active:scale-95 disabled:opacity-50 disabled:cursor-wait">
+                <button id="login-visible-btn" onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg dark:bg-brand-purple dark:hover:bg-purple-700 active:scale-95 disabled:opacity-50 disabled:cursor-wait">
                     Entrar na Conta
                 </button>
-                <button id="form-login-btn" class="hidden" onclick="handleLogin()"></button>
 
                 <!-- Separador -->
                 <div class="relative flex py-2 items-center">
@@ -170,7 +171,7 @@
         <aside class="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 h-full z-20 dark:bg-slate-900 dark:border-slate-800">
             <div class="p-6 flex items-center justify-center">
                 <!-- Logo Sidebar -->
-                <img src="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png" alt="Fycash Logo" class="h-16 w-auto object-contain animate-float">
+                <img src="https://i.imgur.com/NMHjPFL_d.png?maxwidth=520&shape=thumb&fidelity=high" alt="Fycash Logo" class="h-16 w-auto object-contain animate-float">
             </div>
 
             <div class="px-4 py-2">
@@ -180,8 +181,8 @@
                         <span id="sidebar-user-initial" class="text-slate-500 text-xs font-bold dark:text-slate-300">U</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold text-slate-800 truncate dark:text-white" id="user-name-display">Usuário</p>
-                        <p class="text-[10px] text-slate-400 truncate" id="user-plan-display">Plano Pro</p>
+                        <p class="text-xs font-bold text-slate-800 truncate dark:text-white" id="user-name-display">Carregando...</p>
+                        <p class="text-[10px] text-slate-400 truncate" id="user-plan-display">Plano Free</p>
                     </div>
                     <button onclick="event.stopPropagation(); openAdmin()" id="btn-admin" class="hidden text-xs text-slate-400 hover:text-brand-cyan"><i class="fa-solid fa-lock"></i></button>
                     <i class="fa-solid fa-chevron-right text-slate-300 text-xs group-hover:text-brand-purple"></i>
@@ -195,9 +196,7 @@
                 <button onclick="nav('launch')" id="nav-d-launch" class="nav-link w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500">
                     <i class="fa-solid fa-plus-circle w-5 text-center transition-colors"></i> Lançamentos
                 </button>
-                <button onclick="nav('dre')" id="nav-d-dre" class="nav-link w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500">
-                    <i class="fa-solid fa-file-invoice-dollar w-5 text-center transition-colors"></i> Relatório DRE
-                </button>
+                <!-- DRE REMOVIDO DAQUI -->
                 <button onclick="nav('investments')" id="nav-d-investments" class="nav-link w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500">
                     <i class="fa-solid fa-arrow-trend-up w-5 text-center transition-colors"></i> Investimentos
                 </button>
@@ -242,7 +241,7 @@
             <header class="md:hidden bg-white/80 backdrop-blur-md border-b border-slate-200 p-4 flex justify-between items-center z-20 dark:bg-slate-900/80 dark:border-slate-800">
                 <div class="flex items-center gap-2">
                     <!-- Logo Mobile -->
-                    <img src="https://trello.com/1/cards/69839337e9ae9fb5e25dcf21/attachments/69839e6ada37711734777002/download/fycash_logo.png" alt="Fycash Logo" class="h-8 w-auto object-contain">
+                    <img src="https://i.imgur.com/NMHjPFL_d.png?maxwidth=520&shape=thumb&fidelity=high" alt="Fycash Logo" class="h-8 w-auto object-contain">
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="openWhatsAppModal()" class="w-9 h-9 rounded-full bg-green-500 text-white shadow-lg shadow-green-500/30 flex items-center justify-center active:scale-95 transition"><i class="fa-solid fa-microphone"></i></button>
@@ -370,19 +369,6 @@
                                 <ul id="list-pending" class="mb-4 space-y-2"></ul>
                                 <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar"><table class="w-full text-left border-collapse"><thead class="sticky top-0 bg-white z-10 dark:bg-slate-900"><tr><th class="py-3 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-100 dark:border-slate-800">Data</th><th class="py-3 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-100 dark:border-slate-800">Desc</th><th class="py-3 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-100 dark:border-slate-800">Cat</th><th class="py-3 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-100 text-right dark:border-slate-800">Valor</th><th class="py-3 border-b border-slate-100 dark:border-slate-800"></th></tr></thead><tbody id="list-all-transactions" class="text-sm"></tbody></table></div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- 3. DRE -->
-                    <div id="page-dre" class="hidden space-y-6">
-                         <div class="card p-8 page-enter">
-                            <h2 class="text-2xl font-bold text-slate-800 mb-6 dark:text-white border-l-4 border-brand-purple pl-4">Demonstrativo de Resultados</h2>
-                            <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold dark:bg-slate-800 dark:text-slate-400"><tr><th class="p-4 text-left rounded-l-lg">Conta</th><th class="p-4 text-right">Valor</th><th class="p-4 text-right rounded-r-lg w-24">%</th></tr></thead><tbody id="dre-body" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody></table></div>
-                            <div class="mt-6 flex justify-end"><div class="bg-slate-900 text-white px-6 py-4 rounded-xl flex items-center gap-6 shadow-xl dark:bg-slate-950 hover:scale-105 transition"><span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Lucro Líquido</span><span class="text-2xl font-bold" id="dre-net-profit">R$ 0,00</span></div></div>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="card p-6 page-enter delay-100"><h4 class="font-bold mb-4">Tendência</h4><div class="h-48 relative"><canvas id="chart-dre-trend"></canvas></div></div>
-                            <div class="card p-6 page-enter delay-200"><h4 class="font-bold mb-4">Composição</h4><div class="h-48 relative"><canvas id="chart-dre-comp"></canvas></div></div>
                         </div>
                     </div>
 
@@ -538,14 +524,12 @@
                 <button onclick="nav('dashboard')" id="mob-dashboard" class="mob-nav-item active flex flex-col items-center text-slate-400 text-[10px] font-bold gap-1 transition"><i class="fa-solid fa-chart-pie text-xl"></i> Geral</button>
                 <button onclick="nav('investments')" id="mob-investments" class="mob-nav-item flex flex-col items-center text-slate-400 text-[10px] font-bold gap-1 transition"><i class="fa-solid fa-arrow-trend-up text-xl"></i> Invest</button>
                 <button onclick="nav('launch')" id="mob-launch" class="mob-nav-item flex flex-col items-center text-slate-400 text-[10px] font-bold gap-1 transition"><i class="fa-solid fa-plus-circle text-xl"></i> Add</button>
-                <button onclick="nav('dre')" id="mob-dre" class="mob-nav-item flex flex-col items-center text-slate-400 text-[10px] font-bold gap-1 transition"><i class="fa-solid fa-file-invoice text-xl"></i> DRE</button>
                 <button onclick="nav('profile')" id="mob-profile" class="mob-nav-item flex flex-col items-center text-slate-400 text-[10px] font-bold gap-1 transition"><i class="fa-solid fa-user-circle text-xl"></i> Perfil</button>
             </nav>
         </div>
     </div>
 
-    <!-- MODALS (Mantidos) -->
-    <!-- ... Same modals ... -->
+    <!-- MODALS -->
     <div id="whatsapp-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"><div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden dark:bg-slate-800 border border-slate-200 dark:border-slate-700 animate-enter"><div class="bg-[#075e54] p-4 text-white flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-teal-800"><i class="fa-solid fa-robot"></i></div><div><span class="font-bold block text-sm">Fycash AI</span><span class="text-[10px] opacity-80">Online</span></div></div><button onclick="closeWhatsAppModal()"><i class="fa-solid fa-times"></i></button></div><div class="h-80 bg-[#efe7dd] p-4 overflow-y-auto flex flex-col gap-2" id="whatsapp-chat-area"><div class="self-start bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-sm max-w-[80%]">Olá! Sou sua IA financeira. 🤖<br>Diga algo como: <i>"Gastei 50 no almoço"</i>.</div></div><div class="p-2 bg-white dark:bg-slate-800 flex gap-2"><input id="ai-input-text" class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-full px-4 py-2 text-sm outline-none border border-transparent focus:border-teal-500" placeholder="Digite..." onkeypress="if(event.key==='Enter') sendAIMessage()"><button onclick="sendAIMessage()" class="w-10 h-10 rounded-full bg-[#075e54] text-white flex items-center justify-center hover:scale-105 transition"><i class="fa-solid fa-paper-plane"></i></button></div></div></div>
     <div id="edit-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"><div class="bg-white w-full max-w-sm rounded-2xl p-6 dark:bg-slate-800 shadow-2xl animate-enter"><h3 class="font-bold mb-4 dark:text-white text-lg">Classificar Gasto</h3><input type="hidden" id="edit-index"><input id="edit-name" class="w-full p-3 bg-slate-50 rounded-xl mb-3 text-slate-500 text-sm border border-slate-100" readonly><select id="edit-cat" class="w-full p-3 border rounded-xl mb-6 dark:bg-slate-900 dark:border-slate-700 outline-none focus:ring-2 focus:ring-brand-purple"></select><div class="flex justify-end gap-2"><button onclick="document.getElementById('edit-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-lg transition">Cancelar</button><button onclick="confirmEditCat()" class="bg-brand-purple text-white px-6 py-2 rounded-lg font-bold hover:bg-purple-700 transition shadow-lg shadow-purple-500/30">Salvar</button></div></div></div>
     <div id="aporte-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"><div class="bg-white w-full max-w-sm rounded-2xl p-6 dark:bg-slate-800 shadow-2xl animate-enter"><h3 class="font-bold mb-4 dark:text-white text-lg">Realizar Aporte</h3><input id="aporte-val" type="number" class="w-full p-4 text-2xl font-bold text-center border rounded-xl mb-6 dark:bg-slate-900 dark:border-slate-700 outline-none focus:border-brand-purple text-brand-purple" placeholder="R$ 0,00"><div class="flex justify-end gap-2"><button onclick="document.getElementById('aporte-modal').classList.add('hidden')" class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-lg">Cancelar</button><button onclick="confirmAporte()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:bg-green-700">Confirmar</button></div></div></div>
@@ -555,33 +539,19 @@
     <div id="ai-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"><div class="bg-white w-full max-w-lg rounded-2xl p-6 dark:bg-slate-800 max-h-[80vh] overflow-y-auto animate-enter"><div class="flex justify-between mb-4 border-b pb-2"><span class="font-bold text-brand-purple">Consultoria IA</span><button onclick="document.getElementById('ai-modal').classList.add('hidden')">x</button></div><div id="ai-content" class="prose text-sm dark:prose-invert"></div></div></div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, getDocs, orderBy, query, updateDoc, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-        // CONFIG (MANUAL RESTORE)
+        // SUPABASE CONFIG
+        const SUPABASE_URL = "https://agfobbixqagezlaguofk.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnZm9iYml4cWFnZXpsYWd1b2ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5NDM1MzYsImV4cCI6MjA4NjUxOTUzNn0.0Rd-V-UWmu0PdudaevG28EbmwBKSdKxDwHtTWCf_I0Y";
         const ADMIN_EMAIL = "ohebertgustavo@gmail.com";
-        const firebaseConfig = {
-          apiKey: "AIzaSyCL6XpBIm322dq2hW7z-Y5Nskxdn-T9OzU",
-          authDomain: "fluxocash-b81f6.firebaseapp.com",
-          projectId: "fluxocash-b81f6",
-          storageBucket: "fluxocash-b81f6.firebasestorage.app",
-          messagingSenderId: "1021395240266",
-          appId: "1:1021395240266:web:e44282819a1ab0c2feadb3"
-        };
-        const appId = firebaseConfig.appId; 
-        const apiKey = ""; 
+        const apiKey = "AIzaSyDlyCLSdn306SbNXTbb4DspOVEQZFhBw-w"; // Gemini Key
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // REMOVED AUTO-AUTH TO FIX CONFLICT
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const DEFAULT_CATEGORIES = ['Moradia', 'Alimentação', 'Transporte', 'Saúde e Cuidados', 'Educação', 'Lazer', 'Investimentos'];
 
         let currentUser = null;
-        let unsubscribeUser = null;
         let appData = { incomes: [], incomeOrigins: [], fixed: [], variable: [], debts: [], goals: [], budgets: [], categories: [], profile: {}, investments: [], categoryRules: {} };
         let isOffline = false;
         let chartRev, chartExp, chartBal, chartPie, chartDREComp, chartDRETrend, chartARCA, chartARCAInvest, compoundChart, chartBottle;
@@ -607,18 +577,29 @@
 
         async function saveData() { 
             if(isOffline){ localStorage.setItem('fluxocash_local',JSON.stringify(appData)); return; } 
-            if(currentUser) await setDoc(doc(db,'artifacts',appId,'users',currentUser.uid,'app_data','main'),appData); 
+            if(currentUser) {
+                const { error } = await supabase.from('user_data').upsert({ user_id: currentUser.id, content: appData });
+                if(error) console.error("Erro ao salvar:", error);
+            }
         }
 
         function getMonthlyData() {
-            const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
             const currentYear = new Date().getFullYear();
             const data = Array(12).fill(0).map((_, i) => ({ month: i, revenue: 0, expenses: 0, balance: 0, accumulated: 0 }));
-            
-            appData.incomes.forEach(inc => { const d = new Date(inc.date + 'T00:00:00'); if(d.getFullYear()===currentYear) data[d.getMonth()].revenue += inc.value; });
+            const parseDate = (dateStr) => { const parts = dateStr.split('-'); return new Date(parts[0], parts[1]-1, parts[2]); };
+
+            appData.incomes.forEach(inc => { 
+                const d = parseDate(inc.date); 
+                if(d.getFullYear()===currentYear) data[d.getMonth()].revenue += inc.value; 
+            });
+
             const fixedTotal = appData.fixed.reduce((a,b)=>a+b.value,0);
             data.forEach(d => d.expenses += fixedTotal);
-            appData.variable.forEach(v => { const d = new Date(v.date + 'T00:00:00'); if(d.getFullYear()===currentYear) data[d.getMonth()].expenses += v.value; });
+            
+            appData.variable.forEach(v => { 
+                const d = parseDate(v.date); 
+                if(d.getFullYear()===currentYear) data[d.getMonth()].expenses += v.value; 
+            });
             
             let acc = 0; data.forEach(d => { d.balance = d.revenue - d.expenses; acc += d.balance; d.accumulated = acc; });
             return data;
@@ -626,7 +607,6 @@
 
         function setText(id, val) { const el = document.getElementById(id); if(el) el.innerText = val; }
 
-        // --- NEW AUTO-CATEGORIZATION LOGIC ---
         const normalizeKey = (str) => str.trim().toUpperCase();
 
         function learnAndApply(name, category) {
@@ -634,7 +614,6 @@
             const key = normalizeKey(name);
             appData.categoryRules[key] = category;
             
-            // Retroactive Update
             let count = 0;
             appData.variable.forEach(v => {
                 if(normalizeKey(v.name) === key && v.category === 'Sem Categoria') {
@@ -653,15 +632,14 @@
             setText('dash-expense', fmt(curr.expenses));
             setText('dash-balance', fmt(curr.accumulated));
             
-            // Calculate Total Invested (Assets) from new array
-            const totalInvested = appData.investments.reduce((a,b) => a + b.value, 0);
+            const investList = appData.investments || [];
+            const totalInvested = investList.reduce((a,b) => a + (b.value || 0), 0);
             setText('dash-invest', fmt(totalInvested));
 
-            // Update User Profile Display
-            const userDispName = appData.profile?.name || (currentUser ? currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : "Usuário") : "Convidado");
+            const userDispName = appData.profile?.name || (currentUser?.user_metadata?.name || (currentUser?.email ? currentUser.email.split('@')[0] : "Usuário"));
             const userPhoto = appData.profile?.photo;
             
-            setText('user-name-display', userDispName);
+            setText('user-name-display', userDispName || "Convidado");
             const initialEl = document.getElementById('sidebar-user-initial');
             const photoEl = document.getElementById('sidebar-user-photo');
             
@@ -672,7 +650,7 @@
                 if(previewEl) previewEl.src = userPhoto;
             } else {
                  if(photoEl) photoEl.classList.add('hidden');
-                 if(initialEl) { initialEl.innerText = userDispName.charAt(0).toUpperCase(); initialEl.classList.remove('hidden'); }
+                 if(initialEl) { initialEl.innerText = (userDispName || "U").charAt(0).toUpperCase(); initialEl.classList.remove('hidden'); }
             }
 
             let score = 500;
@@ -727,243 +705,34 @@
             updateArcaAdvice();
         }
 
-        // Render Lists (Consolidated)
         function renderTransactionsList() { const lVar=document.getElementById('list-all-transactions'); const lPend=document.getElementById('list-pending'); const pendSec=document.getElementById('pending-section'); if(!lVar)return; lVar.innerHTML=''; lPend.innerHTML=''; let hasPending=false; const all=[...appData.variable.map((x,i)=>({...x,type:'exp',idx:i})),...appData.incomes.map((x,i)=>({...x,type:'inc',idx:i}))]; all.sort((a,b)=>new Date(b.date)-new Date(a.date)); all.forEach((item,index)=>{ const isExp=item.type==='exp'; const dateArr=item.date.split('-'); const dateStr=`${dateArr[2]}/${dateArr[1]}`; const delayClass=`delay-${Math.min((index%5)*100,300)}`; if(isExp&&(!item.category||item.category==='Sem Categoria')){hasPending=true;lPend.innerHTML+=`<li class="bg-yellow-50 p-2 rounded border border-yellow-200 flex justify-between items-center text-sm"><span class="font-bold text-yellow-800">${item.name} (${fmt(item.value)})</span> <button onclick="openEditCat(${item.idx})" class="bg-white border text-xs px-2 py-1 rounded">Classificar</button></li>`;} if(lVar.childElementCount<50){lVar.innerHTML+=`<tr class="group hover:bg-slate-50 transition dark:hover:bg-slate-800 page-enter ${delayClass}"><td class="py-3 text-xs text-slate-400 font-medium border-b border-slate-50 dark:border-slate-800">${dateStr}</td><td class="py-3 font-bold text-slate-700 dark:text-slate-200 border-b border-slate-50 dark:border-slate-800">${item.name||item.description}</td><td class="py-3 border-b border-slate-50 dark:border-slate-800"><span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${isExp?'bg-slate-100 text-slate-500':'bg-green-100 text-green-600'}">${isExp?(item.category||'Geral'):'Entrada'}</span></td><td class="py-3 text-right font-bold ${isExp?'text-slate-800 dark:text-white':'text-green-500'} border-b border-slate-50 dark:border-slate-800">${isExp?'-':'+'} ${fmt(item.value)}</td><td class="py-3 text-right border-b border-slate-50 dark:border-slate-800"><button onclick="delItem('${item.type==='exp'?'variable':'incomes'}', ${item.idx})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-trash"></i></button></td></tr>`;}}); if(pendSec)pendSec.classList.toggle('hidden',!hasPending); }
         function renderGoalsList() { const el=document.getElementById('list-goals-full'); if(!el)return; el.innerHTML=''; appData.goals.forEach((g,i)=>{ const saved=g.saved||0; const pct=g.totalValue>0?(saved/g.totalValue)*100:0; el.innerHTML+=`<div class="p-4 border rounded-xl bg-slate-50 dark:bg-slate-800 dark:border-slate-700 page-enter"><div class="flex justify-between font-bold mb-2"><span>${g.name}</span><span class="text-primary">${pct.toFixed(0)}%</span></div><div class="h-2 bg-slate-200 rounded-full mb-2"><div class="h-2 bg-primary rounded-full" style="width:${Math.min(pct,100)}%"></div></div><div class="flex justify-between text-xs text-slate-500"><span>${fmt(saved)} de ${fmt(g.totalValue)}</span><div class="flex gap-2"><button onclick="openAporte(${g.id})" class="text-primary font-bold hover:underline">Aportar</button><button onclick="delItem('goals',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div></div></div>`; }); }
         function renderDebtsList() { const el=document.getElementById('list-debts'); if(!el)return; el.innerHTML=''; appData.debts.forEach((d,i)=>{ el.innerHTML+=`<div class="p-3 bg-white border-l-4 border-red-500 shadow-sm rounded flex justify-between items-center dark:bg-slate-800 page-enter"><div class="text-sm"><strong>${d.name}</strong><br><span class="text-xs text-slate-500">Total: ${fmt(d.totalValue)} (${d.installments}x)</span></div><button onclick="delItem('debts',${i})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div>`; }); }
         function renderBudgetList() { const el=document.getElementById('budget-list'); if(!el)return; el.innerHTML=''; const currMonth=new Date().getMonth(); appData.categories.forEach((cat,index)=>{ const b=appData.budgets.find(x=>x.cat===cat); const lim=b?b.lim:0; const spent=appData.variable.filter(v=>v.category===cat&&new Date(v.date).getMonth()===currMonth).reduce((a,x)=>a+x.value,0); const pct=lim>0?(spent/lim)*100:0; const color=pct>100?'bg-red-500':(pct>80?'bg-yellow-500':'bg-primary'); el.innerHTML+=`<div class="p-3 border rounded-xl bg-white dark:bg-slate-800 dark:border-slate-700 page-enter delay-${index%3}00"><div class="flex justify-between text-sm font-bold mb-1"><span>${cat}</span><span class="${pct>100?'text-red-500':'text-slate-500'}">${fmt(spent)} / <input type="number" value="${lim}" onchange="updateBudgetLimit('${cat}',this.value)" class="w-16 bg-transparent border-b text-right outline-none"></span></div><div class="h-2 bg-slate-100 rounded-full"><div class="h-2 rounded-full ${color} transition-all duration-1000" style="width:${Math.min(pct,100)}%"></div></div></div>`; }); }
         function renderFixedList() { const el=document.getElementById('list-fixed'); if(!el)return; el.innerHTML=''; appData.fixed.forEach((f,i)=>{ el.innerHTML+=`<tr class="border-b dark:border-slate-700 page-enter"><td class="p-3 font-medium">${f.name}</td><td class="p-3 text-right">${fmt(f.value)}</td><td class="p-3"><button onclick="delItem('fixed',${i})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); }
         function renderCategoryManagementList() { const el=document.getElementById('category-list-manage'); if(!el)return; el.innerHTML=''; appData.categories.forEach((c,i)=>{ el.innerHTML+=`<li class="flex justify-between bg-slate-50 p-2 rounded border text-xs dark:bg-slate-800 dark:border-slate-700 page-enter"><span>${c}</span><button onclick="removeCategory(${i})" class="text-red-400 hover:text-red-600 transition hover:scale-110">x</button></li>`; }); }
+        function renderInvestmentsList() { const el=document.getElementById('list-investments'); if(!el)return; el.innerHTML=''; appData.investments=appData.investments||[]; appData.investments.forEach((inv,i)=>{ const color=inv.type==='Ações'?'bg-red-100 text-red-600':(inv.type==='Real Estate'?'bg-orange-100 text-orange-600':(inv.type==='Caixa'?'bg-blue-100 text-blue-600':'bg-purple-100 text-purple-600')); el.innerHTML+=`<tr class="border-b dark:border-slate-700 hover:bg-slate-50 transition"><td class="p-3 font-bold">${inv.name}</td><td class="p-3"><span class="text-[10px] font-bold px-2 py-1 rounded ${color}">${inv.type}</span></td><td class="p-3 text-right text-brand-cyan font-bold">${fmt(inv.value)}</td><td class="p-3"><button onclick="delItem('investments',${i})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`; }); renderArcaChart('chart-arca-invest'); }
+        function updateArcaAdvice() { const totals={'Ações':0,'Real Estate':0,'Caixa':0,'Internacional':0}; let totalVal=0; const investList=appData.investments||[]; investList.forEach(i=>{totals[i.type]=(totals[i.type]||0)+i.value;totalVal+=i.value;}); const adviceBox=document.getElementById('arca-advice-box'); if(!adviceBox)return; if(totalVal===0){adviceBox.innerHTML=`<i class="fa-solid fa-robot mr-2"></i> Adicione investimentos para receber conselhos.`;return;} let lowest={type:'',val:100}; for(const[type,val]of Object.entries(totals)){const pct=(val/totalVal)*100;if(pct<lowest.val){lowest={type:type,val:pct};}} const advice=`Aporte em <strong>${lowest.type}</strong> (${lowest.val.toFixed(1)}%) para reequilibrar (Meta: 25%).`; adviceBox.innerHTML=`<i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i> ${advice}`; }
+        function renderArcaChart(canvasId) { const ctx=document.getElementById(canvasId); if(!ctx)return; if(chartARCAInvest)chartARCAInvest.destroy(); const totals={'Ações':0,'Real Estate':0,'Caixa':0,'Internacional':0}; const investList=appData.investments||[]; investList.forEach(i=>totals[i.type]=(totals[i.type]||0)+i.value); const dataVals=Object.values(totals); chartARCAInvest=new Chart(ctx,{type:'bar',data:{labels:Object.keys(totals),datasets:[{label:'Sua Carteira (R$)',data:dataVals,backgroundColor:['#ef4444','#f97316','#3b82f6','#8b5ae4'],borderRadius:6},{label:'Meta Ideal',data:Array(4).fill(dataVals.reduce((a,b)=>a+b,0)/4),type:'line',borderColor:'#21E9CA',borderDash:[5,5]}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}}); }
+        function renderCharts(mData) { if(document.getElementById('chart-balance')){if(chartBal)chartBal.destroy();chartBal=new Chart(document.getElementById('chart-balance'),{type:'line',data:{labels:mData.map(d=>d.month),datasets:[{label:'Saldo',data:mData.map(d=>d.accumulated),borderColor:'#8D5AE4',backgroundColor:'rgba(141,90,228,0.1)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:1500,easing:'easeOutQuart'}}});} if(document.getElementById('chart-pie-expenses')){const cats={};appData.variable.forEach(v=>{cats[v.category]=(cats[v.category]||0)+v.value;});if(chartPie)chartPie.destroy();chartPie=new Chart(document.getElementById('chart-pie-expenses'),{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:['#8D5AE4','#21E9CA','#10b981','#f59e0b','#ef4444','#8b5ae4']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:10}}}},animation:{animateScale:true,animateRotate:true}}});} if(document.getElementById('chart-expenses')){if(chartExp)chartExp.destroy();chartExp=new Chart(document.getElementById('chart-expenses'),{type:'bar',data:{labels:mData.map(d=>d.month),datasets:[{label:'Receita',data:mData.map(d=>d.revenue),backgroundColor:'#10b981'},{label:'Despesa',data:mData.map(d=>d.expenses),backgroundColor:'#ef4444'}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true},y:{stacked:true}},animation:{duration:1000}}});} const botCont=document.getElementById('bottleneck-chart-container');const botCv=document.getElementById('chart-bottlenecks');if(botCont&&botCv){const over={};let hasOver=false;const currMonth=new Date().getMonth();appData.categories.forEach(cat=>{const b=appData.budgets.find(x=>x.cat===cat);if(b&&b.lim>0){const spent=appData.variable.filter(v=>v.category===cat&&new Date(v.date).getMonth()===currMonth).reduce((a,x)=>a+x.value,0);if(spent>b.lim){over[cat]=spent-b.lim;hasOver=true;}}});if(hasOver){botCont.classList.remove('hidden');if(chartBottle)chartBottle.destroy();chartBottle=new Chart(botCv,{type:'bar',data:{labels:Object.keys(over),datasets:[{label:'Excesso',data:Object.values(over),backgroundColor:'#ef4444'}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false}});}else{botCont.classList.add('hidden');}} }
+        function updateSelects() { const sels=['var-cat','edit-cat']; sels.forEach(id=>{const el=document.getElementById(id);if(el){const old=el.value;el.innerHTML=appData.categories.map(c=>`<option value="${c}">${c}</option>`).join('')+`<option value="NEW">+ Nova...</option>`;if(old)el.value=old;}}); const dl=document.getElementById('origins-list');if(dl){dl.innerHTML='';appData.incomeOrigins.forEach(o=>dl.innerHTML+=`<option value="${o}">`);} }
 
-        function renderInvestmentsList() {
-            const el = document.getElementById('list-investments'); if(!el) return;
-            el.innerHTML = '';
-            appData.investments.forEach((inv, i) => {
-                const color = inv.type === 'Ações' ? 'bg-red-100 text-red-600' : (inv.type === 'Real Estate' ? 'bg-orange-100 text-orange-600' : (inv.type === 'Caixa' ? 'bg-blue-100 text-blue-600' : 'bg-purple-100 text-purple-600'));
-                el.innerHTML += `<tr class="border-b dark:border-slate-700 hover:bg-slate-50 transition"><td class="p-3 font-bold">${inv.name}</td><td class="p-3"><span class="text-[10px] font-bold px-2 py-1 rounded ${color}">${inv.type}</span></td><td class="p-3 text-right text-brand-cyan font-bold">${fmt(inv.value)}</td><td class="p-3"><button onclick="delItem('investments',${i})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></td></tr>`;
-            });
-            renderArcaChart('chart-arca-invest'); // Render main ARCA chart
-        }
-
-        function updateArcaAdvice() {
-            const totals = { 'Ações': 0, 'Real Estate': 0, 'Caixa': 0, 'Internacional': 0 };
-            let totalVal = 0;
-            appData.investments.forEach(i => { totals[i.type] = (totals[i.type] || 0) + i.value; totalVal += i.value; });
-            
-            const adviceBox = document.getElementById('arca-advice-box');
-            if(!adviceBox) return;
-
-            if(totalVal === 0) {
-                adviceBox.innerHTML = `<i class="fa-solid fa-robot mr-2"></i> Adicione investimentos para receber conselhos.`;
-                return;
-            }
-
-            let advice = "";
-            let lowest = { type: '', val: 100 };
-            
-            for(const [type, val] of Object.entries(totals)) {
-                const pct = (val / totalVal) * 100;
-                if(pct < lowest.val) { lowest = { type: type, val: pct }; }
-            }
-            
-            advice = `Aporte em <strong>${lowest.type}</strong> (${lowest.val.toFixed(1)}%) para reequilibrar sua carteira (Meta: 25%).`;
-            adviceBox.innerHTML = `<i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i> ${advice}`;
-        }
-
-        function renderArcaChart(canvasId) {
-            const ctx = document.getElementById(canvasId);
-            if(!ctx) return;
-            if(chartARCAInvest) chartARCAInvest.destroy();
-            
-            const totals = { 'Ações': 0, 'Real Estate': 0, 'Caixa': 0, 'Internacional': 0 };
-            appData.investments.forEach(i => totals[i.type] = (totals[i.type] || 0) + i.value);
-            
-            const dataVals = Object.values(totals);
-            
-            chartARCAInvest = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(totals),
-                    datasets: [
-                        { label: 'Sua Carteira (R$)', data: dataVals, backgroundColor: ['#ef4444', '#f97316', '#3b82f6', '#8b5ae4'], borderRadius: 6 },
-                        { label: 'Meta Ideal (Equilíbrio)', data: Array(4).fill(dataVals.reduce((a,b)=>a+b,0)/4), type: 'line', borderColor: '#21E9CA', borderDash: [5, 5] }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-            });
-        }
-
-        function renderCharts(mData) {
-            if(document.getElementById('chart-balance')) { if(chartBal) chartBal.destroy(); chartBal = new Chart(document.getElementById('chart-balance'), { type: 'line', data: { labels: mData.map(d=>d.month), datasets: [{ label: 'Saldo', data: mData.map(d=>d.accumulated), borderColor: '#8D5AE4', backgroundColor: 'rgba(141, 90, 228, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x: {display: false}, y: {display: false} }, animation: { duration: 1500, easing: 'easeOutQuart' } } }); }
-            if(document.getElementById('chart-pie-expenses')) { const cats = {}; appData.variable.forEach(v => { cats[v.category] = (cats[v.category]||0) + v.value; }); if(chartPie) chartPie.destroy(); chartPie = new Chart(document.getElementById('chart-pie-expenses'), { type: 'doughnut', data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#8D5AE4', '#21E9CA', '#10b981', '#f59e0b', '#ef4444', '#8b5ae4'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } }, animation: { animateScale: true, animateRotate: true } } }); }
-            if(document.getElementById('chart-expenses')) { if(chartExp) chartExp.destroy(); chartExp = new Chart(document.getElementById('chart-expenses'), { type: 'bar', data: { labels: mData.map(d=>d.month), datasets: [{ label: 'Receita', data: mData.map(d=>d.revenue), backgroundColor: '#10b981' }, { label: 'Despesa', data: mData.map(d=>d.expenses), backgroundColor: '#ef4444' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: {stacked: true}, y: {stacked: true} }, animation: { duration: 1000 } } }); }
-            const botCont = document.getElementById('bottleneck-chart-container'); const botCv = document.getElementById('chart-bottlenecks');
-            if(botCont && botCv) { const over = {}; let hasOver = false; const currMonth = new Date().getMonth(); appData.categories.forEach(cat => { const b = appData.budgets.find(x => x.cat === cat); if(b && b.lim > 0) { const spent = appData.variable.filter(v => v.category === cat && new Date(v.date).getMonth() === currMonth).reduce((a,x)=>a+x.value,0); if(spent > b.lim) { over[cat] = spent - b.lim; hasOver = true; } } }); if(hasOver) { botCont.classList.remove('hidden'); if(chartBottle) chartBottle.destroy(); chartBottle = new Chart(botCv, { type: 'bar', data: { labels: Object.keys(over), datasets: [{ label: 'Excesso', data: Object.values(over), backgroundColor: '#ef4444' }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false } }); } else { botCont.classList.add('hidden'); } }
-        }
-
-        function updateSelects() {
-            const sels = ['var-cat', 'edit-cat']; sels.forEach(id => { const el = document.getElementById(id); if(el) { const old = el.value; el.innerHTML = appData.categories.map(c => `<option value="${c}">${c}</option>`).join('') + `<option value="NEW">+ Nova...</option>`; if(old) el.value = old; } });
-            const dl = document.getElementById('origins-list'); if(dl) { dl.innerHTML = ''; appData.incomeOrigins.forEach(o => dl.innerHTML += `<option value="${o}">`); }
-        }
-
-        window.nav = (id) => { 
-            const pages = document.querySelectorAll('[id^="page-"]'); pages.forEach(p => { p.classList.add('hidden'); p.classList.remove('page-enter'); }); 
-            const target = document.getElementById('page-'+id); if(target) { target.classList.remove('hidden'); void target.offsetWidth; target.classList.add('page-enter'); } 
-            document.querySelectorAll('.nav-link, .mob-nav-item').forEach(l => l.classList.remove('active')); 
-            const dLink = document.getElementById('nav-d-'+id); if(dLink) dLink.classList.add('active'); 
-            const mLink = document.getElementById('mob-'+id); if(mLink) mLink.classList.add('active'); 
-            const titles = { dashboard: 'Visão Geral', launch: 'Lançamentos', dre: 'Relatório DRE', budget: 'Orçamento', goals: 'Metas', debts: 'Passivos', fixed: 'Custos Fixos', profile: 'Meu Perfil', investments: 'Meus Investimentos' }; 
-            document.getElementById('page-title').innerText = titles[id] || 'Fycash'; 
-            if(id === 'dashboard' || id === 'launch') render(); 
-            if(id === 'dre') window.renderDRE(); 
-            if(id === 'profile') loadProfile();
-            if(id === 'investments') { renderInvestmentsList(); updateArcaAdvice(); }
-        };
+        window.nav = (id) => { const pages=document.querySelectorAll('[id^="page-"]'); pages.forEach(p=>{p.classList.add('hidden');p.classList.remove('page-enter');}); const target=document.getElementById('page-'+id); if(target){target.classList.remove('hidden');void target.offsetWidth;target.classList.add('page-enter');} document.querySelectorAll('.nav-link, .mob-nav-item').forEach(l=>l.classList.remove('active')); const dLink=document.getElementById('nav-d-'+id); if(dLink)dLink.classList.add('active'); const mLink=document.getElementById('mob-'+id); if(mLink)mLink.classList.add('active'); const titles={dashboard:'Visão Geral',launch:'Lançamentos',budget:'Orçamento',goals:'Metas',debts:'Passivos',fixed:'Custos Fixos',profile:'Meu Perfil',investments:'Meus Investimentos'}; setText('page-title',titles[id]||'Fycash'); if(id==='dashboard'||id==='launch')render(); if(id==='profile')loadProfile(); if(id==='investments'){renderInvestmentsList();updateArcaAdvice();} };
+        window.setLaunchMode = (m) => { document.getElementById('form-expense').classList.toggle('hidden',m!=='expense'); document.getElementById('form-income').classList.toggle('hidden',m!=='income'); document.getElementById('btn-mode-exp').className=m==='expense'?'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200 transform scale-105 border-brand-purple':'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-50'; document.getElementById('btn-mode-inc').className=m==='income'?'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200 transform scale-105 border-brand-purple':'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-50'; };
         
-        window.addInvestment = async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('inv-name').value;
-            const type = document.getElementById('inv-type').value;
-            const value = parseFloat(document.getElementById('inv-val').value);
-            if(name && value) {
-                appData.investments.push({ id: Date.now(), name, type, value, date: new Date().toISOString() });
-                await saveData();
-                e.target.reset();
-                renderInvestmentsList();
-                updateArcaAdvice();
-                alert("Ativo adicionado!");
-            }
-        };
-
-        window.loadProfile = () => {
-            const nameEl = document.getElementById('profile-name');
-            const emailEl = document.getElementById('profile-email');
-            
-            if(nameEl) nameEl.value = appData.profile?.name || (currentUser?.displayName || "");
-            if(emailEl) emailEl.value = currentUser?.email || "Sem email (Modo Offline)";
-        };
-
-        window.saveProfile = async (e) => {
-            e.preventDefault();
-            const newName = document.getElementById('profile-name').value;
-            appData.profile.name = newName;
-            
-            // Try updating Firebase Auth Profile too if online
-            if(currentUser) {
-                try {
-                    await updateProfile(currentUser, { displayName: newName, photoURL: appData.profile.photo });
-                } catch(err) { console.log("Erro ao atualizar Auth:", err); }
-            }
-            
-            await saveData();
-            render();
-            // SHOW LOADING STATE
-            const btn = document.getElementById('btn-save-profile');
-            if (btn) {
-                const originalText = btn.innerText;
-                btn.innerText = "Salvando...";
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    alert("Perfil atualizado com sucesso!");
-                }, 500);
-            }
-        };
-
-        window.handlePhotoFile = (input) => {
-            const file = input.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    appData.profile.photo = e.target.result;
-                    document.getElementById('profile-img-preview').src = e.target.result;
-                    // Auto save after photo select
-                    saveData().then(() => render()); 
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        window.changeUserPassword = async (e) => {
-            e.preventDefault();
-            const p1 = document.getElementById('new-password').value;
-            const p2 = document.getElementById('confirm-new-password').value;
-            
-            if(p1 !== p2) return alert("As senhas não coincidem.");
-            if(isOffline || !currentUser) return alert("Esta função requer login online.");
-
-            const btn = document.getElementById('btn-change-pass');
-            if (btn) {
-                const originalText = btn.innerText;
-                btn.innerText = "Atualizando...";
-                btn.disabled = true;
-                
-                try {
-                    await updatePassword(currentUser, p1);
-                    alert("Senha alterada com sucesso!");
-                    e.target.reset();
-                } catch(err) {
-                    if(err.code === 'auth/requires-recent-login') {
-                        alert("Por segurança, faça logout e login novamente antes de trocar a senha.");
-                    } else {
-                        alert("Erro: " + err.message);
-                    }
-                } finally {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }
-            }
-        };
-
-        window.setLaunchMode = (m) => { document.getElementById('form-expense').classList.toggle('hidden', m !== 'expense'); document.getElementById('form-income').classList.toggle('hidden', m !== 'income'); document.getElementById('btn-mode-exp').className = m === 'expense' ? 'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200 transform scale-105 border-brand-purple' : 'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-50'; document.getElementById('btn-mode-inc').className = m === 'income' ? 'flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-800 shadow-sm border border-slate-200 transform scale-105 border-brand-purple' : 'flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-50'; };
-        
-        // ... (window functions addVar, addIncome, etc. remain the same) ...
-        window.addVar=async(e)=>{e.preventDefault();const desc=document.getElementById('var-desc').value;const val=parseFloat(document.getElementById('var-val').value);const cat=document.getElementById('var-cat').value;const date=document.getElementById('var-date').value;const parc=parseInt(document.getElementById('var-parc').value)||1;if(desc&&val){const valPerMonth=val/parc;const dObj=new Date(date);for(let i=0;i<parc;i++){const newD=new Date(dObj.getFullYear(),dObj.getMonth()+i,dObj.getDate()+1).toISOString().split('T')[0];appData.variable.push({name:desc+(parc>1?` (${i+1}/${parc})`:''),value:valPerMonth,category:cat,date:newD});}await saveData();e.target.reset();document.getElementById('var-date').valueAsDate=new Date();render();alert('Lançamento salvo!');} // NEW: Auto-learn
-        // Add auto-learn logic to existing addVar call
-        if(desc && val) { learnAndApply(desc, cat); } 
-        };
+        window.addVar=async(e)=>{e.preventDefault();const desc=document.getElementById('var-desc').value;const val=parseFloat(document.getElementById('var-val').value);const cat=document.getElementById('var-cat').value;const date=document.getElementById('var-date').value;const parc=parseInt(document.getElementById('var-parc').value)||1;if(desc&&val){const valPerMonth=val/parc;const dObj=new Date(date);for(let i=0;i<parc;i++){const newD=new Date(dObj.getFullYear(),dObj.getMonth()+i,dObj.getDate()+1).toISOString().split('T')[0];appData.variable.push({name:desc+(parc>1?` (${i+1}/${parc})`:''),value:valPerMonth,category:cat,date:newD});}await saveData();e.target.reset();document.getElementById('var-date').valueAsDate=new Date();render();alert('Lançamento salvo!');if(desc&&val){learnAndApply(desc,cat);}}};
         window.addIncome=async(e)=>{e.preventDefault();const desc=document.getElementById('inc-desc').value;const val=parseFloat(document.getElementById('inc-val').value);const date=document.getElementById('inc-date').value;const origin=document.getElementById('inc-origin').value;if(desc&&val){appData.incomes.push({description:desc,value:val,date:date,origin:origin});if(origin&&!appData.incomeOrigins.includes(origin))appData.incomeOrigins.push(origin);await saveData();e.target.reset();render();alert('Entrada salva!');}};
         window.addFixed=async(e)=>{e.preventDefault();const name=document.getElementById('fix-name').value;const val=parseFloat(document.getElementById('fix-val').value);if(name&&val){appData.fixed.push({name,value:val});await saveData();e.target.reset();render();}};
         window.addGoal=async(e)=>{e.preventDefault();const name=document.getElementById('goal-name').value;const val=parseFloat(document.getElementById('goal-val').value);const date=document.getElementById('goal-date').value;if(name&&val){appData.goals.push({id:Date.now(),name,totalValue:val,deadline:date,saved:0});await saveData();e.target.reset();render();}};
         window.addDebt=async(e)=>{e.preventDefault();const name=document.getElementById('debt-name').value;const tot=parseFloat(document.getElementById('debt-tot').value);const rate=parseFloat(document.getElementById('debt-rate').value)||0;const inst=parseInt(document.getElementById('debt-inst').value);if(name&&tot){const final=tot*(1+rate/100);appData.debts.push({name,totalValue:final,installments:inst,installmentValue:final/inst});await saveData();e.target.reset();render();}};
-        window.delItem=async(type,idx)=>{if(confirm('Excluir este item?')){appData[type].splice(idx,1);await saveData();render(); if(type==='investments'){renderInvestmentsList();updateArcaAdvice();}}};
+        window.delItem=async(type,idx)=>{if(confirm('Excluir este item?')){appData[type].splice(idx,1);await saveData();render();if(type==='investments'){renderInvestmentsList();updateArcaAdvice();}}};
         window.updateBudgetLimit=(cat,val)=>{const idx=appData.budgets.findIndex(b=>b.cat===cat);if(idx>-1)appData.budgets[idx].lim=parseFloat(val);else appData.budgets.push({cat,lim:parseFloat(val)});saveData();render();};
         
-        // --- LOGIN HANDLER WITH FEEDBACK ---
-        window.handleLogin = async () => {
-            const btn = document.querySelector('button[onclick*="form-login-btn"]'); // Find the visual button that triggers this
-            const originalText = btn ? btn.innerText : "Entrar";
-            
-            if (btn) {
-                btn.innerText = "Entrando...";
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-
-            try {
-                await signInWithEmailAndPassword(auth, document.getElementById('log-email').value, document.getElementById('log-pass').value);
-            } catch(e) {
-                alert("Erro ao logar: " + e.code);
-                if (btn) {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
-            }
-        };
-
+        window.handleLogin = async () => { const btn=document.getElementById('login-visible-btn'); const originalText=btn?btn.innerText:"Entrar"; if(btn){btn.innerText="Entrando...";btn.disabled=true;btn.classList.add('opacity-50','cursor-not-allowed');} try { const { error } = await supabase.auth.signInWithPassword({ email: document.getElementById('log-email').value, password: document.getElementById('log-pass').value }); if(error) throw error; location.reload(); } catch(e) { alert("Erro ao logar: " + e.message); if(btn){btn.innerText=originalText;btn.disabled=false;btn.classList.remove('opacity-50','cursor-not-allowed');} } };
         window.toggleAuth=(mode)=>{document.getElementById('view-login').classList.toggle('hidden',mode!=='login');};
-        window.doLogout=()=>signOut(auth).then(()=>location.reload());
+        window.doLogout=async()=>{await supabase.auth.signOut(); location.reload();};
         
-        window.forceOfflineMode = () => {
-            isOffline = true;
-            document.getElementById('auth-screen').classList.add('hidden');
-            const appScreen = document.getElementById('app-screen');
-            appScreen.classList.remove('hidden');
-            appScreen.classList.add('flex');
-            setTimeout(() => { appScreen.classList.remove('opacity-0'); }, 100);
-            checkMigration();
-            render();
-        };
+        window.forceOfflineMode = () => { isOffline=true; document.getElementById('auth-screen').classList.add('hidden'); const appScreen=document.getElementById('app-screen'); appScreen.classList.remove('hidden'); appScreen.classList.add('flex'); setTimeout(()=>{appScreen.classList.remove('opacity-0');},100); checkMigration(); render(); setText('user-name-display', "Convidado"); setText('user-plan-display', "Plano Free"); };
 
         window.handleCatChange = (el) => { if(el.value === 'NEW') { const n = prompt("Nova categoria:"); if(n) { appData.categories.push(n); updateSelects(); el.value = n; saveData(); } } };
         window.addNewCategory = () => { const n = document.getElementById('new-cat-input').value.trim(); if(n && !appData.categories.includes(n)) { appData.categories.push(n); saveData(); renderCategoryManagementList(); renderBudgetList(); updateSelects(); document.getElementById('new-cat-input').value = ''; } };
@@ -978,55 +747,51 @@
         window.nextGoal = () => { currentGoalIndex = Math.min(appData.goals.length - 1, currentGoalIndex + 1); render(); };
         window.openAporte = (id) => { currentGoalId = id; document.getElementById('aporte-modal').classList.remove('hidden'); };
         window.confirmAporte = () => { const val = parseFloat(document.getElementById('aporte-val').value); if(currentGoalId && val) { const g = appData.goals.find(x => x.id === currentGoalId); if(g) { g.saved = (g.saved || 0) + val; saveData(); render(); } } document.getElementById('aporte-modal').classList.add('hidden'); };
-        window.openArcaModal = () => { document.getElementById('arca-modal').classList.remove('hidden'); if(chartARCA) chartARCA.destroy(); const ctx = document.getElementById('chart-arca').getContext('2d'); chartARCA = new Chart(ctx, { type: 'bar', data: { labels: ['Ações','FIIs','Caixa','Ext'], datasets: [{label: 'Ideal', data:[25,25,25,25], borderColor:'#0ea5e9', type:'line'}, {label: 'Você', data:[10,40,40,10], backgroundColor:'#6366f1'}] } }); };
+        window.openArcaModal = () => { document.getElementById('arca-modal').classList.remove('hidden'); renderArcaChart('chart-arca'); };
         window.applyBudgetMethod = (type) => { const total = appData.incomes.reduce((a,b)=>a+b.value,0); if(total===0) return alert("Adicione receitas primeiro."); let budgets = []; if(type === 'PADRAO') { budgets = [ {cat:'Moradia', lim:total*0.3}, {cat:'Alimentação', lim:total*0.2}, {cat:'Lazer', lim:total*0.1}, {cat:'Investimentos', lim:total*0.3} ]; } else if(type === 'WAR') { budgets = [ {cat:'Moradia', lim:total*0.2}, {cat:'Alimentação', lim:total*0.1}, {cat:'Investimentos', lim:total*0.5} ]; } if(confirm("Aplicar orçamento?")) { budgets.forEach(b => { const idx = appData.budgets.findIndex(x=>x.cat===b.cat); if(idx>-1) appData.budgets[idx].lim = b.lim; else appData.budgets.push(b); }); saveData(); render(); } };
         window.simulateCompoundInterest = () => { const init = parseFloat(document.getElementById('comp-initial').value); const month = parseFloat(document.getElementById('comp-monthly').value); const rate = parseFloat(document.getElementById('comp-rate').value); const years = parseFloat(document.getElementById('comp-years').value); if(init && month && rate && years) { let total = init, invested = init; const months = years * 12; const mRate = rate / 100 / 12; const data = [], labels = []; for(let i=1; i<=months; i++) { total = (total + month) * (1 + mRate); invested += month; if(i%12===0) { labels.push(i/12); data.push(total); } } document.getElementById('comp-result-area').classList.remove('hidden'); document.getElementById('comp-result-total').innerText = fmt(total); document.getElementById('comp-result-invested').innerText = fmt(invested); document.getElementById('comp-result-interest').innerText = fmt(total-invested); if(compoundChart) compoundChart.destroy(); compoundChart = new Chart(document.getElementById('chart-compound'), { type: 'line', data: { labels, datasets: [{label: 'Evolução', data, borderColor: '#8b5ae4', fill: true}] } }); } };
         window.simulateDebtStrategy = (type) => { if(appData.debts.length === 0) return alert("Sem dívidas."); let debts = [...appData.debts]; if(type === 'snowball') debts.sort((a,b) => a.totalValue - b.totalValue); else debts.sort((a,b) => b.totalValue - a.totalValue); let msg = type === 'snowball' ? "❄️ Bola de Neve (Pague as menores primeiro):\n" : "🏔️ Avalanche (Pague as maiores primeiro):\n"; debts.forEach((d,i) => msg += `${i+1}. ${d.name} (${fmt(d.totalValue)})\n`); alert(msg); };
         window.openFeedback = () => document.getElementById('feedback-modal').classList.remove('hidden');
-        window.sendFeedback = async () => { const txt = document.getElementById('feedback-text').value; const type = document.getElementById('feedback-type').value; if(txt) { await addDoc(collection(db,'artifacts',appId,'global_feedback'), { text: txt, type, user: currentUser?.email, date: new Date().toISOString(), status: 'pending' }); alert("Feedback enviado!"); document.getElementById('feedback-modal').classList.add('hidden'); } };
+        window.sendFeedback = async () => { const txt = document.getElementById('feedback-text').value; const type = document.getElementById('feedback-type').value; if(txt) { await supabase.from('global_feedback').insert({ text: txt, type, user_email: currentUser?.email, date: new Date().toISOString(), status: 'pending' }); alert("Feedback enviado!"); document.getElementById('feedback-modal').classList.add('hidden'); } };
         window.openAdmin = () => { document.getElementById('admin-modal').classList.remove('hidden'); loadAdmin(); };
         window.switchAdminTab = (t) => { currentAdminTab = t; loadAdmin(); };
-        async function loadAdmin() { const el = document.getElementById('admin-list'); el.innerHTML = 'Carregando...'; const q = query(collection(db,'artifacts',appId,'global_feedback'), orderBy('date','desc')); const s = await getDocs(q); el.innerHTML = ''; s.forEach(doc => { const d = doc.data(); if(currentAdminTab === 'pending' && d.status === 'done') return; if(currentAdminTab === 'done' && d.status !== 'done') return; el.innerHTML += `<div class="bg-white p-3 mb-2 rounded border shadow-sm dark:bg-slate-700"><div><span class="font-bold text-xs uppercase bg-slate-200 px-2 py-1 rounded mr-2">${d.type}</span> <span class="font-bold">${d.user}</span></div><p class="text-sm mt-2">${d.text}</p>${d.status!=='done'?`<button onclick="solveFeedback('${doc.id}')" class="text-xs text-green-600 mt-2 font-bold">Resolver</button>`:''}</div>`; }); }
-        window.solveFeedback = async (id) => { await updateDoc(doc(db,'artifacts',appId,'global_feedback',id), {status: 'done'}); loadAdmin(); };
+        async function loadAdmin() { const el = document.getElementById('admin-list'); el.innerHTML = 'Carregando...'; const { data, error } = await supabase.from('global_feedback').select('*').order('date', {ascending: false}); if(error) { el.innerHTML = 'Erro'; return; } el.innerHTML = ''; data.forEach(d => { if(currentAdminTab === 'pending' && d.status === 'done') return; if(currentAdminTab === 'done' && d.status !== 'done') return; el.innerHTML += `<div class="bg-white p-3 mb-2 rounded border shadow-sm dark:bg-slate-700"><div><span class="font-bold text-xs uppercase bg-slate-200 px-2 py-1 rounded mr-2">${d.type}</span> <span class="font-bold">${d.user_email}</span></div><p class="text-sm mt-2">${d.text}</p>${d.status!=='done'?`<button onclick="solveFeedback('${d.id}')" class="text-xs text-green-600 mt-2 font-bold">Resolver</button>`:''}</div>`; }); }
+        window.solveFeedback = async (id) => { await supabase.from('global_feedback').update({ status: 'done' }).eq('id', id); loadAdmin(); };
         window.askAI = async (ctx) => { document.getElementById('ai-modal').classList.remove('hidden'); document.getElementById('ai-content').innerText = "Pensando..."; try { const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({contents:[{parts:[{text:`Analise dados financeiros (JSON): ${JSON.stringify(appData)}. Contexto: ${ctx}. Responda como consultor financeiro.`}]}]}) }); const d = await res.json(); document.getElementById('ai-content').innerHTML = marked.parse(d.candidates[0].content.parts[0].text); } catch(e) { document.getElementById('ai-content').innerText = "Erro na IA."; } };
-        window.importCSV = (input) => { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; lines.forEach(l => { const c = l.split(','); if(c.length >= 3) { const val = parseFloat(c[2]); const name = c[1] || 'Importado'; let cat = 'Sem Categoria'; if(appData.categoryRules && appData.categoryRules[normalizeKey(name)]) { cat = appData.categoryRules[normalizeKey(name)]; } if(!isNaN(val)) { appData.variable.push({ name: name, value: Math.abs(val), date: c[0], category: cat }); count++; } } }); saveData(); render(); alert(`${count} itens importados.`); }; reader.readAsText(file); };
-        window.renderDRE = () => { const mData = getMonthlyData(); const curr = mData[new Date().getMonth()]; const gross = curr.revenue; const currMonth = new Date().getMonth(); const varCosts = appData.variable.filter(v => v.category !== 'Investimentos' && new Date(v.date).getMonth() === currMonth).reduce((a,b)=>a+b.value,0); const contrib = gross - varCosts; const fixed = appData.fixed.reduce((a,b)=>a+b.value,0); const ebit = contrib - fixed; const invest = appData.variable.filter(v => v.category === 'Investimentos' && new Date(v.date).getMonth() === currMonth).reduce((a,b)=>a+b.value,0); const net = ebit - invest; const el = document.getElementById('dre-body'); if(el) { el.innerHTML = `<tr><td class="p-4 font-bold text-slate-700 dark:text-white">Receita Bruta</td><td class="p-4 text-right text-green-500 font-bold">+ ${fmt(gross)}</td><td class="p-4 text-right text-xs text-slate-400">100%</td></tr><tr><td class="p-4 pl-8 text-slate-500">(-) Despesas Variáveis</td><td class="p-4 text-right text-red-400">- ${fmt(varCosts)}</td><td class="p-4 text-right text-xs text-slate-400">${((varCosts/gross)*100).toFixed(1)}%</td></tr><tr class="bg-slate-50 font-bold dark:bg-slate-800"><td class="p-4 text-slate-800 dark:text-white">(=) Margem Contribuição</td><td class="p-4 text-right text-slate-700 dark:text-white">${fmt(contrib)}</td><td class="p-4 text-right text-xs">--</td></tr><tr><td class="p-4 pl-8 text-slate-500">(-) Custos Fixos</td><td class="p-4 text-right text-red-400">- ${fmt(fixed)}</td><td class="p-4 text-right text-xs text-slate-400">--</td></tr><tr class="bg-slate-50 font-bold dark:bg-slate-800"><td class="p-4 text-slate-800 dark:text-white">(=) EBIT (Operacional)</td><td class="p-4 text-right text-slate-700 dark:text-white">${fmt(ebit)}</td><td class="p-4 text-right text-xs">--</td></tr><tr><td class="p-4 pl-8 text-slate-500">(-) Investimentos</td><td class="p-4 text-right text-purple-400">- ${fmt(invest)}</td><td class="p-4 text-right text-xs text-slate-400">--</td></tr><tr class="bg-slate-900 text-white font-bold"><td class="p-4">(=) Lucro Líquido</td><td class="p-4 text-right">${fmt(net)}</td><td class="p-4 text-right text-xs">--</td></tr>`; document.getElementById('dre-net-profit').innerText = fmt(net); if(chartDREComp) chartDREComp.destroy(); chartDREComp = new Chart(document.getElementById('chart-dre-comp'), { type: 'pie', data: { labels:['Var','Fixo','Invest','Lucro'], datasets:[{data:[varCosts,fixed,invest,Math.max(0,net)], backgroundColor:['#ef4444','#f59e0b','#6366f1','#10b981']}] }, options: {maintainAspectRatio:false} }); if(chartDRETrend) chartDRETrend.destroy(); const trends = mData.map(m => m.revenue - m.expenses); chartDRETrend = new Chart(document.getElementById('chart-dre-trend'), { type: 'line', data: { labels:mData.map(m=>m.month), datasets:[{label:'Lucro', data:trends, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true}] }, options: {maintainAspectRatio:false} }); } };
+        window.importCSV = (input) => { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; lines.forEach(l => { const c = l.split(','); if(c.length >= 3) { const val = parseFloat(c[2]); if(!isNaN(val)) { appData.variable.push({ name: c[1] || 'Importado', value: Math.abs(val), date: c[0], category: 'Sem Categoria' }); count++; } } }); saveData(); render(); alert(`${count} itens importados.`); }; reader.readAsText(file); };
         
-        // Auto-Learn Input Listener
-        document.getElementById('var-desc').addEventListener('input', (e) => {
-            const val = e.target.value;
-            const key = normalizeKey(val);
-            if(appData.categoryRules && appData.categoryRules[key]) {
-                document.getElementById('var-cat').value = appData.categoryRules[key];
+        window.addInvestment = async (e) => { e.preventDefault(); const name=document.getElementById('inv-name').value; const type=document.getElementById('inv-type').value; const value=parseFloat(document.getElementById('inv-val').value); if(name&&value){ appData.investments=appData.investments||[]; appData.investments.push({id:Date.now(),name,type,value,date:new Date().toISOString()}); await saveData(); e.target.reset(); renderInvestmentsList(); updateArcaAdvice(); alert("Ativo adicionado!"); } };
+        window.loadProfile = () => { const nameEl=document.getElementById('profile-name'); const emailEl=document.getElementById('profile-email'); if(nameEl)nameEl.value=appData.profile?.name||(currentUser?.user_metadata?.name||"Usuário"); if(emailEl)emailEl.value=currentUser?.email||"Sem email (Modo Offline)"; };
+        window.saveProfile = async (e) => { e.preventDefault(); const newName=document.getElementById('profile-name').value; appData.profile.name=newName; if(currentUser){ try{ await supabase.auth.updateUser({data:{name:newName, photo: appData.profile.photo}}); }catch(err){console.log(err);} } await saveData(); render(); const btn=document.getElementById('btn-save-profile'); if(btn){const ot=btn.innerText;btn.innerText="Salvando...";setTimeout(()=>{btn.innerText=ot;alert("Perfil atualizado!");},500);} };
+        window.handlePhotoFile = (input) => { const file=input.files[0]; if(file){ const reader=new FileReader(); reader.onload=(e)=>{ appData.profile.photo=e.target.result; document.getElementById('profile-img-preview').src=e.target.result; saveData().then(()=>render()); }; reader.readAsDataURL(file); } };
+        window.changeUserPassword = async (e) => { e.preventDefault(); const p1=document.getElementById('new-password').value; const p2=document.getElementById('confirm-new-password').value; if(p1!==p2)return alert("Senhas não coincidem."); if(isOffline||!currentUser)return alert("Requer login online."); const btn=document.getElementById('btn-change-pass'); if(btn){const ot=btn.innerText;btn.innerText="Atualizando...";btn.disabled=true; try{ const {error}=await supabase.auth.updateUser({password:p1}); if(error)throw error; alert("Senha alterada!"); e.target.reset(); }catch(err){alert("Erro: "+err.message);}finally{btn.innerText=ot;btn.disabled=false;}} };
+
+        // INIT SUPABASE AUTH
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUser = session.user;
+                document.getElementById('auth-screen').classList.add('hidden');
+                const appScreen = document.getElementById('app-screen');
+                appScreen.classList.remove('hidden');
+                appScreen.classList.add('flex');
+                setTimeout(() => { appScreen.classList.remove('opacity-0'); }, 100);
+                
+                const displayEmail = currentUser.email || "Convidado";
+                setText('user-name-display', currentUser.user_metadata?.name || displayEmail.split('@')[0]);
+                if(currentUser.email === ADMIN_EMAIL) document.getElementById('btn-admin').classList.remove('hidden');
+                
+                // LOAD DATA
+                supabase.from('user_data').select('content').eq('user_id', currentUser.id).single().then(({ data, error }) => {
+                    if (data && data.content) { appData = data.content; checkMigration(); }
+                    else { checkMigration(); saveData(); }
+                    render();
+                });
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('app-screen').classList.add('hidden');
             }
         });
 
-        if(auth) {
-            onAuthStateChanged(auth, (user) => {
-                if(user) {
-                    currentUser = user;
-                    document.getElementById('auth-screen').classList.add('hidden');
-                    const appScreen = document.getElementById('app-screen');
-                    appScreen.classList.remove('hidden');
-                    appScreen.classList.add('flex');
-                    setTimeout(() => { appScreen.classList.remove('opacity-0'); }, 100);
-                    // Check email existence
-                    const displayEmail = user.email || "Convidado";
-                    document.getElementById('user-name-display').innerText = displayEmail.includes('@') ? displayEmail.split('@')[0] : displayEmail;
-                    if(user.email === ADMIN_EMAIL) document.getElementById('btn-admin').classList.remove('hidden');
-                    const docRef = doc(db,'artifacts',appId,'users',user.uid,'app_data','main');
-                    if(unsubscribeUser) unsubscribeUser();
-                    unsubscribeUser = onSnapshot(docRef, (s) => {
-                        if(s.exists()) { appData = s.data(); checkMigration(); }
-                        else { appData = { incomes: [], fixed: [], variable: [], categories: [...DEFAULT_CATEGORIES], debts: [], goals: [], budgets: [], incomeOrigins: ['Salário'] }; saveData(); }
-                        render();
-                    }, (err) => { forceOfflineMode(); });
-                } else {
-                    document.getElementById('auth-screen').classList.remove('hidden');
-                    document.getElementById('app-screen').classList.add('hidden');
-                }
-            });
-        }
         document.getElementById('var-date').valueAsDate = new Date();
         document.getElementById('inc-date').valueAsDate = new Date();
     </script>
